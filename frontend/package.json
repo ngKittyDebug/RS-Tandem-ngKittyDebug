@@ -13,7 +13,8 @@
     "lint:fix": "eslint --fix .",
     "ci:format": "prettier --check .",
     "format": "prettier --write .",
-    "prepare": "cd .. && husky frontend/.husky"
+    "prepare": "cd .. && husky frontend/.husky",
+    "check-all": "npm run typecheck && npm run lint && npm run ci:format && npm run test"
   },
   "prettier": {
     "printWidth": 100,
@@ -62,6 +63,7 @@
     "@commitlint/config-conventional": "^20.4.2",
     "angular-eslint": "21.2.0",
     "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "jsdom": "^27.1.0",
     "less": "^4.5.1",
