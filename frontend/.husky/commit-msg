@@ -1,0 +1,3 @@
+cd frontend
+
+npx --no -- commitlint --edit $1
