@@ -1,1 +1,65 @@
-/* You can add global styles to this file, and also import other style files */
+:root,
+[tuiTheme='light'] {
+  --tui-background-base: oklch(98.4% 0.003 247.858);
+  --tui-background-base-alt: #ffffff;
+
+  --tui-text-primary: oklch(44.6% 0.043 257.281);
+
+  --tui-border-normal: oklch(92.9% 0.013 255.508);
+
+  --accent-1: #8b5cf6;
+  --accent-2: #14b8a6;
+  --accent-3: #ec4899;
+}
+
+[tuiTheme='dark'] {
+  --tui-background-base: oklch(20.8% 0.042 265.755);
+  --tui-background-base-alt: oklch(12.9% 0.042 264.695);
+
+  --tui-text-primary: oklch(70.4% 0.04 256.788);
+
+  --tui-border-normal: oklch(44.6% 0.043 257.281);
+
+  --accent-1: #8b5cf6;
+  --accent-2: #14b8a6;
+  --accent-3: #ec4899;
+}
+
+.gradient-btn {
+  background: linear-gradient(90deg, var(--accent-1) 0%, var(--accent-3) 100%);
+
+  color: #ffffff;
+  font-family: var(--tui-font-text);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+
+  padding: 0 1.25rem;
+  block-size: 3.5rem;
+  border-radius: var(--tui-radius-l);
+  box-shadow: 0 6px 18px rgba(123, 92, 245, 0.35);
+  border: none;
+
+  transition: all 0.2s ease;
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(123, 92, 245, 0.45);
+      filter: brightness(1.05);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(123, 92, 245, 0.3);
+    filter: brightness(0.95);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+}
