@@ -1,98 +1,203 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Backend (NestJS)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Backend для приложения RS-Tandem-ngKittyDebug на NestJS с использованием Prisma ORM и PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Зависимости
 
-## Description
+### Предварительные требования
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Node.js >= 20
+- npm >= 10
+- Docker и Docker Compose
 
-## Project setup
+## Запуск приложения
+
+### Настройка окружения
+
+Скопируйте файл `.env.example` и настройте переменные окружения:
 
 ```bash
-$ npm install
+cp .env.example .env
 ```
 
-## Compile and run the project
+Необходимые переменные окружения:
+
+- `DATABASE_URL` — строка подключения к PostgreSQL
+- `PORT` — порт сервера (по умолчанию 3000)
+- `HOST` — хост сервера (по умолчанию http://localhost)
+- `POSTGRES_USER` — пользователь PostgreSQL
+- `POSTGRES_PASSWORD` — пароль PostgreSQL
+- `POSTGRES_DB` — имя базы данных PostgreSQL
+
+### Запуск в режиме разработки
+
+1. Установите зависимости:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm ci
 ```
 
-## Run tests
+2. Поднимите Docker контейнер с PostgreSQL:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Запуск контейнера postgres (образ: postgres:17.5-alpine3.22)
+npm run docker:dev
 ```
 
-## Deployment
+Контейнер будет доступен на порту `5433`.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+3. Сгенерируйте Prisma клиента:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run generate:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+4. Примените миграции (при необходимости):
 
-## Resources
+```bash
+npm run migration:dev
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+5. Запустите сервер в режиме разработки:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```bash
+# Запуск с авто-перезагрузкой
+npm run start:dev
 
-## Support
+# Запуск с отладкой
+npm run start:debug
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Запуск в production режиме
 
-## Stay in touch
+1. Установите зависимости:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+npm ci
+```
 
-## License
+2. Поднимите Docker контейнер с PostgreSQL:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```bash
+npm run docker:dev
+```
+
+3. Сгенерируйте Prisma клиента:
+
+```bash
+npm run generate:dev
+```
+
+4. Примените миграции:
+
+```bash
+npm run migration:dev
+```
+
+5. Соберите проект:
+
+```bash
+npm run build
+```
+
+6. Запустите production сервер:
+
+```bash
+npm run start:prod
+```
+
+---
+
+## Swagger (API документация)
+
+Проект использует Swagger для документирования API.
+
+### Запуск Swagger
+
+После запуска приложения Swagger доступен по адресу:
+
+```
+http://localhost:3000/docs
+```
+
+### Возможности
+
+- **Интерактивная документация** — просмотр всех доступных эндпоинтов
+- **Тестирование API** — возможность отправлять запросы прямо из браузера
+- **Bearer Auth** — поддержка авторизации через JWT токены
+- **Экспорт в YAML** — документация доступна по адресу `/openapi.yaml`
+
+### Примеры запросов через Swagger
+
+1. Откройте `http://localhost:3000/docs`
+2. Раздел **auth** содержит следующие эндпоинты:
+   - `POST /auth` — создание нового пользователя
+   - `PATCH /auth/:id` — обновление пользователя
+   - `DELETE /auth/:id` — удаление пользователя
+
+3. Для авторизации нажмите кнопку **Authorize** и введите JWT токен
+
+---
+
+## Доступные эндпоинты
+
+### Auth Controller
+
+| Метод  | Эндпоинт    | Описание                      |
+| ------ | ----------- | ----------------------------- |
+| POST   | `/auth`     | Создание нового пользователя  |
+| PATCH  | `/auth/:id` | Обновление пользователя по ID |
+| DELETE | `/auth/:id` | Удаление пользователя по ID   |
+
+### Пример запроса для создания пользователя
+
+```bash
+POST http://localhost:3000/auth
+Content-Type: application/json
+
+{
+  "email": "test@gmail.com",
+  "password": "Alex"
+}
+```
+
+---
+
+## Команды для разработки
+
+### Линтинг и форматирование
+
+```bash
+# Форматирование кода
+npm run format
+
+# Линтинг
+npm run lint
+
+# Проверка типов
+npm run typecheck
+```
+
+### Тесты
+
+```bash
+# Запуск тестов
+npm run test
+
+# Запуск тестов в режиме watch
+npm run test:watch
+
+# Покрытие тестами
+npm run test:cov
+
+# E2E тесты
+npm run test:e2e
+```
+
+### Проверка всех (format, typecheck, lint, test)
+
+```bash
+npm run check-all
+```
+
+---
