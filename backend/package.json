@@ -25,7 +25,8 @@
     "migration:dev": "cross-env MODE=development npx prisma migration status",
     "migration": "npx prisma migration",
     "generate:dev": "cross-env MODE=development npx prisma generate",
-    "check-all": "npm run ci:format && npm run typecheck && npm run ci:lint && npm run test"
+    "check-all": "npm run ci:format && npm run typecheck && npm run ci:lint && npm run test",
+    "docker:dev": "docker-compose up -d"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
