@@ -61,7 +61,7 @@ npm run migration:dev
 5. Запустите сервер в режиме разработки:
 
 ```bash
-# Запуск с авто-перезагрузкой
+# Запуск с авто-перезагрузкой (режим development)
 npm run start:dev
 
 # Запуск с отладкой
@@ -105,8 +105,6 @@ npm run build
 ```bash
 npm run start:prod
 ```
-
----
 
 ## Swagger (API документация)
 
@@ -171,8 +169,14 @@ Content-Type: application/json
 # Форматирование кода
 npm run format
 
+# Проверка форматирования (для CI)
+npm run ci:format
+
 # Линтинг
 npm run lint
+
+# Проверка линтинга (для CI)
+npm run ci:lint
 
 # Проверка типов
 npm run typecheck
@@ -194,10 +198,29 @@ npm run test:cov
 npm run test:e2e
 ```
 
-### Проверка всех (format, typecheck, lint, test)
+### Проверка всех (ci:format, typecheck, ci:lint, test)
 
 ```bash
 npm run check-all
+```
+
+### Prisma команды
+
+```bash
+# Применение миграций (dev режим)
+npm run migration:dev
+
+# Применение миграций
+npm run migration
+
+# Push схемы БД (dev режим)
+npm run db:push:dev
+
+# Push схемы БД
+npm run db:push
+
+# Генерация Prisma клиента (dev режим)
+npm run generate:dev
 ```
 
 ---

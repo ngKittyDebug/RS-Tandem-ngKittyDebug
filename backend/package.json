@@ -21,9 +21,10 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prepare": "cd .. && husky backend/.husky",
-    "migration:dev": "cross-env MODE=development npx prisma migration status",
-    "migration": "npx prisma migration",
+    "db:push": "npx prisma db push",
+    "db:push:dev": "cross-env MODE=development npx prisma db push",
+    "migration:dev": "cross-env MODE=development npx prisma migrate dev",
+    "migration": "npx prisma migrate dev",
     "generate:dev": "cross-env MODE=development npx prisma generate",
     "check-all": "npm run ci:format && npm run typecheck && npm run ci:lint && npm run test",
     "docker:dev": "docker-compose up -d"
@@ -67,6 +68,7 @@
     "globals": "^16.0.0",
     "husky": "^9.1.7",
     "jest": "^30.0.0",
+    "jest-mock-extended": "^4.0.0",
     "lint-staged": "^16.2.7",
     "prettier": "^3.4.2",
     "prisma": "^7.4.1",
@@ -91,9 +93,24 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(t|j)s",
+      "!**/generated/**",
+      "!**/*.spec.ts"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^prisma/(.*)$": "<rootDir>/../prisma/$1",
+      "^src/(.*)$": "<rootDir>/$1",
+      "^src_generated/prisma/client$": "<rootDir>/../src/generated/prisma/client"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(@prisma|prisma)/)"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/",
+      "/generated/"
+    ]
   }
 }
