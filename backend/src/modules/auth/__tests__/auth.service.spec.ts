@@ -2,28 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from '../auth.service';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateAuthDto } from '../dto/create-auth.dto';
-import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
-
-// Мокаем весь модуль PrismaService
-jest.mock('prisma/prisma.service', () => ({
-  PrismaService: jest.fn().mockImplementation(() => ({
-    user: {
-      create: jest.fn(),
-      findUnique: jest.fn(),
-      findMany: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-    },
-  })),
-}));
+import { createMockPrismaService } from 'prisma/__mocks__/prisma-service-mock';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let prismaMock: DeepMockProxy<PrismaService>;
+  const prismaMock = createMockPrismaService();
 
   beforeEach(async () => {
-    prismaMock = mockDeep<PrismaService>();
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,

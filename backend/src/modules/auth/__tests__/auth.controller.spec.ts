@@ -3,19 +3,6 @@ import { AuthController } from '../auth.controller';
 import { AuthService } from '../auth.service';
 import { CreateAuthDto } from '../dto/create-auth.dto';
 
-// Мокаем AuthService для тестирования контроллера
-jest.mock('prisma/prisma.service', () => ({
-  PrismaService: jest.fn().mockImplementation(() => ({
-    user: {
-      create: jest.fn(),
-      findUnique: jest.fn(),
-      findMany: jest.fn(),
-      update: jest.fn(),
-      delete: jest.fn(),
-    },
-  })),
-}));
-
 describe('AuthController', () => {
   let controller: AuthController;
   let authServiceMock: jest.Mocked<AuthService>;

@@ -27,7 +27,8 @@
     "migration": "npx prisma migrate dev",
     "generate:dev": "cross-env MODE=development npx prisma generate",
     "check-all": "npm run ci:format && npm run typecheck && npm run ci:lint && npm run test",
-    "docker:dev": "docker-compose up -d"
+    "docker:dev": "docker-compose up -d",
+    "prepare": "cd .. && husky backend/.husky"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
