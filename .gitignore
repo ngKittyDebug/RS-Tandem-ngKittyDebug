@@ -44,3 +44,7 @@ __screenshots__/
 Thumbs.db
 
 /**/.env
+
+backend/src/generated
+backend/dist
+backend/coverage
