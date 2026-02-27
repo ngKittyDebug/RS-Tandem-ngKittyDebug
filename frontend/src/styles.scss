@@ -25,41 +25,32 @@
   --accent-3: #ec4899;
 }
 
-.gradient-btn {
+button[tuiButton][data-appearance='gradient'] {
   background: linear-gradient(90deg, var(--accent-1) 0%, var(--accent-3) 100%);
-
   color: #ffffff;
-  font-family: var(--tui-font-text);
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
 
-  padding: 0 1.25rem;
-  block-size: 3.5rem;
-  border-radius: var(--tui-radius-l);
-  box-shadow: 0 6px 18px rgba(123, 92, 245, 0.35);
-  border: none;
+  box-shadow: 0 6px 18px color-mix(in oklch, var(--accent-1) 35%, transparent);
 
   transition: all 0.2s ease;
 
   @media (hover: hover) {
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 22px rgba(123, 92, 245, 0.45);
+      box-shadow: 0 8px 22px color-mix(in oklch, var(--accent-1) 45%, transparent);
       filter: brightness(1.05);
     }
   }
 
   &:active {
     transform: translateY(0);
-    box-shadow: 0 4px 12px rgba(123, 92, 245, 0.3);
+    box-shadow: 0 4px 12px color-mix(in oklch, var(--accent-1) 30%, transparent);
     filter: brightness(0.95);
   }
 
   &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+    filter: none;
     box-shadow: none;
     transform: none;
+    cursor: not-allowed;
   }
 }
