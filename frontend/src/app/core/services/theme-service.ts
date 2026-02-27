@@ -4,9 +4,13 @@ import { Injectable, signal } from '@angular/core';
   providedIn: 'root',
 })
 export class ThemeService {
-  public readonly theme = signal<'light' | 'dark'>('light');
+  private readonly storageKey = 'app-theme';
 
-  public toggle(): void {
+  private baseTheme = localStorage.getItem(this.storageKey) || 'light';
+  public readonly theme = signal(this.baseTheme);
+
+  public changeTheme(): void {
     this.theme.update((t) => (t === 'light' ? 'dark' : 'light'));
+    localStorage.setItem(this.storageKey, this.theme());
   }
 }

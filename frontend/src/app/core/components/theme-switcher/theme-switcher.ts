@@ -14,7 +14,7 @@ import { ThemeService } from '../../services/theme-service';
 export class ThemeSwitcher {
   protected readonly themeService = inject(ThemeService);
 
-  public onChange(): void {
-    this.themeService.toggle();
+  public onChangeTheme(): void {
+    this.themeService.changeTheme();
   }
 }

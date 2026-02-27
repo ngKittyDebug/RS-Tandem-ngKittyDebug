@@ -24,14 +24,12 @@ export class LaguageSwitcher {
     this.value = this.currentLang;
     const availableLangs = this.transLocoService.getAvailableLangs();
 
-    if (Array.isArray(availableLangs) && typeof availableLangs[0] === 'string') {
-      this.languages = availableLangs as string[];
-    } else {
-      this.languages = (availableLangs as { id: string; label: string }[]).map((lang) => lang.id);
-    }
+    this.languages = availableLangs.map((lang) => {
+      return typeof lang === 'string' ? lang : lang.id;
+    });
   }
 
-  public onChange(event: string): void {
+  public onChangeLanguage(event: string): void {
     this.transLocoService.setActiveLang(event);
     this.currentLang = event;
   }
