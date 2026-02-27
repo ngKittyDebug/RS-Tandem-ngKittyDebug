@@ -1,0 +1,15 @@
+<ng-container>
+  <button
+    appearance="outline-grayscale"
+    iconStart="@tui.languages"
+    size="s"
+    tuiButton
+    tuiButtonSelect
+    type="button"
+    [(ngModel)]="value"
+    (ngModelChange)="onChange($event)"
+  >
+    {{ value }}
+    <tui-data-list-wrapper *tuiTextfieldDropdown new [items]="languages" />
+  </button>
+</ng-container>
