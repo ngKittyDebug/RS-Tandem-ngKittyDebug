@@ -1,11 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslocoTestingModule } from '@jsverse/transloco';
+import { TranslocoService, TranslocoTestingModule } from '@jsverse/transloco';
 
 import { LaguageSwitcher } from './laguage-switcher';
 
 describe('LaguageSwitcher', () => {
   let component: LaguageSwitcher;
   let fixture: ComponentFixture<LaguageSwitcher>;
+  const mockTranslocoService = {
+    getActiveLang: vi.fn().mockReturnValue('ru'),
+    getAvailableLangs: vi.fn().mockReturnValue(['ru', 'en']),
+    setActiveLang: vi.fn(),
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -19,6 +24,7 @@ describe('LaguageSwitcher', () => {
           },
         }),
       ],
+      providers: [{ provide: TranslocoService, useValue: mockTranslocoService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LaguageSwitcher);
@@ -28,5 +34,12 @@ describe('LaguageSwitcher', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should change language', () => {
+    const newLang = 'en';
+    component.onChangeLanguage(newLang);
+    expect(mockTranslocoService.setActiveLang).toHaveBeenCalledWith(newLang);
+    expect(component.currentLang).toBe(newLang);
   });
 });
