@@ -1,7 +1,29 @@
+:host ::ng-deep .header {
+  height: 60px;
+}
+
 .wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  margin: 0 auto;
+  max-width: 1500px;
+  padding: 0 20px;
+  width: 100%;
+  height: 60px;
+}
+
+.logo {
+  display: block;
+  width: 30px;
+  height: 30px;
+  background-color: red;
+}
+
+.services {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
+  gap: 5px;
+  align-self: center;
+  justify-self: end;
 }
