@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
+import { provideRouter } from '@angular/router';
 
 import { App } from './app';
 
@@ -16,6 +17,7 @@ describe('App', () => {
           },
         }),
       ],
+      providers: [provideRouter([])],
     }).compileComponents();
   });
 
