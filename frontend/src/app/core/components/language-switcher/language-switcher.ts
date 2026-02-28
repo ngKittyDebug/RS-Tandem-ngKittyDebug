@@ -1,9 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TuiButton, TuiTextfield } from '@taiga-ui/core';
 import { TuiButtonSelect, TuiDataListWrapper, TuiSelect } from '@taiga-ui/kit';
 import { TranslocoService } from '@jsverse/transloco';
-import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-language-switcher',
@@ -13,13 +12,14 @@ import { inject } from '@angular/core';
   styleUrl: './language-switcher.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LaguageSwitcher {
-  public currentLang: string;
-  public readonly languages: string[];
-  protected value: string | null;
+export class LaguageSwitcher implements OnInit {
   private transLocoService = inject(TranslocoService);
 
-  constructor() {
+  public currentLang: string | null = null;
+  public languages: string[] = [];
+  protected value: string | null = null;
+
+  public ngOnInit(): void {
     this.currentLang = this.transLocoService.getActiveLang();
     this.value = this.currentLang;
     const availableLangs = this.transLocoService.getAvailableLangs();
