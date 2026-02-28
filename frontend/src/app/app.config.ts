@@ -20,7 +20,6 @@ export const appConfig: ApplicationConfig = {
       config: {
         availableLangs: ['ru', 'en'],
         defaultLang: 'ru',
-        // Remove this option if your application doesn't support changing language in runtime.
         reRenderOnLangChange: true,
         prodMode: !isDevMode(),
       },
@@ -28,7 +27,7 @@ export const appConfig: ApplicationConfig = {
     }),
     provideTranslocoPersistLang({
       storage: {
-        useValue: localStorage, // Указываем localStorage как хранилище
+        useValue: localStorage,
       },
     }),
   ],

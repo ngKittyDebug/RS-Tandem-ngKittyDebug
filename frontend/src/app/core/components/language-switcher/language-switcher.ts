@@ -6,11 +6,11 @@ import { TranslocoService } from '@jsverse/transloco';
 import { inject } from '@angular/core';
 
 @Component({
-  selector: 'app-laguage-switcher',
+  selector: 'app-language-switcher',
   standalone: true,
   imports: [FormsModule, TuiButton, TuiButtonSelect, TuiDataListWrapper, TuiSelect, TuiTextfield],
-  templateUrl: './laguage-switcher.html',
-  styleUrl: './laguage-switcher.scss',
+  templateUrl: './language-switcher.html',
+  styleUrl: './language-switcher.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LaguageSwitcher {

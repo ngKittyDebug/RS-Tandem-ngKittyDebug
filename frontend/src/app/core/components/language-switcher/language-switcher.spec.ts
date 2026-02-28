@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslocoService, TranslocoTestingModule } from '@jsverse/transloco';
 
-import { LaguageSwitcher } from './laguage-switcher';
+import { LaguageSwitcher } from './language-switcher';
 
 describe('LaguageSwitcher', () => {
   let component: LaguageSwitcher;

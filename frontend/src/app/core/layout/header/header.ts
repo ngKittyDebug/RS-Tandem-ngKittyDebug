@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { TuiHeader } from '@taiga-ui/layout';
-import { LaguageSwitcher } from '../../../core/components/laguage-switcher/laguage-switcher';
 import { ThemeSwitcher } from '../../components/theme-switcher/theme-switcher';
 import { TuiAppearance } from '@taiga-ui/core';
 import { RouterLink } from '@angular/router';
+import { LaguageSwitcher } from '../../components/language-switcher/language-switcher';
 
 @Component({
   selector: 'app-header',
