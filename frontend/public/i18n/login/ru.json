@@ -1,3 +1,32 @@
 {
-  "loginWorks": "Страница входа работает"
+  "loginWorks": "Страница входа работает",
+
+  "title": "С возвращением",
+  "subtitle": "Войдите, чтобы продолжить в MeowVault",
+
+  "form": {
+    "emailLabel": "Email",
+    "emailPlaceholder": "mail@example.com",
+
+    "passwordLabel": "Пароль",
+    "passwordPlaceholder": "Aa888888"
+  },
+
+  "buttons": {
+    "login": "Войти",
+    "google": "Продолжить через Google"
+  },
+
+  "divider": "или",
+
+  "links": {
+    "noAccount": "Нет аккаунта?",
+    "signUp": "Зарегистрироваться"
+  },
+
+  "error": {
+    "required": "Поле обязательно для заполнения",
+    "emailPattern": "Неверный формат email",
+    "passwordPattern": "Минимум 8 символов на англ., одна заглавная буква, одна строчная и одна цифра"
+  }
 }

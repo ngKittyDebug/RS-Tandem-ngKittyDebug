@@ -1,1 +1,75 @@
-<p *transloco="let t">{{ t('login.loginWorks') }}</p>
+<div class="login" *transloco="let t">
+  <form
+    tuiAppearance="floating"
+    tuiCardLarge
+    tuiForm="m"
+    class="login__form"
+    aria-labelledby="login-title"
+    [formGroup]="loginForm"
+    (ngSubmit)="submit()"
+  >
+    <div tuiHeader class="login__header">
+      <h2 tuiTitle id="login-title">{{ t('login.title') }}</h2>
+      <p tuiSubtitle>{{ t('login.subtitle') }}</p>
+    </div>
+
+    <tui-textfield iconStart="@tui.mail">
+      <label tuiLabel for="email">{{ t('login.form.emailLabel') }}</label>
+      <input
+        formControlName="email"
+        placeholder="{{ t('login.form.emailPlaceholder') }}"
+        tuiTextfield
+        type="email"
+        autocomplete="email"
+        id="email"
+      />
+    </tui-textfield>
+    <tui-error [error]="getInputError('email')"></tui-error>
+
+    <tui-textfield iconStart="@tui.lock">
+      <label tuiLabel for="password">{{ t('login.form.passwordLabel') }}</label>
+      <input
+        formControlName="password"
+        placeholder="{{ t('login.form.passwordPlaceholder') }}"
+        tuiTextfield
+        type="password"
+        autocomplete="current-password"
+        id="password"
+      />
+      <tui-icon tuiPassword />
+    </tui-textfield>
+    <tui-error [error]="getInputError('password')"></tui-error>
+
+    <button
+      tuiButton
+      appearance="gradient"
+      class="login__button"
+      type="submit"
+      [disabled]="loginForm.invalid"
+    >
+      {{ t('login.buttons.login') }}
+    </button>
+
+    <div class="login__divider">
+      <span>{{ t('login.divider') }}</span>
+    </div>
+
+    <div class="login__google">
+      <img src="/assets/images/cat/cat-1.png" class="login__cat" alt="cat" />
+      <button
+        tuiButton
+        appearance="outline"
+        type="button"
+        (click)="loginWithGoogle()"
+        class="login__button"
+      >
+        {{ t('login.buttons.google') }}
+      </button>
+    </div>
+
+    <div class="login__link">
+      {{ t('login.links.noAccount') }}
+      <a tuiLink routerLink="/registration">{{ t('login.links.signUp') }}</a>
+    </div>
+  </form>
+</div>

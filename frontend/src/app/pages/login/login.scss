@@ -1,0 +1,73 @@
+.login {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+
+  &__form {
+    width: 100%;
+    max-width: 32rem;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: center;
+    padding-bottom: 1rem;
+  }
+
+  &__button {
+    width: 100%;
+  }
+
+  &__divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem 0rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &::before,
+    &::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--tui-border-normal);
+    }
+
+    span {
+      white-space: nowrap;
+    }
+  }
+
+  &__link {
+    text-align: center;
+    padding-top: 2rem;
+    font-size: 0.875rem;
+    color: var(--tui-text-secondary);
+
+    a {
+      margin-left: 0.25rem;
+      font-weight: 500;
+    }
+  }
+
+  &__google {
+    position: relative;
+  }
+
+  &__cat {
+    position: absolute;
+    width: 130px;
+    height: auto;
+    z-index: 2;
+    top: -55px;
+    left: 5px;
+  }
+}

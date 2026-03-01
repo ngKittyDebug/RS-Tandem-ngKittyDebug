@@ -1,3 +1,32 @@
 {
-  "loginWorks": "Login page works"
+  "loginWorks": "Login page works",
+
+  "title": "Welcome Back",
+  "subtitle": "Login to continue to MeowVault",
+
+  "form": {
+    "emailLabel": "Email",
+    "emailPlaceholder": "mail@example.com",
+
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Aa888888"
+  },
+
+  "buttons": {
+    "login": "Login",
+    "google": "Continue with Google"
+  },
+
+  "divider": "or",
+
+  "links": {
+    "noAccount": "Don't have an account?",
+    "signUp": "Sign up"
+  },
+
+  "error": {
+    "required": "This field is required",
+    "emailPattern": "Invalid email format",
+    "passwordPattern": "Minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number"
+  }
 }
