@@ -1,8 +1,24 @@
-.container{
+.container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: black;
+}
+.container h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.container p {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+}
+.container .not-found-image {
+  width: 250px;
+  height: auto;
+  border-radius: 50px;
+  border: 10px solid #ccc;
+  -webkit-box-shadow: 0px 18px 24px 0px rgba(145, 145, 145, 0.67);
+  -moz-box-shadow: 0px 18px 24px 0px rgba(145, 145, 145, 0.67);
+  box-shadow: 0px 15px 15px -6px rgba(145, 145, 145, 0.67);
 }
