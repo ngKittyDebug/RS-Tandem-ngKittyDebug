@@ -7,6 +7,7 @@ describe('CreateAuthDto', () => {
     const dto = plainToClass(CreateAuthDto, {
       email: 'test@gmail.com',
       password: 'password123',
+      username: 'Alex',
     });
 
     const errors = validateSync(dto);
@@ -17,6 +18,7 @@ describe('CreateAuthDto', () => {
     const dto = plainToClass(CreateAuthDto, {
       email: 'invalid-email',
       password: 'password123',
+      username: 'Alex',
     });
 
     const errors = validateSync(dto);
@@ -29,6 +31,7 @@ describe('CreateAuthDto', () => {
     const dto = plainToClass(CreateAuthDto, {
       email: '',
       password: 'password123',
+      username: 'Alex',
     });
 
     const errors = validateSync(dto);
@@ -41,6 +44,7 @@ describe('CreateAuthDto', () => {
     const dto = plainToClass(CreateAuthDto, {
       email: 'test@gmail.com',
       password: '',
+      username: 'Alex',
     });
 
     const errors = validateSync(dto);
@@ -53,6 +57,7 @@ describe('CreateAuthDto', () => {
     const dto = plainToClass(CreateAuthDto, {
       email: 'test@gmail.com',
       password: 12345,
+      username: 'Alex',
     });
 
     const errors = validateSync(dto);
@@ -64,7 +69,7 @@ describe('CreateAuthDto', () => {
     const dto = plainToClass(CreateAuthDto, {});
 
     const errors = validateSync(dto);
-    expect(errors).toHaveLength(2);
+    expect(errors).toHaveLength(3);
   });
 
   it('should pass with valid email formats', () => {
@@ -78,6 +83,7 @@ describe('CreateAuthDto', () => {
       const dto = plainToClass(CreateAuthDto, {
         email,
         password: 'password123',
+        username: 'Alex',
       });
       const errors = validateSync(dto);
       expect(errors).toHaveLength(0);

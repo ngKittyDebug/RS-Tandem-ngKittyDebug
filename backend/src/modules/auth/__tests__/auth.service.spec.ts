@@ -3,6 +3,7 @@ import { AuthService } from '../auth.service';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateAuthDto } from '../dto/create-auth.dto';
 import { createMockPrismaService } from 'prisma/__mocks__/prisma-service-mock';
+import { Role } from 'src/generated/prisma/enums';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -30,12 +31,15 @@ describe('AuthService', () => {
     const createAuthDto: CreateAuthDto = {
       email: 'test@gmail.com',
       password: 'password123',
+      username: 'Alex',
     };
 
     const mockUser = {
       id: 'test-uuid',
       email: createAuthDto.email,
+      username: createAuthDto.username,
       password: createAuthDto.password,
+      role: Role.user,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -50,6 +54,7 @@ describe('AuthService', () => {
         data: {
           email: createAuthDto.email,
           password: createAuthDto.password,
+          username: createAuthDto.username,
         },
       });
     });
@@ -64,31 +69,30 @@ describe('AuthService', () => {
   });
 
   describe('findOne', () => {
-    it('should return a string with the id', () => {
-      const result = service.findOne(1);
-      expect(result).toBe('This action returns a #1 auth');
-    });
-  });
-
-  describe('update', () => {
-    const updateAuthDto: Partial<CreateAuthDto> = {
-      email: 'updated@gmail.com',
+    const createAuthDto: CreateAuthDto = {
+      email: 'test@gmail.com',
+      password: 'password123',
+      username: 'Alex',
     };
 
-    it('should call console.log and return a string', () => {
-      jest.spyOn(console, 'log').mockImplementation(() => {});
+    const mockUser = {
+      id: 'test-uuid',
+      email: createAuthDto.email,
+      username: createAuthDto.username,
+      password: createAuthDto.password,
+      role: Role.user,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-      const result = service.update(1, updateAuthDto);
-
-      expect(console.log).toHaveBeenCalledWith(updateAuthDto);
-      expect(result).toBe('This action updates a #1 auth');
-    });
-  });
-
-  describe('remove', () => {
-    it('should return a string with the id', () => {
-      const result = service.remove(1);
-      expect(result).toBe('This action removes a #1 auth');
+    it('should return a string with the email or login', async () => {
+      await prismaMock.user.findFirst({
+        where: {
+          OR: [{ email: mockUser.email }, { username: mockUser.username }],
+        },
+      });
+      const result = await service.findOne(createAuthDto);
+      expect(result);
     });
   });
 });

@@ -10,5 +10,10 @@ export class CreateAuthDto {
   @ApiProperty({ example: 'Alex' })
   @IsString()
   @IsNotEmpty()
+  username: string;
+
+  @ApiProperty({ example: 'Test1213133124' })
+  @IsString()
+  @IsNotEmpty()
   password: string;
 }

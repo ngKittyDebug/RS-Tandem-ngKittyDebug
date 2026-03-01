@@ -1,36 +1,44 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, Logger } from '@nestjs/common';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { User } from 'src/generated/prisma/client';
+import { User } from 'src/generated/prisma/browser';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
+
+  private readonly logger = new Logger(AuthService.name);
 
   async create(data: CreateAuthDto): Promise<User> {
-    const existingUser = await this.prisma.user.findUnique({
-      where: { email: data.email },
-    });
+    const existingUser = await this.findOne(data);
 
     if (existingUser) {
-      throw new ConflictException('Пользователь с таким email уже существует');
+      this.logger.error('Пользователь уже существует');
+      throw new ConflictException(`Пользователь уже существует`);
     }
 
-    return await this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         email: data.email,
         password: data.password,
+        username: data.username,
       },
+    });
+
+    this.logger.log(`Пользователь с ${user.id} создан`);
+
+    return user;
+  }
+
+  async findOne(data: CreateAuthDto): Promise<User | null> {
+    return await this.prisma.user.findFirst({
+      where: { OR: [{ email: data.email }, { username: data.username }] },
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
   update(id: number, updateAuthDto: UpdateAuthDto) {
-    console.log(updateAuthDto);
+    this.logger.log(updateAuthDto);
     return `This action updates a #${id} auth`;
   }
 

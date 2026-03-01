@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '../auth.controller';
 import { AuthService } from '../auth.service';
 import { CreateAuthDto } from '../dto/create-auth.dto';
+import { Role } from 'src/generated/prisma/enums';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -36,12 +37,15 @@ describe('AuthController', () => {
     const createAuthDto: CreateAuthDto = {
       email: 'test@gmail.com',
       password: 'password123',
+      username: 'Alex',
     };
 
     const mockUser = {
       id: 'test-uuid',
       email: createAuthDto.email,
+      username: createAuthDto.username,
       password: createAuthDto.password,
+      role: Role.user,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

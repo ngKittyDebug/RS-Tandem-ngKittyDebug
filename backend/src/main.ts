@@ -13,7 +13,10 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
   app.enableCors({
-    origin: '*',
+    origin: [
+      `${config.getOrThrow<string>('HOST')}:${config.getOrThrow<string>('PORT')}`,
+      `${config.getOrThrow<string>('DEPLOY_URL_CORS')}`,
+    ],
     credentials: true,
   });
 

@@ -18,11 +18,20 @@ export class AuthController {
     return this.authService.create(createAuthDto);
   }
 
+  @ApiOperation({
+    summary: 'Обновление данных пользователя',
+    description:
+      'Позволяет отправить тело запроса с изменение данных пользователя',
+  })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
     return this.authService.update(+id, updateAuthDto);
   }
 
+  @ApiOperation({
+    summary: 'Удаление пользователя',
+    description: 'Позволяет удалить пользователя из БД',
+  })
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.authService.remove(+id);
