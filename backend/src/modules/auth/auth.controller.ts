@@ -1,8 +1,17 @@
-import { Controller, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  HttpCode,
+  HttpStatus,
+  Req,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { ApiOperation } from '@nestjs/swagger';
+import { LoginAuthDto } from './dto/login-auth.dto';
+import { Request, Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -13,27 +22,46 @@ export class AuthController {
     description:
       'Посылаем POST запрос на создание нового пользователя в таблице',
   })
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Post('register')
+  create(
+    @Body() createAuthDto: CreateAuthDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.authService.signIn(res, createAuthDto);
   }
 
   @ApiOperation({
-    summary: 'Обновление данных пользователя',
+    summary: 'Логин пользователя',
     description:
-      'Позволяет отправить тело запроса с изменение данных пользователя',
+      'Посылаем POST запрос на логин пользователя, возвращает accessToken в теле ответа и устанавливает в куках refreshToken',
   })
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  login(
+    @Body() loginAuthDto: LoginAuthDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.authService.login(res, loginAuthDto);
   }
 
   @ApiOperation({
-    summary: 'Удаление пользователя',
-    description: 'Позволяет удалить пользователя из БД',
+    summary: 'Получить новые refreshToken',
+    description:
+      'Посылаем POST запрос на выдачу нового refreshToken, сервер принимает cookies и забирает из него нужный токен и валидирует его',
   })
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  refresh(@Res({ passthrough: true }) res: Response, @Req() req: Request) {
+    return this.authService.refresh(req, res);
+  }
+
+  @ApiOperation({
+    summary: 'Удаляет токен из лул',
+    description: 'Посылаем POST запрос на на удаление кук с фронта',
+  })
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  logout(@Res({ passthrough: true }) res: Response) {
+    return this.authService.logout(res);
   }
 }
