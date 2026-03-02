@@ -1,1 +1,25 @@
-<p *transloco="let t">{{ t('registration.registrationWorks') }}</p>
+<div class="registration">
+  <form class="registration__form" tuiAppearance="floating" tuiCardLarge tuiForm="m">
+    <h2 class="registration__header">Регистрация</h2>
+    <tui-textfield class="reg__inp" tuiTextfieldSize="m">
+      <label tuiLabel for="name">Введите Ваш псевдоним</label>
+      <input formControlName="name" tuiTextfield type="text" autocomplete="name" id="name" />
+    </tui-textfield>
+    <tui-textfield class="reg__inp" tuiTextfieldSize="m">
+      <label tuiLabel for="email">Введите email</label>
+      <input formControlName="email" tuiTextfield type="email" autocomplete="email" id="email" />
+    </tui-textfield>
+    <tui-textfield class="reg__inp" tuiTextfieldSize="m">
+      <label tuiLabel for="password">Введите пароль</label>
+      <input formControlName="password" tuiTextfield type="password" autocomplete="current-password" id="password" />
+    </tui-textfield>
+    <tui-textfield class="reg__inp" tuiTextfieldSize="m">
+      <label tuiLabel for="passwordRepeat">Повторите пароль</label>
+      <input formControlName="password" tuiTextfield type="password" autocomplete="current-password" id="passwordRepeat" />
+    </tui-textfield>
+    <div class="registration__bottom">
+      <button class="registration__btn" tuiButton appearance='gradient' type='button' size='m'>Press</button>
+      <a class="registration__link" href="#">Уже есть аккаунт?</a>
+    </div>
+  </form>
+</div>
