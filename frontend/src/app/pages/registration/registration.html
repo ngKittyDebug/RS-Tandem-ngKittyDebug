@@ -1,40 +1,23 @@
 <div class="registration">
-  <form
-    class="registration__form"
-    [formGroup]="registrationForm"
-    tuiAppearance="floating"
-    tuiCardLarge
-    tuiForm="m"
-    (ngSubmit)="submit()"
-  >
+  <form class="registration__form" [formGroup]="registrationForm" tuiAppearance="floating" tuiCardLarge tuiForm="m"
+    (ngSubmit)="submit()">
     <h2 class="registration__header">Регистрация</h2>
     <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.user">
       <label tuiLabel for="name">Введите Ваш псевдоним</label>
       <input formControlName="name" tuiTextfield type="text" autocomplete="name" id="name" />
     </tui-textfield>
     <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.mail">
-      <label tuiLabel for="email">Введите email</label>
+      <label tuiLabel for="email">{{ t('emailLabel') }}</label>
       <input formControlName="email" tuiTextfield type="email" autocomplete="email" id="email" />
     </tui-textfield>
     <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.lock">
       <label tuiLabel for="password">Введите пароль</label>
-      <input
-        formControlName="password"
-        tuiTextfield
-        type="password"
-        autocomplete="current-password"
-        id="password"
-      />
+      <input formControlName="password" tuiTextfield type="password" autocomplete="current-password" id="password" />
     </tui-textfield>
     <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.lock">
       <label tuiLabel for="passwordRepeat">Повторите пароль</label>
-      <input
-        formControlName="passwordRepeat"
-        tuiTextfield
-        type="password"
-        autocomplete="current-password"
-        id="passwordRepeat"
-      />
+      <input formControlName="passwordRepeat" tuiTextfield type="password" autocomplete="current-password"
+        id="passwordRepeat" />
     </tui-textfield>
     <div class="registration__bottom">
       <button class="registration__btn" tuiButton appearance="gradient" type="submit" size="m">

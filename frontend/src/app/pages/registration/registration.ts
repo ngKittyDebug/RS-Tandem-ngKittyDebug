@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TuiAppearance, TuiButton, TuiTextfield } from '@taiga-ui/core';
 import {} from '@taiga-ui/kit';
 import { TuiCardLarge, TuiForm } from '@taiga-ui/layout';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { TranslocoService } from '@jsverse/transloco';
 // import { PASSWORD_PATTERN } from 'src/app/shared/validators/password.pattern'; TODO когда Алена замержит свой компонент а я его спулю, это надо раскоментировать и проверить путь!
 // import { EMAIL_PATTERN } from 'src/app/shared/validators/email.pattern'; TODO когда Алена замержит свой компонент а я его спулю, это надо раскоментировать и проверить путь!
 
@@ -15,27 +16,30 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Registration {
-  public registrationForm: FormGroup;
+  private translocoService = inject(TranslocoService);
   private fb = inject(FormBuilder);
 
-  constructor() {
-    this.registrationForm = this.fb.group({
-      name: ['', Validators.required],
-      email: [
-        '',
-        [
-          Validators.required,
-          // Validators.pattern(EMAIL_PATTERN), TODO когда Алена замержит свой компонент а я его спулю, это надо раскоментировать  и проверить путь!
-        ],
-      ],
-      password: [
-        '',
-        Validators.required,
-        // Validators.pattern(PASSWORD_PATTERN), TODO когда Алена замержит свой компонент а я его спулю, это надо раскоментировать  и проверить путь!
-      ],
-      passwordRepeat: ['', Validators.required],
-    });
+  public t(key: string): string {
+    return this.translocoService.translate(key);
   }
+  public registrationForm = this.fb.group({
+    name: ['', [Validators.required]],
+    email: [
+      '',
+      [
+        Validators.required,
+        // Validators.pattern(EMAIL_PATTERN), TODO когда Алена замержит свой компонент, а я его спулю, это надо раскомментировать и проверить путь!
+      ],
+    ],
+    password: [
+      '',
+      [
+        Validators.required,
+        // Validators.pattern(PASSWORD_PATTERN), TODO когда Алена замержит свой компонент, а я его спулю, это надо раскомментировать и проверить путь!
+      ],
+    ],
+    passwordRepeat: ['', [Validators.required]],
+  });
 
   public submit(): void {
     alert('Сабмит работает!');
