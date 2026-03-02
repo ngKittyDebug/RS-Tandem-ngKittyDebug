@@ -2,74 +2,59 @@ import { validateSync } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 import { CreateAuthDto } from '../dto/create-auth.dto';
 
+const validDtoData = {
+  email: 'test@gmail.com',
+  password: 'password123',
+  username: 'Alex',
+};
+
+const createDto = (overrides: Partial<typeof validDtoData> = {}) =>
+  plainToClass(CreateAuthDto, { ...validDtoData, ...overrides });
+
 describe('CreateAuthDto', () => {
   it('should create a valid DTO with correct data', () => {
-    const dto = plainToClass(CreateAuthDto, {
-      email: 'test@gmail.com',
-      password: 'password123',
-      username: 'Alex',
-    });
-
-    const errors = validateSync(dto);
-    expect(errors).toHaveLength(0);
+    const dto = createDto();
+    expect(validateSync(dto)).toHaveLength(0);
   });
 
   it('should validate email format', () => {
-    const dto = plainToClass(CreateAuthDto, {
-      email: 'invalid-email',
-      password: 'password123',
-      username: 'Alex',
-    });
-
+    const dto = createDto({ email: 'invalid-email' });
     const errors = validateSync(dto);
+
     expect(errors).toHaveLength(1);
     expect(errors[0].property).toBe('email');
     expect(errors[0].constraints).toHaveProperty('isEmail');
   });
 
   it('should validate email is not empty', () => {
-    const dto = plainToClass(CreateAuthDto, {
-      email: '',
-      password: 'password123',
-      username: 'Alex',
-    });
-
+    const dto = createDto({ email: '' });
     const errors = validateSync(dto);
+
     expect(errors).toHaveLength(1);
     expect(errors[0].property).toBe('email');
     expect(errors[0].constraints).toHaveProperty('isNotEmpty');
   });
 
   it('should validate password is not empty', () => {
-    const dto = plainToClass(CreateAuthDto, {
-      email: 'test@gmail.com',
-      password: '',
-      username: 'Alex',
-    });
-
+    const dto = createDto({ password: '' });
     const errors = validateSync(dto);
+
     expect(errors).toHaveLength(1);
     expect(errors[0].property).toBe('password');
     expect(errors[0].constraints).toHaveProperty('isNotEmpty');
   });
 
   it('should validate password is a string', () => {
-    const dto = plainToClass(CreateAuthDto, {
-      email: 'test@gmail.com',
-      password: 12345,
-      username: 'Alex',
-    });
-
+    const dto = createDto({ password: 12345 as unknown as string });
     const errors = validateSync(dto);
+
     expect(errors).toHaveLength(1);
     expect(errors[0].property).toBe('password');
   });
 
-  it('should validate both fields are required', () => {
-    const dto = plainToClass(CreateAuthDto, {});
-
-    const errors = validateSync(dto);
-    expect(errors).toHaveLength(3);
+  it('should validate all fields are required', () => {
+    const dto = createDto({ email: '', password: '', username: '' });
+    expect(validateSync(dto)).toHaveLength(3);
   });
 
   it('should pass with valid email formats', () => {
@@ -80,13 +65,7 @@ describe('CreateAuthDto', () => {
     ];
 
     validEmails.forEach((email) => {
-      const dto = plainToClass(CreateAuthDto, {
-        email,
-        password: 'password123',
-        username: 'Alex',
-      });
-      const errors = validateSync(dto);
-      expect(errors).toHaveLength(0);
+      expect(validateSync(createDto({ email }))).toHaveLength(0);
     });
   });
 });

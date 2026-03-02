@@ -102,7 +102,11 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s",
       "!**/generated/**",
-      "!**/*.spec.ts"
+      "!**/*.spec.ts",
+      "!**/*.module.ts",
+      "!**/*.config.ts",
+      "!**/*.mail.ts",
+      "!main.ts"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
@@ -112,7 +116,7 @@
       "^src_generated/prisma/client$": "<rootDir>/../src/generated/prisma/client"
     },
     "transformIgnorePatterns": [
-      "/node_modules/(?!(@prisma|prisma)/)"
+      "/node_modules/(?!(@prisma|prisma|bcrypt-ts)/)"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/",
