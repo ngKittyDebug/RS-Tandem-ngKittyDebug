@@ -3,7 +3,7 @@ import { TuiAppearance, TuiButton, TuiTextfield } from '@taiga-ui/core';
 import {} from '@taiga-ui/kit';
 import { TuiCardLarge, TuiForm } from '@taiga-ui/layout';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { TranslocoService } from '@jsverse/transloco';
+import { TranslocoService, TranslocoModule } from '@jsverse/transloco';
 // import { PASSWORD_PATTERN } from 'src/app/shared/validators/password.pattern'; TODO когда Алена замержит свой компонент а я его спулю, это надо раскоментировать и проверить путь!
 // import { EMAIL_PATTERN } from 'src/app/shared/validators/email.pattern'; TODO когда Алена замержит свой компонент а я его спулю, это надо раскоментировать и проверить путь!
 
@@ -12,7 +12,15 @@ import { TranslocoService } from '@jsverse/transloco';
   templateUrl: './registration.html',
   styleUrls: ['./registration.scss'],
   standalone: true,
-  imports: [TuiTextfield, TuiButton, TuiAppearance, TuiCardLarge, TuiForm, ReactiveFormsModule],
+  imports: [
+    TuiTextfield,
+    TuiButton,
+    TuiAppearance,
+    TuiCardLarge,
+    TuiForm,
+    ReactiveFormsModule,
+    TranslocoModule,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Registration {

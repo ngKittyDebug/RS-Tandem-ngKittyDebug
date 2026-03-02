@@ -1,29 +1,28 @@
-<div class="registration">
+<div class="registration" *transloco="let t">
   <form class="registration__form" [formGroup]="registrationForm" tuiAppearance="floating" tuiCardLarge tuiForm="m"
     (ngSubmit)="submit()">
-    <h2 class="registration__header">Регистрация</h2>
+    <h2 class="registration__header">{{ t('registration.heading') }}</h2>
     <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.user">
-      <label tuiLabel for="name">Введите Ваш псевдоним</label>
+      <label tuiLabel for="name">{{ t('registration.form.name') }}</label>
       <input formControlName="name" tuiTextfield type="text" autocomplete="name" id="name" />
     </tui-textfield>
     <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.mail">
-      <label tuiLabel for="email">{{ t('emailLabel') }}</label>
+      <label tuiLabel for="email">{{ t('registration.form.email') }}</label>
       <input formControlName="email" tuiTextfield type="email" autocomplete="email" id="email" />
     </tui-textfield>
     <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.lock">
-      <label tuiLabel for="password">Введите пароль</label>
+      <label tuiLabel for="password">{{ t('registration.form.password') }}</label>
       <input formControlName="password" tuiTextfield type="password" autocomplete="current-password" id="password" />
     </tui-textfield>
     <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.lock">
-      <label tuiLabel for="passwordRepeat">Повторите пароль</label>
+      <label tuiLabel for="passwordRepeat">{{ t('registration.form.passwordRepeat') }}</label>
       <input formControlName="passwordRepeat" tuiTextfield type="password" autocomplete="current-password"
         id="passwordRepeat" />
     </tui-textfield>
     <div class="registration__bottom">
-      <button class="registration__btn" tuiButton appearance="gradient" type="submit" size="m">
-        Press
-      </button>
-      <a class="registration__link" href="#">Уже есть аккаунт?</a>
+      <button class="registration__btn" tuiButton appearance="gradient" type="submit" size="m"> {{
+        t('registration.form.button') }} </button>
+      <a class="registration__link" href="/login">{{t('registration.link') }}</a>
     </div>
   </form>
 </div>

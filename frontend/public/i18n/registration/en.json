@@ -1,3 +1,11 @@
 {
-  "registrationWorks": "Registration page works"
+  "heading": "Registration",
+  "link": "Alredy have an account?",
+  "form": {
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "passwordRepeat": "Repeat password",
+    "button": "Registration"
+  }
 }
