@@ -63,7 +63,7 @@ export class AuthService {
       throw new ConflictException(`Пользователь уже существует`);
     }
 
-    const salts = await genSalt(this.SALT);
+    const salts = await genSalt(+this.SALT);
 
     const user = await this.prisma.user.create({
       data: {

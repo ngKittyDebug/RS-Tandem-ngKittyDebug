@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { Request, Response } from 'express';
 
@@ -21,15 +21,15 @@ interface LogoutResponse {
   logout: boolean;
 }
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiOperation({
-    summary: 'Создает пользователя',
-    description:
-      'Посылаем POST запрос на создание нового пользователя в таблице',
-  })
+  @ApiOperation({ summary: 'Регистрация нового пользователя' })
+  @ApiBody({ type: CreateAuthDto })
+  @ApiResponse({ status: 201, description: 'Пользователь зарегистрирован' })
+  @ApiResponse({ status: 409, description: 'Пользователь уже существует' })
   @Post('register')
   create(
     @Body() createAuthDto: CreateAuthDto,
@@ -38,11 +38,10 @@ export class AuthController {
     return this.authService.signIn(res, createAuthDto);
   }
 
-  @ApiOperation({
-    summary: 'Логин пользователя',
-    description:
-      'Посылаем POST запрос на логин пользователя, возвращает accessToken в теле ответа и устанавливает в куках refreshToken',
-  })
+  @ApiOperation({ summary: 'Вход в систему' })
+  @ApiBody({ type: LoginAuthDto })
+  @ApiResponse({ status: 200, description: 'Успешный вход' })
+  @ApiResponse({ status: 403, description: 'Неверные учётные данные' })
   @Post('login')
   @HttpCode(HttpStatus.OK)
   login(
@@ -52,11 +51,10 @@ export class AuthController {
     return this.authService.login(res, loginAuthDto);
   }
 
-  @ApiOperation({
-    summary: 'Получить новые refreshToken',
-    description:
-      'Посылаем POST запрос на выдачу нового refreshToken, сервер принимает cookies и забирает из него нужный токен и валидирует его',
-  })
+  @ApiOperation({ summary: 'Обновление токенов' })
+  @ApiResponse({ status: 200, description: 'Токены обновлены' })
+  @ApiResponse({ status: 401, description: 'Токен недействителен' })
+  @ApiResponse({ status: 404, description: 'Пользователь не найден' })
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   refresh(
@@ -66,10 +64,8 @@ export class AuthController {
     return this.authService.refresh(req, res);
   }
 
-  @ApiOperation({
-    summary: 'Удаляет токен из лул',
-    description: 'Посылаем POST запрос на на удаление кук с фронта',
-  })
+  @ApiOperation({ summary: 'Выход из системы' })
+  @ApiResponse({ status: 200, description: 'Успешный выход' })
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   logout(@Res({ passthrough: true }) res: Response): LogoutResponse {
