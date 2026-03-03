@@ -6,8 +6,8 @@
       <p class="registration__subtitle" tuiSubtitle>{{ t('registration.subtitle') }}</p>
     </div>
     <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.user">
-      <label tuiLabel for="name">{{ t('registration.form.name') }}</label>
-      <input formControlName="name" tuiTextfield type="text" autocomplete="name" id="name" />
+      <label tuiLabel for="username">{{ t('registration.form.username') }}</label>
+      <input formControlName="username" tuiTextfield type="text" autocomplete="username" id="username" />
     </tui-textfield>
     <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.mail">
       <label tuiLabel for="email">{{ t('registration.form.email') }}</label>
@@ -24,7 +24,7 @@
     </tui-textfield>
     <div class="registration__bottom">
       <img class="registration__img" src="/assets/images/kittysvg.svg" alt="cat">
-      <button class="registration__btn" tuiButton appearance="gradient" type="submit" size="m"> {{
+      <button class="registration__btn" tuiButton appearance="gradient" type="submit" size="m" [disabled]="!registrationForm.valid"> {{
         t('registration.form.button') }} </button>
       <a class="registration__link" href="/login">{{t('registration.link') }}</a>
     </div>

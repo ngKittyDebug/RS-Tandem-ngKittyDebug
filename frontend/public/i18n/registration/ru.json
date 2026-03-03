@@ -3,7 +3,7 @@
   "subtitle": "Регистрация в MeowVault",
   "link": "Уже есть аккаунт?",
   "form": {
-    "name": "Имя",
+    "username": "Имя",
     "email": "Почта",
     "password": "Пароль",
     "passwordRepeat": "Повторите пароль",
