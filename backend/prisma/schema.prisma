@@ -1,6 +1,6 @@
 generator client {
-  provider      = "prisma-client"
-  output        = "../src/generated/prisma"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -13,14 +13,13 @@ enum Role {
 }
 
 model User {
-  id    String     @default(uuid()) @id
-  email String  @unique
-  username String @unique
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
   password  String
-  role Role @default(user)
+  role      Role     @default(user)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@map("users")
 }
-

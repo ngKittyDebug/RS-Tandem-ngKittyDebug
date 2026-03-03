@@ -15,14 +15,14 @@ import { LoginAuthDto } from './dto/login-auth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from '../interface/jwt-payload';
 import { Response, Request } from 'express';
+import ms from 'ms';
+import { isDev } from 'src/utils/is-dev-util';
 
 @Injectable()
 export class AuthService {
   private SALT: number;
   private JWT_ACCESS_TOKEN_EXPIRE_TIME: string;
   private JWT_REFRESH_TOKEN_EXPIRE_TIME: string;
-
-  private DOMAIN: string;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -37,8 +37,6 @@ export class AuthService {
     this.JWT_REFRESH_TOKEN_EXPIRE_TIME = configService.getOrThrow<string>(
       'JWT_REFRESH_TOKEN_EXPIRE_TIME',
     );
-
-    this.DOMAIN = configService.getOrThrow<string>('DOMAIN');
   }
 
   private readonly logger = new Logger(AuthService.name);
@@ -108,7 +106,7 @@ export class AuthService {
     this.sendCookie(
       res,
       refreshToken,
-      new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+      new Date(Date.now() + ms(this.JWT_REFRESH_TOKEN_EXPIRE_TIME as never)),
     );
 
     return { accessToken };
@@ -138,7 +136,7 @@ export class AuthService {
     const refresh = req.cookies['refreshToken'] as string;
 
     if (!refresh) {
-      throw new UnauthorizedException('Токен все, гг вп');
+      throw new UnauthorizedException('Токен больше не действителен');
     }
 
     const payload: JwtPayload = await this.jwtService.verifyAsync(refresh);
@@ -156,7 +154,7 @@ export class AuthService {
       });
 
       if (!user) {
-        throw new NotFoundException('ти кто такой?');
+        throw new NotFoundException('Пользователь не найден');
       }
 
       return this.auth(res, user);
@@ -166,10 +164,9 @@ export class AuthService {
   private sendCookie(res: Response, token: string, expires: Date) {
     res.cookie('refreshToken', token, {
       httpOnly: true,
-      domain: this.DOMAIN,
       expires,
-      secure: false,
-      sameSite: 'none',
+      secure: !isDev(this.configService),
+      sameSite: isDev(this.configService) ? 'lax' : 'none',
     });
   }
 

@@ -4,6 +4,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
+import { isDev } from './utils/is-dev-util';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,10 +18,12 @@ async function bootstrap() {
 
   app.enableCors({
     origin: [
-      `${config.getOrThrow<string>('HOST')}:${config.getOrThrow<string>('PORT')}`,
+      `${config.getOrThrow<string>('DEV_HOST')}`,
       `${config.getOrThrow<string>('DEPLOY_URL_CORS')}`,
     ],
     credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   });
 
   const swaggerConfig = new DocumentBuilder()
@@ -35,13 +38,19 @@ async function bootstrap() {
 
   SwaggerModule.setup('docs', app, swaggerDocument, {
     yamlDocumentUrl: '/openapi.yaml',
+    swaggerOptions: {
+      persistAuthorization: true,
+      withCredentials: true,
+    },
   });
 
   const port = config.getOrThrow<number>('PORT');
-  const host = config.getOrThrow<number>('HOST');
+  const host = isDev(config)
+    ? config.getOrThrow<number>('DEV_HOST')
+    : config.getOrThrow<number>('DEV_HOST');
 
   await app.listen(port);
-  logger.log(`App start: ${host}:${port}`);
-  logger.log(`Swagger start: ${host}:${port}/docs`);
+  logger.log(`App start: ${host}`);
+  logger.log(`Swagger start: ${host}/docs`);
 }
 void bootstrap();
