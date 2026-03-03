@@ -4,9 +4,17 @@
   "title": "С возвращением",
   "subtitle": "Войдите, чтобы продолжить в MeowVault",
 
+  "mode": {
+    "email": "Email",
+    "username": "Имя пользователя"
+  },
+
   "form": {
     "emailLabel": "Email",
     "emailPlaceholder": "mail@example.com",
+
+    "usernameLabel": "Имя пользователя",
+    "usernamePlaceholder": "john_doe",
 
     "passwordLabel": "Пароль",
     "passwordPlaceholder": "Aa888888"

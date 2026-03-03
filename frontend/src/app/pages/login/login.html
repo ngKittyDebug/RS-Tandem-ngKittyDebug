@@ -13,18 +13,54 @@
       <p tuiSubtitle>{{ t('login.subtitle') }}</p>
     </div>
 
-    <tui-textfield iconStart="@tui.mail">
-      <label tuiLabel for="email">{{ t('login.form.emailLabel') }}</label>
-      <input
-        formControlName="email"
-        placeholder="{{ t('login.form.emailPlaceholder') }}"
-        tuiTextfield
-        type="email"
-        autocomplete="email"
-        id="email"
-      />
-    </tui-textfield>
-    <tui-error [error]="getInputError('email')"></tui-error>
+    <div class="login__switcher">
+      <button
+        tuiButton
+        type="button"
+        size="s"
+        [appearance]="loginMode() === 'email' ? 'primary' : 'outline'"
+        (click)="switchMode('email')"
+      >
+        {{ t('login.mode.email') }}
+      </button>
+      <button
+        tuiButton
+        type="button"
+        size="s"
+        [appearance]="loginMode() === 'username' ? 'primary' : 'outline'"
+        (click)="switchMode('username')"
+      >
+        {{ t('login.mode.username') }}
+      </button>
+    </div>
+
+    @if (loginMode() === 'email') {
+      <tui-textfield iconStart="@tui.mail">
+        <label tuiLabel for="email">{{ t('login.form.emailLabel') }}</label>
+        <input
+          formControlName="email"
+          [placeholder]="t('login.form.emailPlaceholder')"
+          tuiTextfield
+          type="email"
+          autocomplete="email"
+          id="email"
+        />
+      </tui-textfield>
+      <tui-error [error]="getInputError('email')"></tui-error>
+    } @else {
+      <tui-textfield iconStart="@tui.user">
+        <label tuiLabel for="username">{{ t('login.form.usernameLabel') }}</label>
+        <input
+          formControlName="username"
+          [placeholder]="t('login.form.usernamePlaceholder')"
+          tuiTextfield
+          type="text"
+          autocomplete="username"
+          id="username"
+        />
+      </tui-textfield>
+      <tui-error [error]="getInputError('username')"></tui-error>
+    }
 
     <tui-textfield iconStart="@tui.lock">
       <label tuiLabel for="password">{{ t('login.form.passwordLabel') }}</label>
@@ -45,9 +81,9 @@
       appearance="gradient"
       class="login__button"
       type="submit"
-      [disabled]="loginForm.invalid"
+      [disabled]="loginForm.invalid || isLoading()"
     >
-      {{ t('login.buttons.login') }}
+      {{ isLoading() ? '...' : t('login.buttons.login') }}
     </button>
 
     <div class="login__divider">
@@ -62,8 +98,9 @@
         type="button"
         (click)="loginWithGoogle()"
         class="login__button"
+        [disabled]="isLoading()"
       >
-        {{ t('login.buttons.google') }}
+        {{ isLoading() ? '...' : t('login.buttons.google') }}
       </button>
     </div>
 

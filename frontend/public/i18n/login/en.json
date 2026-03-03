@@ -4,9 +4,17 @@
   "title": "Welcome Back",
   "subtitle": "Login to continue to MeowVault",
 
+  "mode": {
+    "email": "Email",
+    "username": "Users name"
+  },
+
   "form": {
     "emailLabel": "Email",
     "emailPlaceholder": "mail@example.com",
+
+    "usernameLabel": "Users name",
+    "usernamePlaceholder": "john_doe",
 
     "passwordLabel": "Password",
     "passwordPlaceholder": "Aa888888"

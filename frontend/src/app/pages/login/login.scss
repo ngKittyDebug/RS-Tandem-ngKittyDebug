@@ -6,6 +6,11 @@
   padding: 2rem 1rem;
   box-sizing: border-box;
 
+  &__switcher {
+    display: flex;
+    gap: 0.5rem;
+  }
+
   &__form {
     width: 100%;
     max-width: 32rem;
