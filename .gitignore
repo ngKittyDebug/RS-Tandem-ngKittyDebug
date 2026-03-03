@@ -22,6 +22,7 @@ yarn-error.log
 
 # Visual Studio Code
 /**/.vscode/*
+.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -48,3 +49,4 @@ Thumbs.db
 backend/src/generated
 backend/dist
 backend/coverage
+.env
