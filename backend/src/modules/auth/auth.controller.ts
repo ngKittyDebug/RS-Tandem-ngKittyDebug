@@ -13,6 +13,14 @@ import { ApiOperation } from '@nestjs/swagger';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { Request, Response } from 'express';
 
+interface AuthResponse {
+  accessToken: string;
+}
+
+interface LogoutResponse {
+  logout: boolean;
+}
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -26,7 +34,7 @@ export class AuthController {
   create(
     @Body() createAuthDto: CreateAuthDto,
     @Res({ passthrough: true }) res: Response,
-  ) {
+  ): Promise<AuthResponse> {
     return this.authService.signIn(res, createAuthDto);
   }
 
@@ -40,7 +48,7 @@ export class AuthController {
   login(
     @Body() loginAuthDto: LoginAuthDto,
     @Res({ passthrough: true }) res: Response,
-  ) {
+  ): Promise<AuthResponse> {
     return this.authService.login(res, loginAuthDto);
   }
 
@@ -51,7 +59,10 @@ export class AuthController {
   })
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  refresh(@Res({ passthrough: true }) res: Response, @Req() req: Request) {
+  refresh(
+    @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
+  ): Promise<AuthResponse> {
     return this.authService.refresh(req, res);
   }
 
@@ -61,7 +72,7 @@ export class AuthController {
   })
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  logout(@Res({ passthrough: true }) res: Response) {
+  logout(@Res({ passthrough: true }) res: Response): LogoutResponse {
     return this.authService.logout(res);
   }
 }
