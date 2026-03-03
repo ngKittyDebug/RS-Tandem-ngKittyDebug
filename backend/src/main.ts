@@ -4,7 +4,6 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
-import { isDev } from './utils/is-dev-util';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -45,11 +44,9 @@ async function bootstrap() {
   });
 
   const port = config.getOrThrow<number>('PORT');
-  const host = isDev(config)
-    ? config.getOrThrow<number>('DEV_HOST')
-    : config.getOrThrow<number>('DEV_HOST');
+  const host = config.getOrThrow<number>('DEV_HOST');
 
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   logger.log(`App start: ${host}`);
   logger.log(`Swagger start: ${host}/docs`);
 }

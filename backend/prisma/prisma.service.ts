@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import {
   Injectable,
   Logger,
@@ -15,8 +16,8 @@ export class PrismaService
 {
   private readonly logger = new Logger(PrismaService.name);
 
-  public constructor() {
-    const connectionString = `${process.env.MODE ? process.env.DEVELOPMENT_POSTGRES : process.env.DIRECT_URL}`;
+  public constructor(private readonly configService: ConfigService) {
+    const connectionString = `${configService.getOrThrow('MODE') === 'develop' ? configService.getOrThrow('DEVELOPMENT_POSTGRES') : configService.getOrThrow('DIRECT_URL')}`;
 
     const adapter = new PrismaPg({ connectionString });
     super({ adapter });
