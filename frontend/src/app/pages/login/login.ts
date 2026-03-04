@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoginForm } from './models/login-form.interface';
@@ -50,6 +50,7 @@ export class Login {
   private fb = inject(FormBuilder);
   private translocoService = inject(TranslocoService);
   private authService = inject(AuthService);
+  private destroyRef = inject(DestroyRef);
   private router = inject(Router);
   protected loginMode = signal<LoginMode>('email');
   protected isLoading = signal<boolean>(false);
@@ -99,7 +100,7 @@ export class Login {
     this.authService
       .login(data)
       .pipe(
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
         finalize(() => this.isLoading.set(false)),
       )
       .subscribe({
