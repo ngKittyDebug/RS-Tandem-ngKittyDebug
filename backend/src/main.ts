@@ -15,11 +15,10 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
 
+  const corsPattern = new RegExp(config.getOrThrow<string>('DEPLOY_URL_CORS'));
+
   app.enableCors({
-    origin: [
-      `${config.getOrThrow<string>('DEV_HOST')}`,
-      `${config.getOrThrow<string>('DEPLOY_URL_CORS')}`,
-    ],
+    origin: [`${config.getOrThrow<string>('DEV_HOST')}`, corsPattern],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
