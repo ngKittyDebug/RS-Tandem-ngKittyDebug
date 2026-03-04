@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { TuiAppearance, TuiButton, TuiTextfield } from '@taiga-ui/core';
+import { TuiAppearance, TuiButton, TuiTextfield, TuiError } from '@taiga-ui/core';
 import {} from '@taiga-ui/kit';
 import { TuiCardLarge, TuiForm } from '@taiga-ui/layout';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
@@ -9,6 +9,7 @@ import { AuthService } from '../../core/services/register-service';
 import { PASSWORD_PATTERN } from '../../core/patterns/password-pattern';
 import { EMAIL_PATTERN } from '../../core/patterns/email-pattern';
 import { RegisterDto } from './models/register.interfaces';
+import { RegisterField } from './models/register-field.type';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -24,6 +25,7 @@ import { firstValueFrom } from 'rxjs';
     TuiForm,
     ReactiveFormsModule,
     TranslocoModule,
+    TuiError,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -62,35 +64,25 @@ export class Registration {
       console.error(error);
       console.log('Произошла ошибка при регистрации');
     }
-    // const respons = await fetch('https://meow-vault-pr-44.onrender.com/auth/register', { method: "POST", body: JSON.stringify(User) })
-    // const data = await respons.json();
-    // console.log(data)
   }
-  //   public async simulateNetworkError(): Promise<void> {
-  //     // Запрос на несуществующий домен вызовет HttpErrorResponse с status 0 (сетевая ошибка)
-  //     const url = 'https://meow-vault-pr-44.onrender.com/auth/register';
-  //     const { username, email, password } = this.registrationForm.getRawValue();
-  //     const User: RegisterDto = {
-  //       "email": "user@example.com",
-  //       "username": "john_doe",
-  //       "password": "StrongPass123!"
-  //     };
-  //     try {
-  //       const response = await fetch(url, {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json' // Обязательно для JSON
-  //         },
-  //         body: JSON.stringify(User) // Преобразование объекта в строку
-  //       });
+  protected getInputError(typeInput: RegisterField): string | null {
+    const control = this.registrationForm.get(typeInput);
+    if (!control || !control.touched) return null;
 
-  //       const result = await response.json();
-  //       console.log(result);
-  //       const label = result.error;
-  //       const message = result.message.toString();
-  //     } catch (error) {
-  //       console.error('Ошибка запроса:', error);
-  //     }
+    if (control.hasError('required')) {
+      return this.translocoService.translate('registration.error.required');
+    }
+    if (control.hasError('pattern')) {
+      if (typeInput === 'passwordRepeat') return null;
+      return this.translocoService.translate(`registration.error.${typeInput}Pattern`);
+    }
+    if (typeInput === 'passwordRepeat' && this.registrationForm.hasError('passwords')) {
+      return (
+        this.translocoService.translate('registration.error.passwordMismatch') ||
+        'Пароли не совпадают'
+      );
+    }
 
-  //   }
+    return null;
+  }
 }
