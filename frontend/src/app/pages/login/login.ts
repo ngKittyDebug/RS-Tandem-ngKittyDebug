@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoginForm } from './models/login-form.interface';
@@ -13,7 +13,6 @@ import {
   TuiTitle,
   TuiIcon,
   TuiLink,
-  TuiAlertService,
 } from '@taiga-ui/core';
 import { TuiPassword } from '@taiga-ui/kit';
 import { TuiCardLarge, TuiForm, TuiHeader } from '@taiga-ui/layout';
@@ -22,6 +21,8 @@ import { AuthService } from '../../core/services/auth/auth-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LoginField } from './models/login-field.type';
 import { finalize } from 'rxjs';
+import { USER_PATTERN } from '../../core/patterns/user-pattern';
+import { ImgCat } from './components/img-cat/img-cat';
 
 @Component({
   selector: 'app-login',
@@ -40,17 +41,16 @@ import { finalize } from 'rxjs';
     TuiIcon,
     TuiPassword,
     TuiLink,
+    ImgCat,
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
 export class Login {
   private fb = inject(FormBuilder);
-  private destroyRef = inject(DestroyRef);
   private translocoService = inject(TranslocoService);
   private authService = inject(AuthService);
   private router = inject(Router);
-  private alerts = inject(TuiAlertService);
   protected loginMode = signal<LoginMode>('email');
   protected isLoading = signal<boolean>(false);
 
@@ -79,7 +79,7 @@ export class Login {
       username.clearValidators();
       username.reset('');
     } else {
-      username.setValidators([Validators.required]);
+      username.setValidators([Validators.required, Validators.pattern(USER_PATTERN)]);
       email.clearValidators();
       email.reset('');
     }
@@ -99,36 +99,12 @@ export class Login {
     this.authService
       .login(data)
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
+        takeUntilDestroyed(),
         finalize(() => this.isLoading.set(false)),
       )
       .subscribe({
         next: () => {
           this.router.navigate(['/main']);
-        },
-
-        error: (err) => {
-          this.alerts
-            .open(err.message, { label: 'Error', appearance: 'negative', autoClose: 5000 })
-            .subscribe();
-        },
-      });
-  }
-
-  protected loginWithGoogle(): void {
-    this.isLoading.set(true);
-    this.alerts
-      .open('login form with google', { appearance: 'positive', autoClose: 5000 })
-      .subscribe();
-    this.authService
-      .logout()
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.isLoading.set(false)),
-      )
-      .subscribe({
-        next: () => {
-          this.router.navigate(['/registration']);
         },
       });
   }
@@ -142,9 +118,7 @@ export class Login {
     }
 
     if (control.hasError('pattern')) {
-      return typeInput === 'email'
-        ? this.translocoService.translate('login.error.emailPattern')
-        : this.translocoService.translate('login.error.passwordPattern');
+      return this.translocoService.translate(`login.error.${typeInput}Pattern`);
     }
 
     return null;

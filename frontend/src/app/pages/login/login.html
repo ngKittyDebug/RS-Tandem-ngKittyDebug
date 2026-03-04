@@ -66,7 +66,7 @@
       <label tuiLabel for="password">{{ t('login.form.passwordLabel') }}</label>
       <input
         formControlName="password"
-        placeholder="{{ t('login.form.passwordPlaceholder') }}"
+        [placeholder]="t('login.form.passwordPlaceholder')"
         tuiTextfield
         type="password"
         autocomplete="current-password"
@@ -76,31 +76,16 @@
     </tui-textfield>
     <tui-error [error]="getInputError('password')"></tui-error>
 
-    <button
-      tuiButton
-      appearance="gradient"
-      class="login__button"
-      type="submit"
-      [disabled]="loginForm.invalid || isLoading()"
-    >
-      {{ isLoading() ? '...' : t('login.buttons.login') }}
-    </button>
-
-    <div class="login__divider">
-      <span>{{ t('login.divider') }}</span>
-    </div>
-
-    <div class="login__google">
-      <img src="/assets/images/cat/cat-1.png" class="login__cat" alt="cat" />
+    <div class="login__footer">
+      <app-img-cat class="login__cat"></app-img-cat>
       <button
         tuiButton
-        appearance="outline"
-        type="button"
-        (click)="loginWithGoogle()"
+        appearance="gradient"
         class="login__button"
-        [disabled]="isLoading()"
+        type="submit"
+        [disabled]="loginForm.invalid || isLoading()"
       >
-        {{ isLoading() ? '...' : t('login.buttons.google') }}
+        {{ isLoading() ? '...' : t('login.buttons.login') }}
       </button>
     </div>
 

@@ -35,6 +35,7 @@
   "error": {
     "required": "This field is required",
     "emailPattern": "Invalid email format",
-    "passwordPattern": "Minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number"
+    "passwordPattern": "Minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number",
+    "usernamePattern": "Any 3–20 characters, no spaces required"
   }
 }
