@@ -27,7 +27,9 @@ export class TestButton {
       console.log(result);
       const label = result.error;
       const message = result.message.toString();
-      this.errorService.showCustomToster(message, label, 'positive', 4000);
+      this.errorService.showPositiveToster(message, label);
+      this.errorService.showErrorToster(message, label);
+      this.errorService.showWarningToster(message, label);
     } catch (error) {
       console.error('Ошибка запроса:', error);
     }
