@@ -11,7 +11,7 @@
     "ci:format": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "typecheck": "tsc --noEmit",
-    "start:dev": "cross-env MODE=development nest start --watch",
+    "start:dev": "cross-env MODE=develop nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -21,13 +21,13 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration:dev": "cross-env MODE=development npx prisma migrate dev",
+    "migration:dev": "cross-env MODE=develop npx prisma migrate dev",
     "migration": "npx prisma migrate deploy",
     "generate:dev": "npx prisma generate",
     "check-all": "npm run ci:format && npm run typecheck && npm run ci:lint && npm run test",
     "docker:dev": "docker-compose up -d",
     "prepare": "cd .. && husky backend/.husky",
-    "prisma-studio": "cross-env MODE=development npx prisma studio"
+    "prisma-studio": "cross-env MODE=develop npx prisma studio"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

@@ -127,7 +127,22 @@ export class AuthService {
     dto: CreateAuthDto | LoginAuthDto,
   ): Promise<User | null> {
     return await this.prisma.user.findFirst({
-      where: { OR: [{ email: dto.email }, { username: dto.username }] },
+      where: {
+        OR: [
+          {
+            email: {
+              equals: dto.email,
+              mode: 'insensitive',
+            },
+          },
+          {
+            username: {
+              equals: dto.username,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      },
     });
   }
 
