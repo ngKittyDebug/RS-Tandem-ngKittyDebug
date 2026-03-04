@@ -398,8 +398,18 @@ describe('AuthService', () => {
       expect(prismaMock.user.findFirst).toHaveBeenCalledWith({
         where: {
           OR: [
-            { email: mockCreateAuthDto.email },
-            { username: mockCreateAuthDto.username },
+            {
+              email: {
+                equals: mockCreateAuthDto.email,
+                mode: 'insensitive',
+              },
+            },
+            {
+              username: {
+                equals: mockCreateAuthDto.username,
+                mode: 'insensitive',
+              },
+            },
           ],
         },
       });

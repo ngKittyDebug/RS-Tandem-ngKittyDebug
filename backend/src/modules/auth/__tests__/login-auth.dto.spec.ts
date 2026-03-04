@@ -5,7 +5,7 @@ import { LoginAuthDto } from '../dto/login-auth.dto';
 const createDto = (overrides: Partial<LoginAuthDto> = {}) =>
   plainToClass(LoginAuthDto, {
     email: 'test@gmail.com',
-    password: 'password123',
+    password: 'Password123',
     ...overrides,
   });
 
@@ -27,7 +27,7 @@ describe('LoginAuthDto', () => {
     const errors = validateSync(dto);
 
     expect(errors[0].property).toBe('email');
-    expect(errors[0].constraints).toHaveProperty('isEmail');
+    expect(errors[0].constraints).toHaveProperty('matches');
   });
 
   it('should validate email is not empty when email is provided', () => {
@@ -35,9 +35,8 @@ describe('LoginAuthDto', () => {
     const errors = validateSync(dto);
 
     expect(errors.length).toBeGreaterThanOrEqual(1);
-    expect(
-      errors.find((e) => e.property === 'email')?.constraints,
-    ).toHaveProperty('isNotEmpty');
+    const emailError = errors.find((e) => e.property === 'email');
+    expect(emailError?.constraints).toHaveProperty('matches');
   });
 
   it('should validate username is not empty when username is provided', () => {
@@ -48,9 +47,8 @@ describe('LoginAuthDto', () => {
     const errors = validateSync(dto);
 
     expect(errors.length).toBeGreaterThanOrEqual(1);
-    expect(
-      errors.find((e) => e.property === 'username')?.constraints,
-    ).toHaveProperty('isNotEmpty');
+    const usernameError = errors.find((e) => e.property === 'username');
+    expect(usernameError?.constraints).toHaveProperty('matches');
   });
 
   it('should validate password is not empty', () => {
@@ -63,7 +61,7 @@ describe('LoginAuthDto', () => {
   });
 
   it('should validate password is a string', () => {
-    const dto = createDto({ password: 12345 as unknown as string });
+    const dto = createDto({ password: 12345678 as unknown as string });
     const errors = validateSync(dto);
 
     expect(errors).toHaveLength(1);

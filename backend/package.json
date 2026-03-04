@@ -113,6 +113,7 @@
     "moduleNameMapper": {
       "^prisma/(.*)$": "<rootDir>/../prisma/$1",
       "^src/(.*)$": "<rootDir>/$1",
+      "^shared/(.*)$": "<rootDir>/../shared/$1",
       "^src_generated/prisma/client$": "<rootDir>/../src/generated/prisma/client"
     },
     "transformIgnorePatterns": [
