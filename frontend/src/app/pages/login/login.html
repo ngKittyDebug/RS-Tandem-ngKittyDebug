@@ -77,7 +77,6 @@
     <tui-error [error]="getInputError('password')"></tui-error>
 
     <div class="login__footer">
-      <app-img-cat class="login__cat"></app-img-cat>
       <button
         tuiButton
         appearance="gradient"
@@ -87,11 +86,12 @@
       >
         {{ isLoading() ? '...' : t('login.buttons.login') }}
       </button>
+      <app-img-cat class="login__cat"></app-img-cat>
     </div>
 
     <div class="login__link">
       {{ t('login.links.noAccount') }}
-      <a tuiLink routerLink="/registration">{{ t('login.links.signUp') }}</a>
+      <a tuiLink [routerLink]="registerRouterPath">{{ t('login.links.signUp') }}</a>
     </div>
   </form>
 </div>

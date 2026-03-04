@@ -10,14 +10,12 @@ import { AUTH_PATHS } from './models/auth-path.enum';
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private readonly base = API_BASE_URL;
-  private readonly endpoint = AUTH_ENDPOINT;
   private accessToken = signal<string | null>(null);
 
   public isLoggedIn = computed(() => this.accessToken() !== null);
 
   private getUrl(path: string): string {
-    return `${this.base}${this.endpoint}${path}`;
+    return `${API_BASE_URL}${AUTH_ENDPOINT}${path}`;
   }
 
   public register(data: RegisterDto): Observable<void> {

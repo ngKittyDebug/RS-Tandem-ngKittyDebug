@@ -23,6 +23,7 @@ import { LoginField } from './models/login-field.type';
 import { finalize } from 'rxjs';
 import { USER_PATTERN } from '../../core/patterns/user-pattern';
 import { ImgCat } from './components/img-cat/img-cat';
+import { AppRoute, getRoutePath } from '../../app.routes';
 
 @Component({
   selector: 'app-login',
@@ -54,6 +55,7 @@ export class Login {
   private router = inject(Router);
   protected loginMode = signal<LoginMode>('email');
   protected isLoading = signal<boolean>(false);
+  protected registerRouterPath = getRoutePath(AppRoute.REGISTRATION);
 
   protected readonly loginForm = this.fb.nonNullable.group<LoginForm>({
     email: this.fb.nonNullable.control('', [
@@ -95,7 +97,10 @@ export class Login {
 
     const { email, username, password } = this.loginForm.getRawValue();
 
-    const data = this.loginMode() === 'email' ? { email, password } : { username, password };
+    const data =
+      this.loginMode() === 'email'
+        ? { email: this.normalize(email), password }
+        : { username: this.normalize(username), password };
 
     this.authService
       .login(data)
@@ -105,7 +110,7 @@ export class Login {
       )
       .subscribe({
         next: () => {
-          this.router.navigate(['/main']);
+          this.router.navigate([getRoutePath(AppRoute.MAIN)]);
         },
       });
   }
@@ -123,5 +128,9 @@ export class Login {
     }
 
     return null;
+  }
+
+  private normalize(value: string): string {
+    return value.trim().toLocaleLowerCase();
   }
 }
