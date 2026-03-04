@@ -2,20 +2,27 @@ import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { LoginDto, LoginResponse, RegisterDto } from './models/auth.interfaces';
 import { map, Observable, tap } from 'rxjs';
+import { API_BASE_URL, AUTH_ENDPOINT } from '../../constants/api.constants';
+import { AUTH_PATHS } from './models/auth-path.enum';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private readonly url = 'https://meow-vault-pr-44.onrender.com/auth';
+  private readonly base = API_BASE_URL;
+  private readonly endpoint = AUTH_ENDPOINT;
   private accessToken = signal<string | null>(null);
 
   public isLoggedIn = computed(() => this.accessToken() !== null);
 
+  private getUrl(path: string): string {
+    return `${this.base}${this.endpoint}${path}`;
+  }
+
   public register(data: RegisterDto): Observable<void> {
     return this.http
-      .post<LoginResponse>(`${this.url}/register`, data, {
+      .post<LoginResponse>(this.getUrl(AUTH_PATHS.REGISTER), data, {
         withCredentials: true,
       })
       .pipe(
@@ -28,7 +35,7 @@ export class AuthService {
 
   public login(data: LoginDto): Observable<void> {
     return this.http
-      .post<LoginResponse>(`${this.url}/login`, data, {
+      .post<LoginResponse>(this.getUrl(AUTH_PATHS.LOGIN), data, {
         withCredentials: true,
       })
       .pipe(
@@ -41,7 +48,7 @@ export class AuthService {
 
   public refresh(): Observable<void> {
     return this.http
-      .post<LoginResponse>(`${this.url}/refresh`, null, {
+      .post<LoginResponse>(this.getUrl(AUTH_PATHS.REFRESH), null, {
         withCredentials: true,
       })
       .pipe(
@@ -52,7 +59,7 @@ export class AuthService {
 
   public logout(): Observable<void> {
     return this.http
-      .post<void>(`${this.url}/logout`, null, {
+      .post<void>(this.getUrl(AUTH_PATHS.LOGOUT), null, {
         withCredentials: true,
       })
       .pipe(
