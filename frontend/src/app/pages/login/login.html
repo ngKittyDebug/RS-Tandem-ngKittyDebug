@@ -1,1 +1,97 @@
-<p *transloco="let t">{{ t('login.loginWorks') }}</p>
+<div class="login" *transloco="let t">
+  <form
+    tuiAppearance="floating"
+    tuiCardLarge
+    tuiForm="m"
+    class="login__form"
+    aria-labelledby="login-title"
+    [formGroup]="loginForm"
+    (ngSubmit)="submit()"
+  >
+    <div tuiHeader class="login__header">
+      <h2 tuiTitle id="login-title">{{ t('login.title') }}</h2>
+      <p tuiSubtitle>{{ t('login.subtitle') }}</p>
+    </div>
+
+    <div class="login__switcher">
+      <button
+        tuiButton
+        type="button"
+        size="s"
+        [appearance]="loginMode() === 'email' ? 'primary' : 'outline'"
+        (click)="switchMode('email')"
+      >
+        {{ t('login.mode.email') }}
+      </button>
+      <button
+        tuiButton
+        type="button"
+        size="s"
+        [appearance]="loginMode() === 'username' ? 'primary' : 'outline'"
+        (click)="switchMode('username')"
+      >
+        {{ t('login.mode.username') }}
+      </button>
+    </div>
+
+    @if (loginMode() === 'email') {
+      <tui-textfield iconStart="@tui.mail">
+        <label tuiLabel for="email">{{ t('login.form.emailLabel') }}</label>
+        <input
+          formControlName="email"
+          [placeholder]="t('login.form.emailPlaceholder')"
+          tuiTextfield
+          type="email"
+          autocomplete="email"
+          id="email"
+        />
+      </tui-textfield>
+      <tui-error [error]="getInputError('email')"></tui-error>
+    } @else {
+      <tui-textfield iconStart="@tui.user">
+        <label tuiLabel for="username">{{ t('login.form.usernameLabel') }}</label>
+        <input
+          formControlName="username"
+          [placeholder]="t('login.form.usernamePlaceholder')"
+          tuiTextfield
+          type="text"
+          autocomplete="username"
+          id="username"
+        />
+      </tui-textfield>
+      <tui-error [error]="getInputError('username')"></tui-error>
+    }
+
+    <tui-textfield iconStart="@tui.lock">
+      <label tuiLabel for="password">{{ t('login.form.passwordLabel') }}</label>
+      <input
+        formControlName="password"
+        [placeholder]="t('login.form.passwordPlaceholder')"
+        tuiTextfield
+        type="password"
+        autocomplete="current-password"
+        id="password"
+      />
+      <tui-icon tuiPassword />
+    </tui-textfield>
+    <tui-error [error]="getInputError('password')"></tui-error>
+
+    <div class="login__footer">
+      <button
+        tuiButton
+        appearance="gradient"
+        class="login__button"
+        type="submit"
+        [disabled]="loginForm.invalid || isLoading()"
+      >
+        {{ isLoading() ? '...' : t('login.buttons.login') }}
+      </button>
+      <app-img-cat class="login__cat"></app-img-cat>
+    </div>
+
+    <div class="login__link">
+      {{ t('login.links.noAccount') }}
+      <a tuiLink [routerLink]="registerRouterPath">{{ t('login.links.signUp') }}</a>
+    </div>
+  </form>
+</div>
