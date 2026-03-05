@@ -2,6 +2,28 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '../auth.controller';
 import { AuthService } from '../auth.service';
 import { CreateAuthDto } from '../dto/create-auth.dto';
+import { LoginAuthDto } from '../dto/login-auth.dto';
+import { Response, Request } from 'express';
+
+const mockResponse = {
+  cookie: jest.fn(),
+} as unknown as Response;
+
+const mockRequest = {
+  cookies: {},
+} as unknown as Request;
+
+const mockCreateAuthDto: CreateAuthDto = {
+  email: 'test@example.com',
+  username: 'testuser',
+  password: 'password123',
+};
+
+const mockLoginAuthDto: LoginAuthDto = {
+  email: 'test@example.com',
+  username: 'testuser',
+  password: 'password123',
+};
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -9,10 +31,10 @@ describe('AuthController', () => {
 
   beforeEach(async () => {
     authServiceMock = {
-      create: jest.fn(),
-      findOne: jest.fn(),
-      update: jest.fn(),
-      remove: jest.fn(),
+      signIn: jest.fn(),
+      login: jest.fn(),
+      refresh: jest.fn(),
+      logout: jest.fn(),
     } as unknown as jest.Mocked<AuthService>;
 
     const module: TestingModule = await Test.createTestingModule({
@@ -32,53 +54,111 @@ describe('AuthController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('create', () => {
-    const createAuthDto: CreateAuthDto = {
-      email: 'test@gmail.com',
-      password: 'password123',
-    };
+  describe('create (register)', () => {
+    it('should call authService.signIn and return result', async () => {
+      const mockResult = { accessToken: 'access-token' };
+      authServiceMock.signIn.mockResolvedValue(mockResult);
 
-    const mockUser = {
-      id: 'test-uuid',
-      email: createAuthDto.email,
-      password: createAuthDto.password,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+      const result = await controller.create(mockCreateAuthDto, mockResponse);
 
-    it('should create a new user', async () => {
-      authServiceMock.create.mockResolvedValue(mockUser);
+      expect(authServiceMock.signIn).toHaveBeenCalledWith(
+        mockResponse,
+        mockCreateAuthDto,
+      );
+      expect(result).toEqual(mockResult);
+    });
 
-      const result = await controller.create(createAuthDto);
+    it('should throw error if authService.signIn throws', async () => {
+      const error = new Error('Registration failed');
+      authServiceMock.signIn.mockRejectedValue(error);
 
-      expect(result).toEqual(mockUser);
-      expect(authServiceMock.create).toHaveBeenCalledWith(createAuthDto);
+      await expect(
+        controller.create(mockCreateAuthDto, mockResponse),
+      ).rejects.toThrow(error);
     });
   });
 
-  describe('update', () => {
-    const updateAuthDto: Partial<CreateAuthDto> = {
-      email: 'updated@gmail.com',
-    };
+  describe('login', () => {
+    it('should call authService.login and return result', async () => {
+      const mockResult = { accessToken: 'access-token' };
+      authServiceMock.login.mockResolvedValue(mockResult);
 
-    it('should update auth by id', () => {
-      authServiceMock.update.mockReturnValue('This action updates a #1 auth');
+      const result = await controller.login(mockLoginAuthDto, mockResponse);
 
-      const result = controller.update('1', updateAuthDto);
+      expect(authServiceMock.login).toHaveBeenCalledWith(
+        mockResponse,
+        mockLoginAuthDto,
+      );
+      expect(result).toEqual(mockResult);
+    });
 
-      expect(result).toBe('This action updates a #1 auth');
-      expect(authServiceMock.update).toHaveBeenCalledWith(1, updateAuthDto);
+    it('should throw error if authService.login throws', async () => {
+      const error = new Error('Login failed');
+      authServiceMock.login.mockRejectedValue(error);
+
+      await expect(
+        controller.login(mockLoginAuthDto, mockResponse),
+      ).rejects.toThrow(error);
     });
   });
 
-  describe('remove', () => {
-    it('should remove auth by id', () => {
-      authServiceMock.remove.mockReturnValue('This action removes a #1 auth');
+  describe('refresh', () => {
+    it('should call authService.refresh and return result', async () => {
+      const mockResult = { accessToken: 'new-access-token' };
+      authServiceMock.refresh.mockResolvedValue(mockResult);
 
-      const result = controller.remove('1');
+      const result = await controller.refresh(mockResponse, mockRequest);
 
-      expect(result).toBe('This action removes a #1 auth');
-      expect(authServiceMock.remove).toHaveBeenCalledWith(1);
+      expect(authServiceMock.refresh).toHaveBeenCalledWith(
+        mockRequest,
+        mockResponse,
+      );
+      expect(result).toEqual(mockResult);
+    });
+
+    it('should throw error if authService.refresh throws', async () => {
+      const error = new Error('Refresh failed');
+      authServiceMock.refresh.mockRejectedValue(error);
+
+      await expect(
+        controller.refresh(mockResponse, mockRequest),
+      ).rejects.toThrow(error);
+    });
+
+    it('should handle request with cookies', async () => {
+      const mockResult = { accessToken: 'new-access-token' };
+      const reqWithCookies = {
+        cookies: { refreshToken: 'some-token' },
+      } as unknown as Request;
+      authServiceMock.refresh.mockResolvedValue(mockResult);
+
+      await controller.refresh(mockResponse, reqWithCookies);
+
+      expect(authServiceMock.refresh).toHaveBeenCalledWith(
+        reqWithCookies,
+        mockResponse,
+      );
+    });
+  });
+
+  describe('logout', () => {
+    it('should call authService.logout and return result', () => {
+      const mockResult = { logout: true };
+      authServiceMock.logout.mockReturnValue(mockResult);
+
+      const result = controller.logout(mockResponse);
+
+      expect(authServiceMock.logout).toHaveBeenCalledWith(mockResponse);
+      expect(result).toEqual(mockResult);
+    });
+
+    it('should throw error if authService.logout throws', () => {
+      const error = new Error('Logout failed');
+      authServiceMock.logout.mockImplementation(() => {
+        throw error;
+      });
+
+      expect(() => controller.logout(mockResponse)).toThrow(error);
     });
   });
 });
