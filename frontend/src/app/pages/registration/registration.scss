@@ -1,0 +1,51 @@
+.registration {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+
+  &__title {
+    text-align: center;
+    margin: 0 0 1rem 0;
+  }
+
+  &__subtitle {
+    text-align: center;
+    margin: 0;
+  }
+
+  &__form {
+    width: 100%;
+    max-width: 32rem;
+  }
+
+  &__btn {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  &__bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-wrap: nowrap;
+    padding-top: 3rem;
+    position: relative;
+  }
+
+  &__link {
+    text-align: center;
+    padding-top: 2rem;
+    font-size: 0.875rem;
+  }
+
+  &__img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    transform: translate(-75px, -87px) scale(0.4);
+  }
+}
