@@ -24,6 +24,7 @@ import { finalize } from 'rxjs';
 import { USER_PATTERN } from '../../core/patterns/user-pattern';
 import { ImgCat } from './components/img-cat/img-cat';
 import { AppRoute, getRoutePath } from '../../app.routes';
+import { AppTosterService } from '../../core/services/app-toster-service';
 
 @Component({
   selector: 'app-login',
@@ -53,6 +54,7 @@ export class Login {
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
+  private tosterService = inject(AppTosterService);
   protected loginMode = signal<LoginMode>('email');
   protected isLoading = signal<boolean>(false);
   protected registerRouterPath = getRoutePath(AppRoute.REGISTRATION);
@@ -111,6 +113,13 @@ export class Login {
       .subscribe({
         next: () => {
           this.router.navigate([getRoutePath(AppRoute.MAIN)]);
+        },
+        error: (error) => {
+          const key =
+            error.status === 403 ? 'login.error.invalidCredentials' : 'login.error.serverError';
+
+          const message = this.translocoService.translate(key);
+          this.tosterService.showErrorToster(message);
         },
       });
   }
