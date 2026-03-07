@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { TuiLink } from '@taiga-ui/core';
+
 @Component({
   selector: 'app-not-found',
   imports: [TuiLink],
@@ -9,4 +11,9 @@ import { TuiLink } from '@taiga-ui/core';
   styleUrls: ['./not-found.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NotFound {}
+export class NotFound {
+  private readonly router = inject(Router);
+  public goHome(): void {
+    this.router.navigate(['/']);
+  }
+}

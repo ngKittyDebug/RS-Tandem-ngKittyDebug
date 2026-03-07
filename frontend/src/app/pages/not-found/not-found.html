@@ -3,6 +3,12 @@
   <p>Sorry, the page you requested was not found...</p>
   <img class="not-found-image" src="assets/images/catmeow.gif" alt="Cat meow" width="300" />
   <p>
-    <button iconStart="@tui.settings" tuiLink type="button" [textContent]="'GO BACK HOME'"></button>
+    <button
+      iconStart="@tui.settings"
+      tuiLink
+      type="button"
+      (click)="goHome()"
+      [textContent]="'GO BACK HOME'"
+    ></button>
   </p>
 </div>
