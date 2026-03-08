@@ -1,6 +1,21 @@
-import { Body, Controller, Delete, Get, Patch, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Patch,
+  Req,
+  HttpStatus,
+  HttpCode,
+} from '@nestjs/common';
 import { UserService } from './user.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { applyDecorators } from '@nestjs/common';
 import { Request } from 'express';
@@ -9,22 +24,105 @@ import { UpdateUserPassword } from './dto/update-user-pass';
 
 export const ApiAuth = () => applyDecorators(ApiBearerAuth());
 
+@ApiTags('User')
 @ApiAuth()
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiOperation({
+    summary: 'Получение данных пользователя',
+    description: 'Возвращает информацию о текущем авторизованном пользователе.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Данные пользователя',
+    schema: {
+      example: {
+        email: 'user@example.com',
+        username: 'john_doe',
+        createdAt: '2024-01-01T00:00:00.000Z',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Пользователь не авторизован',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Пользователь не найден',
+  })
   @Get()
   findOne(@Req() req: Request) {
     return this.userService.findOne(req);
   }
 
+  @ApiOperation({
+    summary: 'Обновление профиля',
+    description:
+      'Обновляет username и/или email текущего пользователя. Требует подтверждения пароля.',
+  })
+  @ApiBody({ type: UserDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Профиль успешно обновлён',
+    schema: {
+      example: {
+        email: 'newemail@example.com',
+        username: 'new_username',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Некорректные данные',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Неверный пароль',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Email или username уже занят',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Пользователь не найден',
+  })
   @Patch('profile')
   updateUser(@Req() req: Request, @Body() updateUserDto: UserDto) {
     return this.userService.updateUser(req, updateUserDto);
   }
 
+  @ApiOperation({
+    summary: 'Смена пароля',
+    description: 'Изменяет пароль текущего пользователя.',
+  })
+  @ApiBody({ type: UpdateUserPassword })
+  @ApiResponse({
+    status: 200,
+    description: 'Пароль успешно изменён',
+    schema: {
+      example: {
+        success: true,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Некорректные данные',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Неверный старый пароль',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Пользователь не найден',
+  })
   @Patch('password')
+  @HttpCode(HttpStatus.OK)
   updatePassword(
     @Req() req: Request,
     @Body() updateUserPassword: UpdateUserPassword,
@@ -32,6 +130,33 @@ export class UserController {
     return this.userService.updatePassword(req, updateUserPassword);
   }
 
+  @ApiOperation({
+    summary: 'Удаление аккаунта',
+    description:
+      'Безвозвратно удаляет аккаунт текущего пользователя и все связанные данные.',
+  })
+  @ApiBody({ type: UserDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Аккаунт успешно удалён',
+    schema: {
+      example: {
+        success: true,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Некорректные данные',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Неверный пароль',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Пользователь не найден',
+  })
   @Delete()
   delete(@Req() req: Request, @Body() updateUserDto: UserDto) {
     return this.userService.deleteUser(req, updateUserDto);

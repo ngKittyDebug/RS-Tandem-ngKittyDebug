@@ -2,9 +2,10 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { JwtAuthGuard } from './guards/auth.guard';
+import { swaggerConfig } from './modules/auth/config/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,6 +15,7 @@ async function bootstrap() {
   const config = app.get(ConfigService);
 
   const reflector = app.get(Reflector);
+
   app.useGlobalGuards(new JwtAuthGuard(reflector));
 
   const logger = new Logger(bootstrap.name);
@@ -29,21 +31,15 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   });
 
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('MeowVault')
-    .setDescription(
-      'MeowVault — это уютный учебный каталог с несколькими играми, которые помогают прокачать знания JavaScript, TypeScript',
-    )
-    .addBearerAuth()
-    .build();
-
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig);
 
   SwaggerModule.setup('docs', app, swaggerDocument, {
+    customSiteTitle: 'MeowVault API Docs',
     yamlDocumentUrl: '/openapi.yaml',
     swaggerOptions: {
       persistAuthorization: true,
       withCredentials: true,
+      tags: ['Auth', 'User'],
     },
   });
 
