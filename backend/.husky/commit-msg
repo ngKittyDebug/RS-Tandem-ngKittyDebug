@@ -1,3 +1,0 @@
-cd backend
-
-npx --no -- commitlint --edit $1
