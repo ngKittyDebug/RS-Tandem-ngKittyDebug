@@ -1,11 +1,19 @@
 <div class="container">
+  <header tuiHeader="h1">
+    <hgroup tuiTitle>
   <h1>Welcome to the MeowVault!</h1>
-  <p>
-    MeowVault is a system helping students to prepare for their FrontEnd interviews. It conists of
-    funny games, playing which helps them practice their skills in a fun and engaging way. MeowVault
-    is a soft and comfortable way to learn, as soft as a cat's paws which is the symbol of our
-    project. We believe that learning should be enjoyable and stress-free, just like the gentle
-    touch of a cat's paws. So, get ready to have fun while sharpening your FrontEnd skills with
-    MeowVault!
-  </p>
+  <p tuiSubtitle>Learn JavaScript and have fun!</p>
+    </hgroup>
+  	</header>
+    <tui-elastic-container>
+    {{ current }}
+    <button
+        tuiLink
+        type="button"
+        (click)="toggle()"
+    >
+        Show {{ current === more ? 'less' : 'more' }}
+    </button>
+</tui-elastic-container>
+
 </div>
