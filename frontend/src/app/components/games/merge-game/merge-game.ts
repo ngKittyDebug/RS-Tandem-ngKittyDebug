@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { TuiButton, TuiTitle } from '@taiga-ui/core';
 
@@ -9,4 +9,10 @@ import { TuiButton, TuiTitle } from '@taiga-ui/core';
   templateUrl: './merge-game.html',
   styleUrl: './merge-game.scss',
 })
-export class MergeGame {}
+export class MergeGame {
+  private router = inject(Router);
+
+  protected goToTheory(): void {
+    this.router.navigate(['/merge-game/theory']);
+  }
+}

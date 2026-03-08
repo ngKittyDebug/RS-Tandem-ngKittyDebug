@@ -41,13 +41,21 @@ export const routes: Routes = [
     providers: [provideTranslocoScope('merge-game')],
     children: [
       { path: '', redirectTo: 'settings', pathMatch: 'full' },
+
       {
         path: 'settings',
         loadComponent: () =>
           import('./components/games/merge-game/components/settings/settings').then(
             (m) => m.Settings,
           ),
-        providers: [provideTranslocoScope('user-profile')],
+        providers: [provideTranslocoScope('merge-game')],
+      },
+
+      {
+        path: 'theory',
+        loadComponent: () =>
+          import('./components/games/merge-game/components/theory/theory').then((m) => m.Theory),
+        providers: [provideTranslocoScope('merge-game')],
       },
     ],
   },
