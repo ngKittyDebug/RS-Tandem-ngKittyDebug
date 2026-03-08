@@ -26,11 +26,9 @@ function checkFolders() {
     }
   }
 
-  console.log("");
   if (hasError) {
     console.error("💥 Проверка не пройдена!");
     process.exit(1);
-    й;
   } else {
     console.log("✅ Все папки валидны!");
     process.exit(0);
