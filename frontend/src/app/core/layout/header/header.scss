@@ -4,7 +4,7 @@
 
 .header__wrapper {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
   margin: 0 auto;
   max-width: 1500px;
@@ -27,4 +27,14 @@
   gap: 5px;
   align-self: center;
   justify-self: end;
+  border-right: 1px solid var(--tui-background-base);
+  padding-right: 10px;
+}
+
+.user_bar {
+  padding-left: 10px;
+}
+
+.user_bar__logout_button {
+  width: 65px;
 }
