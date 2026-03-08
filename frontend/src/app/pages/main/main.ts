@@ -1,13 +1,26 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TuiTitle } from '@taiga-ui/core';
 import { TuiLink } from '@taiga-ui/core';
 import { TuiElasticContainer } from '@taiga-ui/kit';
 import { TuiHeader } from '@taiga-ui/layout';
+import { TuiBreakpointService, TuiButton, type TuiSizeL } from '@taiga-ui/core';
+import { TuiBlockStatus } from '@taiga-ui/layout';
+import { map, type Observable } from 'rxjs';
 
 @Component({
   standalone: true,
   selector: 'app-main',
-  imports: [TuiHeader, TuiTitle, TuiElasticContainer, TuiLink],
+  imports: [
+    TuiHeader,
+    TuiTitle,
+    TuiElasticContainer,
+    TuiLink,
+    AsyncPipe,
+    NgIf,
+    TuiBlockStatus,
+    TuiButton,
+  ],
   templateUrl: './main.html',
   styleUrls: ['./main.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,4 +37,9 @@ export class Main {
   protected toggle(): void {
     this.current = this.current === this.less ? this.more : this.less;
   }
+  protected readonly breakpointService = inject(TuiBreakpointService);
+
+  protected size$: Observable<TuiSizeL> = this.breakpointService.pipe(
+    map((key) => (key === 'mobile' ? 'm' : 'l')),
+  );
 }

@@ -1,19 +1,42 @@
-<div class="container">
+<div class="main-container">
   <header tuiHeader="h1">
     <hgroup tuiTitle>
-  <h1>Welcome to the MeowVault!</h1>
-  <p tuiSubtitle>Learn JavaScript and have fun!</p>
+      <h1>Welcome to the MeowVault!</h1>
+      <p tuiSubtitle>Learn JavaScript and have fun!</p>
     </hgroup>
-  	</header>
-    <tui-elastic-container>
+  </header>
+  <tui-elastic-container>
     {{ current }}
-    <button
-        tuiLink
-        type="button"
-        (click)="toggle()"
-    >
-        Show {{ current === more ? 'less' : 'more' }}
+    <button tuiLink type="button" (click)="toggle()">
+      Show {{ current === more ? 'less' : 'more' }}
     </button>
-</tui-elastic-container>
+  </tui-elastic-container>
 
+  @if (size$ | async; as size) {
+  <div class="container"
+>
+    <tui-block-status
+        class="card"
+        [card]="true"
+    >
+        <img
+            alt="cat inbox"
+            src="assets/images/cat2.svg"
+            tuiSlot="top"
+            class="image"
+        />
+
+        You need to log in before choosiing a game.
+
+        <button
+            appearance="secondary"
+            tuiButton
+            type="button"
+            [size]="size"
+        >
+            Get Started
+        </button>
+    </tui-block-status>
+</div>
+  }
 </div>

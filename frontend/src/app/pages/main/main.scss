@@ -1,4 +1,4 @@
-.container {
+.main-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -8,4 +8,22 @@
   margin: 0 auto;
   font-size: 1rem;
   gap: 0.5rem;
+}
+.container {
+  display: flex;
+  gap: 1rem;
+  align-self: center;
+  :host-context(tui-root._mobile) & {
+    flex-direction: column;
+  }
+}
+
+.image {
+  inline-size: 5.5rem;
+  block-size: 5.5rem;
+}
+
+.card {
+  background-color: var(--tui-background-base-alt);
+  block-size: auto;
 }
