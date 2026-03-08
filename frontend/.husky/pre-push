@@ -1,4 +1,0 @@
-cd frontend
-
-npx validate-branch-name
-npm run lint
