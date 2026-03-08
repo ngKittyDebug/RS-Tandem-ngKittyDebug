@@ -6,6 +6,7 @@ export enum AppRoute {
   LOGIN = 'login',
   USER_PROFILE = 'user-profile',
   MAIN = '',
+  MERGE_GAME = 'merge-game',
 }
 
 export const getRoutePath = (route: AppRoute): `/${AppRoute}` => {
@@ -32,6 +33,23 @@ export const routes: Routes = [
     path: AppRoute.USER_PROFILE,
     loadComponent: () => import('./pages/user-profile/user-profile').then((m) => m.UserProfile),
     providers: [provideTranslocoScope('user-profile')],
+  },
+  {
+    path: AppRoute.MERGE_GAME,
+    loadComponent: () =>
+      import('./components/games/merge-game/merge-game').then((m) => m.MergeGame),
+    providers: [provideTranslocoScope('merge-game')],
+    children: [
+      { path: '', redirectTo: 'settings', pathMatch: 'full' },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./components/games/merge-game/components/settings/settings').then(
+            (m) => m.Settings,
+          ),
+        providers: [provideTranslocoScope('user-profile')],
+      },
+    ],
   },
   {
     path: '**',

@@ -1,0 +1,44 @@
+{
+  "title": "Merge Game - JS/TS",
+
+  "navigation": {
+    "theory": "Theory",
+    "catalog": "All Games",
+    "start": "Start Game"
+  },
+
+  "gameSetup": {
+    "title": "Game Setup",
+    "subtitle": "Test your logic and associative thinking",
+    "description1": "Find hidden connections and group the words into sets of 4 that share the same idea. After a correct match, a category and related questions will appear.",
+    "description2": "In the “Theory” section you can view the categories, questions, and correct answers.",
+
+    "mode": {
+      "question": "Play with AI helper?",
+      "options": {
+        "yes": "With AI",
+        "no": "Without AI"
+      }
+    },
+
+    "personality": {
+      "question": "Choose AI personality:",
+      "options": {
+        "strict": "Strict",
+        "kind": "Kind",
+        "neutral": "Neutral"
+      }
+    },
+
+    "questions": {
+      "question": "How many questions per category?",
+      "options": {
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5"
+      }
+    }
+  }
+}
