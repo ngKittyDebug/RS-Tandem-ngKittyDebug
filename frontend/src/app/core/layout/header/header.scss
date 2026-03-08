@@ -4,7 +4,7 @@
 
 .header__wrapper {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr auto auto;
   align-items: center;
   margin: 0 auto;
   max-width: 1500px;
@@ -32,6 +32,12 @@
 }
 
 .user_bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  align-self: center;
+  justify-self: end;
   padding-left: 10px;
 }
 

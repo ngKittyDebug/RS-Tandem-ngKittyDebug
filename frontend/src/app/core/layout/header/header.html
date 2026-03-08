@@ -8,11 +8,14 @@
       <app-language-switcher></app-language-switcher>
     </div>
     <div class="user_bar">
-      <button
-        tuiButton
-        appearance="gradient"
-        class="user_bar__logout_button"
-        type="button"
+      	<tui-avatar size="s" tuiAvatarOutline="var(--tui-background-accent-2)">
+          <img alt="cat-1" src="assets/images/cat-1.png"/>
+        </tui-avatar>
+      <button 
+      tuiButton appearance="gradient" 
+      class="user_bar__logout_button" 
+      type="button"
+      (click)="logOutClick()"
       >
         {{ t('log-out') }}
       </button>
