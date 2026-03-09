@@ -1,0 +1,461 @@
+# Backend Code Review — MeowVault
+
+## Дата ревью: 2026-03-09
+
+## Общая оценка: 5.5/10
+
+Проект демонстрирует правильное понимание архитектуры NestJS и использование Prisma. Модульная структура корректна, реализован auth-flow с JWT + httpOnly cookie. Однако присутствуют критические проблемы безопасности и несколько архитектурных ошибок, которые необходимо исправить перед любым деплоем.
+
+## Сводная таблица оценок
+
+| Категория | Оценка | Статус |
+|-----------|--------|--------|
+| 1. Архитектура и структура проекта | 6/10 | Есть замечания |
+| 2. Безопасность | 3/10 | Критические проблемы |
+| 3. Качество кода и чистота | 5/10 | Существенные замечания |
+| 4. Обработка ошибок | 4/10 | Существенные замечания |
+| 5. База данных и Prisma | 5/10 | Существенные замечания |
+| 6. Тестирование | 6/10 | Есть замечания |
+| 7. Конфигурация и DevOps | 4/10 | Существенные замечания |
+| 8. API дизайн и документация | 7/10 | Мелкие замечания |
+
+---
+
+## 1. Архитектура и структура проекта (6/10)
+
+Модульная структура NestJS реализована правильно: `PrismaModule` как глобальный модуль, `AuthModule` с отдельным сервисом и контроллером. Lazy-загрузка модулей, отдельные DTO, интерфейсы — всё на месте.
+
+### `[MAJOR]` Дублирование интерфейсов `AuthResponse` и `LogoutResponse`
+
+**Файл:** `src/modules/auth/auth.service.ts:27-33` и `src/modules/auth/auth.controller.ts:16-22`
+
+Интерфейсы `AuthResponse` и `LogoutResponse` определены дважды — в сервисе и в контроллере. Это нарушение DRY и потенциальный источник рассинхронизации.
+
+```ts
+// auth.service.ts:27-33
+interface AuthResponse {
+  accessToken: string;
+}
+interface LogoutResponse {
+  logout: boolean;
+}
+
+// auth.controller.ts:16-22 — идентичное определение
+interface AuthResponse {
+  accessToken: string;
+}
+interface LogoutResponse {
+  logout: boolean;
+}
+```
+
+**Исправление:** Вынести в общий файл `src/modules/interface/auth-response.ts` и импортировать в обоих местах.
+
+### `[MAJOR]` Метод `signIn` назван как "вход", но выполняет "регистрацию"
+
+**Файл:** `src/modules/auth/auth.service.ts:58`
+
+Метод `signIn` в `AuthService` выполняет **регистрацию** нового пользователя, а не вход. В индустрии "sign in" означает аутентификацию существующего пользователя. Контроллер усугубляет путаницу — метод назван `create` (строка 34 контроллера), что является дефолтом генератора NestJS.
+
+```ts
+// auth.service.ts:58 — регистрация, но названа signIn
+async signIn(res: Response, dto: CreateAuthDto): Promise<AuthResponse> {
+
+// auth.controller.ts:34 — вызывает signIn для endpoint POST /auth/register
+create(@Body() createAuthDto: CreateAuthDto, ...): Promise<AuthResponse> {
+  return this.authService.signIn(res, createAuthDto);
+}
+```
+
+**Исправление:** Переименовать `signIn` → `register` в сервисе, `create` → `register` в контроллере.
+
+---
+
+## 2. Безопасность (3/10)
+
+Это самая слабая область проекта. Есть несколько критических уязвимостей, которые обязательны к исправлению.
+
+### `[CRITICAL]` Refresh token не хранится в БД — logout можно обойти
+
+**Файл:** `src/modules/auth/auth.service.ts:163-207`
+
+Refresh token подписывается JWT, но нигде не сохраняется. Метод `logout` (строка 203) лишь очищает cookie на клиенте, но сам токен остаётся криптографически валидным до истечения (7 дней). Если атакующий извлечёт refresh token до logout, он сможет генерировать новые access tokens неограниченно.
+
+В модели `User` (prisma/schema.prisma) нет поля `refreshToken` или `refreshTokenHash`.
+
+```ts
+// auth.service.ts:203-207 — logout только чистит cookie
+logout(res: Response): LogoutResponse {
+  this.sendCookie(res, 'refreshToken', new Date(0));
+  return { logout: true };
+}
+```
+
+**Исправление:**
+1. Добавить поле `refreshToken String?` в модель `User` в `schema.prisma`
+2. При вызове `auth()` — хешировать и сохранять refresh token в БД
+3. При `refresh()` — проверять совпадение хеша с БД
+4. При `logout()` — обнулять поле в БД
+
+### `[CRITICAL]` `BCRYPT_SALT` читается как строка, но объявлен как число
+
+**Файл:** `src/modules/auth/auth.service.ts:37,46,66`
+
+`ConfigService.getOrThrow<number>` не выполняет runtime-преобразование — дженерик `<number>` это лишь подсказка TypeScript. Реальное значение из `.env` всегда строка `"10"`. На строке 66 применяется `+this.SALT` для явной коерсии, но если кто-то поставит `BCRYPT_SALT=abc`, salt получит `NaN`.
+
+```ts
+// Строка 37 — объявление
+private readonly SALT: number;
+// Строка 46 — получение (реально строка!)
+this.SALT = configService.getOrThrow<number>('BCRYPT_SALT');
+// Строка 66 — коерсия
+const salts = await genSalt(+this.SALT);
+```
+
+**Исправление:**
+```ts
+const raw = configService.getOrThrow<string>('BCRYPT_SALT');
+this.SALT = parseInt(raw, 10);
+if (isNaN(this.SALT) || this.SALT < 10 || this.SALT > 31) {
+  throw new Error(`BCRYPT_SALT must be a number between 10 and 31, got: "${raw}"`);
+}
+```
+
+### `[CRITICAL]` `.env.example` содержит реальные credentials и слабый JWT secret
+
+**Файл:** `.env.example:15,24`
+
+```
+DEVELOPMENT_POSTGRES=postgresql://postgres:123456@localhost:5433/postgresql
+JWT_SECRET_KEY=sss12345678910
+```
+
+`.env.example` коммитится в Git. Значение `sss12345678910` — крайне слабый секрет (14 символов, alphanumeric). Пароль PostgreSQL `123456` тоже открыт. Новые разработчики копируют `.env.example` → `.env` без изменений.
+
+**Исправление:** Заменить на плейсхолдеры:
+```
+DEVELOPMENT_POSTGRES=postgresql://<user>:<password>@localhost:5433/<db_name>
+JWT_SECRET_KEY=<your-strong-random-secret-min-32-chars>
+```
+
+### `[MAJOR]` `EMAIL_PATTERN` — неэкранированная точка пропускает невалидные email
+
+**Файл:** `shared/regexp-pattern.ts:4`
+
+```ts
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+.[^\s@]{2,}$/;
+//                                       ^ — не экранирована!
+```
+
+Точка `.` без экранирования матчит **любой** символ. Email `user@exampleXcom` пройдёт валидацию.
+
+**Исправление:**
+```ts
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+```
+
+### `[MAJOR]` `USER_PATTERN` допускает опасные спецсимволы в username
+
+**Файл:** `shared/regexp-pattern.ts:6`
+
+```ts
+const USER_PATTERN = /^\S{3,20}$/;
+```
+
+`\S` матчит **любой** непробельный символ, включая `<`, `>`, `"`, `'`, `/`, `\`. Username с такими символами может вызвать XSS при отображении в UI или проблемы в URL.
+
+**Исправление:**
+```ts
+const USER_PATTERN = /^[a-zA-Z0-9_-]{3,20}$/;
+```
+
+### `[MAJOR]` Login возвращает `ForbiddenException` (403) вместо `UnauthorizedException` (401)
+
+**Файл:** `src/modules/auth/auth.service.ts:95,103`
+
+HTTP 403 Forbidden означает "у вас нет прав", а не "неверные учётные данные". Для неуспешной аутентификации стандарт — 401 Unauthorized.
+
+```ts
+// Строка 95 — пользователь не найден
+throw new ForbiddenException('Пользователь не существует или неверный пароль');
+// Строка 103 — неверный пароль
+throw new ForbiddenException('Пользователь не существует или неверный пароль');
+```
+
+**Исправление:** Заменить `ForbiddenException` → `UnauthorizedException`.
+
+---
+
+## 3. Качество кода и чистота (5/10)
+
+### `[MAJOR]` `findOne` использует `OR [email, username]` — потенциальные ложные совпадения
+
+**Файл:** `src/modules/auth/auth.service.ts:126-147`
+
+Метод `findOne` всегда ищет по OR: email ИЛИ username. При логине, если пользователь отправляет только email (без username), `dto.username` будет `undefined` или `""`. Prisma включит `username: { equals: '', mode: 'insensitive' }` в OR — теоретически может найти пользователя с пустым username.
+
+При регистрации: если Alice хочет зарегистрироваться с `email=a@a.com, username=bob`, а Bob уже существует с `username=bob` но другим email, Alice будет заблокирована с "пользователь уже существует", хотя её email уникален.
+
+```ts
+return await this.prisma.user.findFirst({
+  where: {
+    OR: [
+      { email: { equals: dto.email, mode: 'insensitive' } },
+      { username: { equals: dto.username, mode: 'insensitive' } },
+    ],
+  },
+});
+```
+
+**Исправление:** Для логина — делать условный запрос в зависимости от того, что передано. Для регистрации — проверять email и username отдельно, чтобы давать конкретное сообщение ("email уже занят" или "username уже занят").
+
+### `[MINOR]` `logout` передаёт имя cookie как значение token
+
+**Файл:** `src/modules/auth/auth.service.ts:204`
+
+```ts
+this.sendCookie(res, 'refreshToken', new Date(0));
+```
+
+Второй параметр `sendCookie` — это значение cookie (строка 194: `token: string`). Передаётся строка `'refreshToken'`, что является именем cookie, а не его значением. Cookie всё равно удалится (expired date), но это запутывает.
+
+**Исправление:** `this.sendCookie(res, '', new Date(0));`
+
+### `[MINOR]` `main.ts:46` — неверный тип-дженерик `<number>` для `DEV_HOST`
+
+**Файл:** `src/main.ts:46`
+
+```ts
+const host = config.getOrThrow<number>('DEV_HOST');
+```
+
+`DEV_HOST` — это URL-строка (`http://localhost:4200`), а не число.
+
+**Исправление:** `config.getOrThrow<string>('DEV_HOST')`
+
+### `[MINOR]` `prisma.service.ts` — ошибки логируются на уровне INFO
+
+**Файл:** `prisma/prisma.service.ts:36,45`
+
+```ts
+this.logger.log(`Fail to connect ${error}`);   // строка 36
+this.logger.log(`Fail to disconnect ${error}`); // строка 45
+```
+
+Ошибки подключения к БД логируются через `logger.log` (INFO), а не `logger.error` (ERROR).
+
+**Исправление:** `this.logger.error('Fail to connect', error);`
+
+---
+
+## 4. Обработка ошибок (4/10)
+
+### `[CRITICAL]` `refresh()` не ловит ошибку `jwtService.verifyAsync`
+
+**Файл:** `src/modules/auth/auth.service.ts:170`
+
+`verifyAsync` бросает `JsonWebTokenError` или `TokenExpiredError` из библиотеки `jsonwebtoken`. Это **не** NestJS HTTP-исключения. Без `try/catch` ошибка пробрасывается как 500 Internal Server Error вместо 401.
+
+```ts
+// Строка 170 — нет try/catch!
+const payload: JwtPayload = await this.jwtService.verifyAsync(refresh);
+```
+
+**Исправление:**
+```ts
+let payload: JwtPayload;
+try {
+  payload = await this.jwtService.verifyAsync<JwtPayload>(refresh);
+} catch {
+  throw new UnauthorizedException('Токен больше не действителен');
+}
+```
+
+### `[CRITICAL]` `signIn` (регистрация) — race condition TOCTOU + необработанный P2002
+
+**Файл:** `src/modules/auth/auth.service.ts:58-88`
+
+Регистрация проверяет уникальность через `findOne`, затем создаёт пользователя. Между этими операциями конкурентный запрос может создать того же пользователя. `prisma.user.create` бросит `P2002` (unique constraint violation), который не перехвачен — клиент получит 500.
+
+```ts
+// Строка 59 — проверка
+const existingUser = await this.findOne(dto);
+// ...
+// Строка 68 — создание (между проверкой и созданием — race condition)
+const user = await this.prisma.user.create({ ... });
+```
+
+**Исправление:** Обернуть `prisma.user.create` в `try/catch` для Prisma error code `P2002`:
+```ts
+try {
+  const user = await this.prisma.user.create({ data: { ... } });
+} catch (error) {
+  if (error.code === 'P2002') {
+    throw new ConflictException('Пользователь уже существует');
+  }
+  throw error;
+}
+```
+
+---
+
+## 5. База данных и Prisma (5/10)
+
+### `[MAJOR]` Отсутствует `url` в `datasource db` — Prisma CLI не сможет работать
+
+**Файл:** `prisma/schema.prisma:6-8`
+
+```prisma
+datasource db {
+  provider = "postgresql"
+}
+```
+
+Поле `url` отсутствует. Prisma CLI (`prisma migrate dev`, `prisma generate`) требует `url` в datasource. Runtime-подключение через `@prisma/adapter-pg` обходит это, но CLI-команды не будут работать.
+
+**Исправление:**
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+И добавить `DATABASE_URL` в `.env.example`.
+
+### `[SUGGESTION]` Модель `User` не имеет поля для хранения refresh token
+
+**Файл:** `prisma/schema.prisma:15-25`
+
+Для реализации отзыва refresh tokens (см. пункт безопасности #1) нужно добавить поле:
+```prisma
+model User {
+  // ...existing fields
+  refreshToken String?
+}
+```
+
+---
+
+## 6. Тестирование (6/10)
+
+### `[MINOR]` Тест `refresh` мокает `verifyAsync` с `UnauthorizedException`, а не с `JsonWebTokenError`
+
+**Файл:** `src/modules/auth/__tests__/auth.service.spec.ts`
+
+Тест для `refresh` с невалидным токеном мокает `jwtService.verifyAsync` так, чтобы он бросал `UnauthorizedException`. В реальности библиотека `jsonwebtoken` бросает свои собственные типы ошибок (`JsonWebTokenError`, `TokenExpiredError`), что маскирует баг с необработанной ошибкой (см. пункт 4.1).
+
+### `[SUGGESTION]` Добавить тесты для edge cases
+
+- Регистрация с дублирующимся email (P2002 handling)
+- Login с пустым username при режиме email
+- Refresh с истёкшим токеном (реальный `TokenExpiredError`)
+- Валидация regex-паттернов с граничными значениями
+
+---
+
+## 7. Конфигурация и DevOps (4/10)
+
+### `[MAJOR]` `.env.example` — дублирующиеся ключи и JS-комментарии
+
+**Файл:** `.env.example:1-26`
+
+- `PORT` определён дважды (строки 4 и 10) — `dotenv` берёт последний
+- `HOST` определён дважды (строки 5 и 11)
+- Строки 14 и 20 используют `//` комментарии — `dotenv` поддерживает только `#`
+- Отсутствует `DATABASE_URL`, который указан в CLAUDE.md как обязательный
+
+**Исправление:** Дедуплицировать ключи, использовать `#` для комментариев, добавить `DATABASE_URL`.
+
+### `[MAJOR]` `bcrypt` и `bcrypt-ts` — дублирующиеся зависимости
+
+**Файл:** `package.json:42-43`
+
+```json
+"bcrypt": "^6.0.0",
+"bcrypt-ts": "^8.0.1",
+```
+
+Код импортирует только `bcrypt-ts`. Пакет `bcrypt` — нативный аддон, требующий C++ toolchain, замедляющий `npm ci` и потенциально ломающий сборку в Docker.
+
+**Исправление:** Удалить `bcrypt` из `dependencies`.
+
+### `[MAJOR]` `@nestjs/mapped-types: "*"` — неограниченная версия
+
+**Файл:** `package.json:37`
+
+```json
+"@nestjs/mapped-types": "*",
+```
+
+Wildcard `*` может подтянуть мажорную несовместимую версию при регенерации lock-файла.
+
+**Исправление:** `"@nestjs/mapped-types": "^2.0.6"`
+
+### `[MINOR]` `tsconfig.json` — `noImplicitAny: false` снижает типобезопасность
+
+Отключённый `noImplicitAny` позволяет неявные `any`-типы, что вместе с `@typescript-eslint/no-explicit-any: 'off'` в ESLint создаёт двойную дыру в типобезопасности.
+
+### `[MINOR]` ESLint — `no-floating-promises` и `no-unsafe-argument` как `warn`
+
+**Файл:** `eslint.config.mjs`
+
+Эти правила установлены в `warn`, а CI (`ci:lint`) запускается без `--max-warnings=0`. Warnings не ломают билд, поэтому floating promises будут копиться незамеченными.
+
+**Исправление:** Поднять до `'error'` или добавить `--max-warnings=0` в `ci:lint`.
+
+---
+
+## 8. API дизайн и документация (7/10)
+
+Swagger интегрирован, есть декораторы `@ApiOperation`, `@ApiResponse`, `@ApiBody`. Документация доступна по `/docs` и `/openapi.yaml`. CORS настроен с поддержкой Netlify deploy previews через regex.
+
+### `[MINOR]` Swagger добавляет `Bearer Auth`, но ни один endpoint его не требует
+
+**Файл:** `src/main.ts:32`
+
+```ts
+.addBearerAuth()
+```
+
+`addBearerAuth()` добавляет секьюрити-схему в Swagger, но ни один контроллер не использует `@ApiBearerAuth()` декоратор. Кнопка "Authorize" в Swagger UI ничего не делает.
+
+### `[SUGGESTION]` Добавить версионирование API (`/api/v1/auth/...`)
+
+Рекомендуется для будущей совместимости при росте проекта.
+
+---
+
+## 9. Рекомендации к следующему ревью
+
+### Приоритет 1 (обязательно)
+- [ ] Исправить хранение refresh token в БД + отзыв при logout
+- [ ] Добавить `try/catch` в `refresh()` для `verifyAsync`
+- [ ] Обработать `P2002` в `signIn` (регистрация)
+- [ ] Исправить `EMAIL_PATTERN` — экранировать точку
+- [ ] Заменить credentials в `.env.example` на плейсхолдеры
+- [ ] Добавить `url = env("DATABASE_URL")` в `schema.prisma`
+
+### Приоритет 2 (важно)
+- [ ] Переименовать `signIn` → `register`
+- [ ] Вынести общие интерфейсы в отдельный файл
+- [ ] Удалить дублирующий пакет `bcrypt`
+- [ ] Зафиксировать версию `@nestjs/mapped-types`
+- [ ] Заменить `ForbiddenException` → `UnauthorizedException` в `login`
+- [ ] Исправить логику `findOne` для раздельной проверки email/username
+- [ ] Дедуплицировать `.env.example`
+
+### Приоритет 3 (желательно)
+- [ ] Включить `noImplicitAny: true` в tsconfig
+- [ ] Поднять ESLint warnings до errors
+- [ ] Исправить `logger.log` → `logger.error` в PrismaService
+- [ ] Ограничить `USER_PATTERN` до `[a-zA-Z0-9_-]`
+- [ ] Добавить тесты edge cases для auth
+
+---
+
+## История ревью
+
+| Дата | Общая оценка | Критических | Мажорных | Минорных |
+|------|-------------|-------------|----------|----------|
+| 2026-03-09 | 5.5/10 | 4 | 8 | 6 |
