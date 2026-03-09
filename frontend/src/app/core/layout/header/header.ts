@@ -28,6 +28,10 @@ export class Header {
   private authService = inject(AuthService);
   private router = inject(Router);
 
+  protected avatarClick(): void {
+    this.router.navigate([getRoutePath(AppRoute.USER_PROFILE)]);
+  }
+
   protected logOutClick(): void {
     this.authService.logout().subscribe({
       next: () => {

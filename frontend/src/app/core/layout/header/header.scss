@@ -1,5 +1,14 @@
 .header {
   height: 60px;
+  border-bottom: 1px solid var(--tui-border-normal);
+}
+
+::ng-deep [tuiTheme='light'] .header {
+  background-color: #ffffff;
+}
+
+::ng-deep [tuiTheme='dark'] .header {
+  background-color: var(--tui-background-base);
 }
 
 .header__wrapper {
@@ -27,7 +36,7 @@
   gap: 5px;
   align-self: center;
   justify-self: end;
-  border-right: 1px solid var(--tui-background-base);
+  border-right: 2px solid var(--tui-border-normal);
   padding-right: 10px;
 }
 
@@ -43,4 +52,8 @@
 
 .user_bar__logout_button {
   width: 65px;
+}
+
+.user_bar__avatar {
+  cursor: pointer;
 }
