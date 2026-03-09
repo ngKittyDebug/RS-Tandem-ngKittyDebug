@@ -6,6 +6,8 @@
 
 Проект демонстрирует правильное понимание архитектуры NestJS и использование Prisma. Модульная структура корректна, реализован auth-flow с JWT + httpOnly cookie. Однако присутствуют критические проблемы безопасности и несколько архитектурных ошибок, которые необходимо исправить перед любым деплоем.
 
+> **Источники best practices:** [NestJS Official Docs](https://docs.nestjs.com), [Prisma Error Handling](https://www.prisma.io/docs/orm/prisma-client/debugging-and-troubleshooting/handling-exceptions-and-errors), NestJS Best Practices Skill (40 rules, 10 categories)
+
 ## Сводная таблица оценок
 
 | Категория | Оценка | Статус |
@@ -25,11 +27,15 @@
 
 Модульная структура NestJS реализована правильно: `PrismaModule` как глобальный модуль, `AuthModule` с отдельным сервисом и контроллером. Lazy-загрузка модулей, отдельные DTO, интерфейсы — всё на месте.
 
+> **Правило `arch-feature-modules`** (NestJS Best Practices, CRITICAL): Организация по фичам, а не по техническим слоям. Проект следует этому правилу — `modules/auth/` содержит controller, service, dto, tests.
+
 ### `[MAJOR]` Дублирование интерфейсов `AuthResponse` и `LogoutResponse`
 
 **Файл:** `src/modules/auth/auth.service.ts:27-33` и `src/modules/auth/auth.controller.ts:16-22`
 
 Интерфейсы `AuthResponse` и `LogoutResponse` определены дважды — в сервисе и в контроллере. Это нарушение DRY и потенциальный источник рассинхронизации.
+
+> **Правило `api-use-dto-serialization`** (NestJS Best Practices, MEDIUM): DTO и response-типы должны быть определены в отдельных файлах и переиспользоваться через imports. [NestJS Serialization](https://docs.nestjs.com/techniques/serialization)
 
 ```ts
 // auth.service.ts:27-33
@@ -49,11 +55,13 @@ interface LogoutResponse {
 }
 ```
 
-**Исправление:** Вынести в общий файл `src/modules/interface/auth-response.ts` и импортировать в обоих местах.
+**Исправление:** Вынести в общий файл `src/modules/interface/auth-response.ts` и импортировать в обоих местах. Рассмотреть использование `class` вместо `interface` для поддержки `@ApiProperty()` декораторов Swagger.
 
 ### `[MAJOR]` Метод `signIn` назван как "вход", но выполняет "регистрацию"
 
 **Файл:** `src/modules/auth/auth.service.ts:58`
+
+> **Правило `arch-single-responsibility`** (NestJS Best Practices, CRITICAL): Чёткая ответственность каждого метода. Имя метода должно отражать его назначение.
 
 Метод `signIn` в `AuthService` выполняет **регистрацию** нового пользователя, а не вход. В индустрии "sign in" означает аутентификацию существующего пользователя. Контроллер усугубляет путаницу — метод назван `create` (строка 34 контроллера), что является дефолтом генератора NestJS.
 
@@ -67,13 +75,48 @@ create(@Body() createAuthDto: CreateAuthDto, ...): Promise<AuthResponse> {
 }
 ```
 
-**Исправление:** Переименовать `signIn` → `register` в сервисе, `create` → `register` в контроллере.
+**Исправление:** Переименовать `signIn` → `register` в сервисе, `create` → `register` в контроллере. Согласно NestJS docs, имена controller-методов должны отражать бизнес-операцию.
+
+### `[SUGGESTION]` Отсутствует глобальный AuthGuard
+
+> **Правило `security-use-guards`** (NestJS Best Practices, HIGH): Используйте Guards для аутентификации и авторизации. [NestJS Authentication](https://docs.nestjs.com/security/authentication)
+
+Согласно официальной документации NestJS, рекомендуется создать глобальный `AuthGuard`, который проверяет JWT на всех эндпоинтах, и помечать публичные маршруты декоратором `@Public()`:
+
+```ts
+// Из NestJS docs: https://docs.nestjs.com/security/authentication
+@Injectable()
+export class AuthGuard implements CanActivate {
+  constructor(private jwtService: JwtService, private reflector: Reflector) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (isPublic) return true;
+
+    const request = context.switchToHttp().getRequest();
+    const token = this.extractTokenFromHeader(request);
+    if (!token) throw new UnauthorizedException();
+    try {
+      const payload = await this.jwtService.verifyAsync(token);
+      request['user'] = payload;
+    } catch {
+      throw new UnauthorizedException();
+    }
+    return true;
+  }
+}
+```
 
 ---
 
 ## 2. Безопасность (3/10)
 
 Это самая слабая область проекта. Есть несколько критических уязвимостей, которые обязательны к исправлению.
+
+> **Правило `security-auth-jwt`** (NestJS Best Practices, HIGH): Реализуйте безопасную JWT-аутентификацию с ротацией токенов, безопасным хранением секретов и отзывом refresh tokens. [NestJS Security](https://docs.nestjs.com/security/authentication)
 
 ### `[CRITICAL]` Refresh token не хранится в БД — logout можно обойти
 
@@ -91,7 +134,7 @@ logout(res: Response): LogoutResponse {
 }
 ```
 
-**Исправление:**
+**Исправление (по NestJS Best Practices `security-auth-jwt`):**
 1. Добавить поле `refreshToken String?` в модель `User` в `schema.prisma`
 2. При вызове `auth()` — хешировать и сохранять refresh token в БД
 3. При `refresh()` — проверять совпадение хеша с БД
@@ -100,6 +143,8 @@ logout(res: Response): LogoutResponse {
 ### `[CRITICAL]` `BCRYPT_SALT` читается как строка, но объявлен как число
 
 **Файл:** `src/modules/auth/auth.service.ts:37,46,66`
+
+> **Правило `devops-use-config-module`** (NestJS Best Practices, LOW-MEDIUM): Используйте ConfigModule с валидацией переменных окружения через `Joi` или `class-validator`. [NestJS Configuration](https://docs.nestjs.com/techniques/configuration#schema-validation)
 
 `ConfigService.getOrThrow<number>` не выполняет runtime-преобразование — дженерик `<number>` это лишь подсказка TypeScript. Реальное значение из `.env` всегда строка `"10"`. На строке 66 применяется `+this.SALT` для явной коерсии, но если кто-то поставит `BCRYPT_SALT=abc`, salt получит `NaN`.
 
@@ -121,6 +166,8 @@ if (isNaN(this.SALT) || this.SALT < 10 || this.SALT > 31) {
 }
 ```
 
+Или лучше — реализовать валидацию env через `ConfigModule.forRoot({ validationSchema })` с Joi, как рекомендует NestJS docs.
+
 ### `[CRITICAL]` `.env.example` содержит реальные credentials и слабый JWT secret
 
 **Файл:** `.env.example:15,24`
@@ -132,6 +179,8 @@ JWT_SECRET_KEY=sss12345678910
 
 `.env.example` коммитится в Git. Значение `sss12345678910` — крайне слабый секрет (14 символов, alphanumeric). Пароль PostgreSQL `123456` тоже открыт. Новые разработчики копируют `.env.example` → `.env` без изменений.
 
+> Из NestJS docs (`security/authentication`): JWT secret должен быть сгенерирован криптографически надёжным генератором и иметь длину минимум 256 бит (32 байта).
+
 **Исправление:** Заменить на плейсхолдеры:
 ```
 DEVELOPMENT_POSTGRES=postgresql://<user>:<password>@localhost:5433/<db_name>
@@ -141,6 +190,8 @@ JWT_SECRET_KEY=<your-strong-random-secret-min-32-chars>
 ### `[MAJOR]` `EMAIL_PATTERN` — неэкранированная точка пропускает невалидные email
 
 **Файл:** `shared/regexp-pattern.ts:4`
+
+> **Правило `security-validate-all-input`** (NestJS Best Practices, HIGH): Валидируйте все входные данные с помощью class-validator и pipes. [NestJS Validation](https://docs.nestjs.com/techniques/validation)
 
 ```ts
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+.[^\s@]{2,}$/;
@@ -158,6 +209,8 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 **Файл:** `shared/regexp-pattern.ts:6`
 
+> **Правило `security-sanitize-output`** (NestJS Best Practices, HIGH): Предотвращайте XSS атаки. Валидируйте входные данные и санитайзите вывод.
+
 ```ts
 const USER_PATTERN = /^\S{3,20}$/;
 ```
@@ -173,7 +226,9 @@ const USER_PATTERN = /^[a-zA-Z0-9_-]{3,20}$/;
 
 **Файл:** `src/modules/auth/auth.service.ts:95,103`
 
-HTTP 403 Forbidden означает "у вас нет прав", а не "неверные учётные данные". Для неуспешной аутентификации стандарт — 401 Unauthorized.
+> **Правило `error-throw-http-exceptions`** (NestJS Best Practices, HIGH): Используйте правильные NestJS HTTP exceptions. 401 = не аутентифицирован, 403 = аутентифицирован, но нет прав.
+
+HTTP 403 Forbidden означает "у вас нет прав", а не "неверные учётные данные". Для неуспешной аутентификации стандарт — 401 Unauthorized. Из NestJS docs: `UnauthorizedException` для невалидных credentials, `ForbiddenException` для авторизации.
 
 ```ts
 // Строка 95 — пользователь не найден
@@ -183,6 +238,21 @@ throw new ForbiddenException('Пользователь не существует
 ```
 
 **Исправление:** Заменить `ForbiddenException` → `UnauthorizedException`.
+
+### `[SUGGESTION]` Отсутствует Rate Limiting
+
+> **Правило `security-rate-limiting`** (NestJS Best Practices, HIGH): Реализуйте ограничение частоты запросов для защиты от brute-force атак. [NestJS Rate Limiting](https://docs.nestjs.com/security/rate-limiting)
+
+Auth endpoints (`/auth/login`, `/auth/register`) не защищены от brute-force атак. Рекомендуется `@nestjs/throttler`:
+
+```ts
+// app.module.ts
+ThrottlerModule.forRoot([{ ttl: 60000, limit: 10 }]),
+
+// auth.controller.ts
+@Throttle({ default: { limit: 5, ttl: 60000 } })
+@Post('login')
+```
 
 ---
 
@@ -237,6 +307,8 @@ const host = config.getOrThrow<number>('DEV_HOST');
 
 **Файл:** `prisma/prisma.service.ts:36,45`
 
+> **Правило `devops-use-logging`** (NestJS Best Practices, LOW-MEDIUM): Используйте структурированное логирование с правильными уровнями (error, warn, log, debug).
+
 ```ts
 this.logger.log(`Fail to connect ${error}`);   // строка 36
 this.logger.log(`Fail to disconnect ${error}`); // строка 45
@@ -250,18 +322,22 @@ this.logger.log(`Fail to disconnect ${error}`); // строка 45
 
 ## 4. Обработка ошибок (4/10)
 
+> **Правило `error-handle-async-errors`** (NestJS Best Practices, HIGH): Все async-операции должны иметь обработку ошибок. Необработанные Promise rejections ведут к 500 ошибкам и утечкам информации.
+
 ### `[CRITICAL]` `refresh()` не ловит ошибку `jwtService.verifyAsync`
 
 **Файл:** `src/modules/auth/auth.service.ts:170`
 
 `verifyAsync` бросает `JsonWebTokenError` или `TokenExpiredError` из библиотеки `jsonwebtoken`. Это **не** NestJS HTTP-исключения. Без `try/catch` ошибка пробрасывается как 500 Internal Server Error вместо 401.
 
+> Из NestJS docs (`security/authentication`): `verifyAsync` должен быть обёрнут в `try/catch` с выбросом `UnauthorizedException`. Это показано в [официальном примере AuthGuard](https://docs.nestjs.com/security/authentication#implementing-the-authentication-guard).
+
 ```ts
 // Строка 170 — нет try/catch!
 const payload: JwtPayload = await this.jwtService.verifyAsync(refresh);
 ```
 
-**Исправление:**
+**Исправление (из NestJS official docs):**
 ```ts
 let payload: JwtPayload;
 try {
@@ -275,6 +351,8 @@ try {
 
 **Файл:** `src/modules/auth/auth.service.ts:58-88`
 
+> **Правило `db-use-transactions`** (NestJS Best Practices, MEDIUM-HIGH): Используйте транзакции для multi-step операций. [Prisma Error Handling](https://www.prisma.io/docs/orm/prisma-client/debugging-and-troubleshooting/handling-exceptions-and-errors)
+
 Регистрация проверяет уникальность через `findOne`, затем создаёт пользователя. Между этими операциями конкурентный запрос может создать того же пользователя. `prisma.user.create` бросит `P2002` (unique constraint violation), который не перехвачен — клиент получит 500.
 
 ```ts
@@ -285,17 +363,46 @@ const existingUser = await this.findOne(dto);
 const user = await this.prisma.user.create({ ... });
 ```
 
-**Исправление:** Обернуть `prisma.user.create` в `try/catch` для Prisma error code `P2002`:
+**Исправление (по Prisma docs — error handling):**
 ```ts
+import { Prisma } from 'src/generated/prisma/client';
+
 try {
   const user = await this.prisma.user.create({ data: { ... } });
 } catch (error) {
-  if (error.code === 'P2002') {
-    throw new ConflictException('Пользователь уже существует');
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.code === 'P2002') {
+      throw new ConflictException('Пользователь уже существует');
+    }
   }
   throw error;
 }
 ```
+
+Или глобально — через `PrismaClientExceptionFilter` ([Prisma + NestJS Error Handling](https://www.prisma.io/blog/nestjs-prisma-error-handling)):
+
+```ts
+@Catch(Prisma.PrismaClientKnownRequestError)
+export class PrismaClientExceptionFilter extends BaseExceptionFilter {
+  catch(exception: Prisma.PrismaClientKnownRequestError, host: ArgumentsHost) {
+    const response = host.switchToHttp().getResponse<Response>();
+    switch (exception.code) {
+      case 'P2002':
+        response.status(HttpStatus.CONFLICT).json({
+          statusCode: HttpStatus.CONFLICT,
+          message: 'Запись уже существует',
+        });
+        break;
+      default:
+        super.catch(exception, host);
+    }
+  }
+}
+```
+
+### `[SUGGESTION]` Отсутствует глобальный Exception Filter
+
+> **Правило `error-use-exception-filters`** (NestJS Best Practices, HIGH): Используйте centralized exception handling через Exception Filters для единообразных ответов об ошибках. [NestJS Exception Filters](https://docs.nestjs.com/exception-filters)
 
 ---
 
@@ -304,6 +411,8 @@ try {
 ### `[MAJOR]` Отсутствует `url` в `datasource db` — Prisma CLI не сможет работать
 
 **Файл:** `prisma/schema.prisma:6-8`
+
+> Из [Prisma Docs — Datasource](https://www.prisma.io/docs/orm/reference/prisma-schema-reference#datasource): поле `url` обязательно для работы CLI команд.
 
 ```prisma
 datasource db {
@@ -327,6 +436,8 @@ datasource db {
 
 **Файл:** `prisma/schema.prisma:15-25`
 
+> Из [Prisma Docs — Schema](https://www.prisma.io/docs/orm/prisma-schema): при изменении модели обязательно запустить `prisma migrate dev` для создания миграции.
+
 Для реализации отзыва refresh tokens (см. пункт безопасности #1) нужно добавить поле:
 ```prisma
 model User {
@@ -339,9 +450,13 @@ model User {
 
 ## 6. Тестирование (6/10)
 
+> **Правило `test-use-testing-module`** (NestJS Best Practices, MEDIUM-HIGH): Используйте `Test.createTestingModule()` для юнит-тестов. Мокайте внешние зависимости для изоляции. [NestJS Testing](https://docs.nestjs.com/fundamentals/testing)
+
 ### `[MINOR]` Тест `refresh` мокает `verifyAsync` с `UnauthorizedException`, а не с `JsonWebTokenError`
 
 **Файл:** `src/modules/auth/__tests__/auth.service.spec.ts`
+
+> **Правило `test-mock-external-services`** (NestJS Best Practices, MEDIUM-HIGH): Моки должны точно отражать поведение реальных зависимостей.
 
 Тест для `refresh` с невалидным токеном мокает `jwtService.verifyAsync` так, чтобы он бросал `UnauthorizedException`. В реальности библиотека `jsonwebtoken` бросает свои собственные типы ошибок (`JsonWebTokenError`, `TokenExpiredError`), что маскирует баг с необработанной ошибкой (см. пункт 4.1).
 
@@ -352,6 +467,10 @@ model User {
 - Refresh с истёкшим токеном (реальный `TokenExpiredError`)
 - Валидация regex-паттернов с граничными значениями
 
+### `[SUGGESTION]` Добавить E2E тесты для auth flow
+
+> **Правило `test-e2e-supertest`** (NestJS Best Practices, MEDIUM-HIGH): Используйте Supertest для E2E-тестирования полного HTTP цикла. [NestJS E2E Testing](https://docs.nestjs.com/fundamentals/testing#end-to-end-testing)
+
 ---
 
 ## 7. Конфигурация и DevOps (4/10)
@@ -360,12 +479,14 @@ model User {
 
 **Файл:** `.env.example:1-26`
 
+> **Правило `devops-use-config-module`** (NestJS Best Practices, LOW-MEDIUM): Используйте `ConfigModule` с валидацией схемы. [NestJS Configuration](https://docs.nestjs.com/techniques/configuration)
+
 - `PORT` определён дважды (строки 4 и 10) — `dotenv` берёт последний
 - `HOST` определён дважды (строки 5 и 11)
 - Строки 14 и 20 используют `//` комментарии — `dotenv` поддерживает только `#`
 - Отсутствует `DATABASE_URL`, который указан в CLAUDE.md как обязательный
 
-**Исправление:** Дедуплицировать ключи, использовать `#` для комментариев, добавить `DATABASE_URL`.
+**Исправление:** Дедуплицировать ключи, использовать `#` для комментариев, добавить `DATABASE_URL`. Реализовать валидацию env через `ConfigModule.forRoot({ validationSchema })`.
 
 ### `[MAJOR]` `bcrypt` и `bcrypt-ts` — дублирующиеся зависимости
 
@@ -400,15 +521,23 @@ Wildcard `*` может подтянуть мажорную несовмести
 
 **Файл:** `eslint.config.mjs`
 
+> **Правило `error-handle-async-errors`** (NestJS Best Practices, HIGH): Floating promises — частая причина багов в async NestJS хэндлерах.
+
 Эти правила установлены в `warn`, а CI (`ci:lint`) запускается без `--max-warnings=0`. Warnings не ломают билд, поэтому floating promises будут копиться незамеченными.
 
 **Исправление:** Поднять до `'error'` или добавить `--max-warnings=0` в `ci:lint`.
+
+### `[SUGGESTION]` Реализовать Graceful Shutdown
+
+> **Правило `devops-graceful-shutdown`** (NestJS Best Practices, LOW-MEDIUM): Включите `app.enableShutdownHooks()` для корректного завершения при SIGTERM. [NestJS Lifecycle Events](https://docs.nestjs.com/fundamentals/lifecycle-events)
 
 ---
 
 ## 8. API дизайн и документация (7/10)
 
 Swagger интегрирован, есть декораторы `@ApiOperation`, `@ApiResponse`, `@ApiBody`. Документация доступна по `/docs` и `/openapi.yaml`. CORS настроен с поддержкой Netlify deploy previews через regex.
+
+> **Правило `api-use-interceptors`** (NestJS Best Practices, MEDIUM): Используйте Interceptors для cross-cutting concerns: логирование, трансформация ответов, кэширование.
 
 ### `[MINOR]` Swagger добавляет `Bearer Auth`, но ни один endpoint его не требует
 
@@ -422,35 +551,55 @@ Swagger интегрирован, есть декораторы `@ApiOperation`,
 
 ### `[SUGGESTION]` Добавить версионирование API (`/api/v1/auth/...`)
 
-Рекомендуется для будущей совместимости при росте проекта.
+> **Правило `api-versioning`** (NestJS Best Practices, MEDIUM): Используйте API versioning для breaking changes. [NestJS Versioning](https://docs.nestjs.com/techniques/versioning)
 
 ---
 
 ## 9. Рекомендации к следующему ревью
 
 ### Приоритет 1 (обязательно)
-- [ ] Исправить хранение refresh token в БД + отзыв при logout
-- [ ] Добавить `try/catch` в `refresh()` для `verifyAsync`
-- [ ] Обработать `P2002` в `signIn` (регистрация)
-- [ ] Исправить `EMAIL_PATTERN` — экранировать точку
-- [ ] Заменить credentials в `.env.example` на плейсхолдеры
-- [ ] Добавить `url = env("DATABASE_URL")` в `schema.prisma`
+- [ ] Исправить хранение refresh token в БД + отзыв при logout (`security-auth-jwt`)
+- [ ] Добавить `try/catch` в `refresh()` для `verifyAsync` (`error-handle-async-errors`)
+- [ ] Обработать `P2002` в `signIn` — через try/catch или PrismaClientExceptionFilter (`error-use-exception-filters`)
+- [ ] Исправить `EMAIL_PATTERN` — экранировать точку (`security-validate-all-input`)
+- [ ] Заменить credentials в `.env.example` на плейсхолдеры (`security-auth-jwt`)
+- [ ] Добавить `url = env("DATABASE_URL")` в `schema.prisma` (Prisma docs)
+- [ ] Создать глобальный `AuthGuard` с `@Public()` декоратором (`security-use-guards`)
 
 ### Приоритет 2 (важно)
-- [ ] Переименовать `signIn` → `register`
-- [ ] Вынести общие интерфейсы в отдельный файл
+- [ ] Переименовать `signIn` → `register` (`arch-single-responsibility`)
+- [ ] Вынести общие интерфейсы в отдельный файл (`api-use-dto-serialization`)
 - [ ] Удалить дублирующий пакет `bcrypt`
 - [ ] Зафиксировать версию `@nestjs/mapped-types`
-- [ ] Заменить `ForbiddenException` → `UnauthorizedException` в `login`
+- [ ] Заменить `ForbiddenException` → `UnauthorizedException` в `login` (`error-throw-http-exceptions`)
 - [ ] Исправить логику `findOne` для раздельной проверки email/username
-- [ ] Дедуплицировать `.env.example`
+- [ ] Дедуплицировать `.env.example` + добавить валидацию env (`devops-use-config-module`)
+- [ ] Добавить Rate Limiting на auth endpoints (`security-rate-limiting`)
 
 ### Приоритет 3 (желательно)
 - [ ] Включить `noImplicitAny: true` в tsconfig
-- [ ] Поднять ESLint warnings до errors
-- [ ] Исправить `logger.log` → `logger.error` в PrismaService
-- [ ] Ограничить `USER_PATTERN` до `[a-zA-Z0-9_-]`
-- [ ] Добавить тесты edge cases для auth
+- [ ] Поднять ESLint warnings до errors (`error-handle-async-errors`)
+- [ ] Исправить `logger.log` → `logger.error` в PrismaService (`devops-use-logging`)
+- [ ] Ограничить `USER_PATTERN` до `[a-zA-Z0-9_-]` (`security-sanitize-output`)
+- [ ] Добавить тесты edge cases для auth (`test-use-testing-module`)
+- [ ] Реализовать Graceful Shutdown (`devops-graceful-shutdown`)
+- [ ] Добавить E2E тесты (`test-e2e-supertest`)
+
+---
+
+## Ссылки на документацию
+
+| Тема | Ссылка |
+|------|--------|
+| NestJS Authentication | https://docs.nestjs.com/security/authentication |
+| NestJS Guards | https://docs.nestjs.com/guards |
+| NestJS Exception Filters | https://docs.nestjs.com/exception-filters |
+| NestJS Configuration | https://docs.nestjs.com/techniques/configuration |
+| NestJS Rate Limiting | https://docs.nestjs.com/security/rate-limiting |
+| NestJS Versioning | https://docs.nestjs.com/techniques/versioning |
+| NestJS Testing | https://docs.nestjs.com/fundamentals/testing |
+| Prisma Error Handling | https://www.prisma.io/docs/orm/prisma-client/debugging-and-troubleshooting/handling-exceptions-and-errors |
+| Prisma + NestJS Exception Filter | https://www.prisma.io/blog/nestjs-prisma-error-handling |
 
 ---
 
