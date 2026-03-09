@@ -2,7 +2,7 @@
 
 ## Цель
 
-Периодический code review студенческого проекта MeowVault для отслеживания прогресса команды. Каждый запуск создаёт/обновляет `backend/CODE_REVIEW.md` и `frontend/CODE_REVIEW.md` с оценками, замечаниями и сравнением с предыдущим ревью.
+Периодический code review студенческого проекта MeowVault для отслеживания прогресса команды. Каждый запуск создаёт/обновляет `CodeQualityStatus/code-review-backend.md` и `CodeQualityStatus/code-review-frontend.md` с оценками, замечаниями и сравнением с предыдущим ревью.
 
 ## Как запустить ревью
 
@@ -66,10 +66,10 @@
 
 ### Шаг 4 — Обновить CODE_REVIEW.md
 
-Записать результаты в `backend/CODE_REVIEW.md` и `frontend/CODE_REVIEW.md`.
+Записать результаты в `CodeQualityStatus/code-review-backend.md` и `CodeQualityStatus/code-review-frontend.md`.
 
 При повторном ревью:
-1. Прочитать существующие CODE_REVIEW.md
+1. Прочитать существующие `CodeQualityStatus/code-review-backend.md` и `CodeQualityStatus/code-review-frontend.md`
 2. Сравнить с новыми находками
 3. Пометить исправленные замечания как `[RESOLVED]`
 4. Добавить новые замечания
