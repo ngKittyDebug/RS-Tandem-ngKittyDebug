@@ -45,16 +45,24 @@
 Обогатить замечания актуальными best practices:
 
 **Skills:**
-- `nestjs-best-practices` — 40 правил по 10 категориям (security-auth-jwt, error-handle-async-errors, arch-feature-modules и др.)
-- `angular-component` — OnPush, signal inputs/outputs, host bindings, standalone defaults
-- `angular-signals` — signal(), computed(), linkedSignal(), effect(), asReadonly(), Service State Pattern
-- `angular-routing` — functional guards (CanActivateFn), lazy loading
-- `angular-http` — HttpInterceptorFn, withInterceptors, resource()
+- `angular-component` — standalone, signal inputs/outputs, host bindings, OnPush
+- `angular-di` — inject(), injection tokens, provider configuration and scopes
+- `angular-directives` — custom attribute/structural directives, host directives
+- `angular-forms` — Signal Forms API (v21+), validation, field state management
+- `angular-http` — resource(), httpResource(), HttpClient signal-based patterns
+- `angular-migration` — AngularJS to Angular hybrid, incremental rewriting
+- `angular-routing` — functional guards, lazy loading, route parameters with signals
+- `angular-signals` — signal(), computed(), linkedSignal(), effect(), Service State Pattern
+- `angular-testing` — Vitest/Jasmine, TestBed, testing signal components and DI
+- `angular-tooling` — Angular CLI v20+, project setup, generation, build optimization
+- `nestjs-best-practices` — security-auth-jwt, error-handling, arch-feature-modules
+- `nestjs-testing-expert` — unit, integration, and e2e testing patterns with Jest
 
 **Context7 (актуальная документация):**
 - `/nestjs/docs.nestjs.com` — NestJS official docs
-- `/websites/v20_angular_dev` — Angular v20+ docs
-- `/prisma/docs` — Prisma docs
+- `/websites/v20_angular_dev` — Angular v20+ official docs
+- `/prisma/docs` — Prisma documentation
+- `/websites/transloco.ng` — Transloco i18n for Angular
 
 ### Шаг 4 — Обновить CODE_REVIEW.md
 
