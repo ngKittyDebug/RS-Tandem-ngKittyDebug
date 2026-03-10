@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { LoginDto, LoginResponse, RegisterDto } from './models/auth.interfaces';
-import { map, Observable, tap } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { API_BASE_URL, AUTH_ENDPOINT } from '../../constants/api.constants';
 import { AUTH_PATHS } from './models/auth-path.enum';
 
@@ -51,6 +51,10 @@ export class AuthService {
       })
       .pipe(
         tap((res) => this.accessToken.set(res.accessToken)),
+        catchError((err) => {
+          this.accessToken.set(null);
+          return throwError(() => err);
+        }),
         map(() => void 0),
       );
   }
