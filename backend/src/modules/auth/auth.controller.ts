@@ -13,14 +13,7 @@ import { ApiOperation, ApiTags, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { Request, Response } from 'express';
 import { Public } from 'src/decorators/public.decorator';
-
-interface AuthResponse {
-  accessToken: string;
-}
-
-interface LogoutResponse {
-  logout: boolean;
-}
+import { AuthResponse, LogoutResponse } from '../interface/auth-module-types';
 
 @ApiTags('Auth')
 @Public()

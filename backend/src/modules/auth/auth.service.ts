@@ -18,19 +18,11 @@ import { Response, Request } from 'express';
 import ms from 'ms';
 import { isDev } from 'src/utils/is-dev-util';
 import { SignOptions } from 'jsonwebtoken';
-
-interface AuthTokens {
-  accessToken: string;
-  refreshToken: string;
-}
-
-interface AuthResponse {
-  accessToken: string;
-}
-
-interface LogoutResponse {
-  logout: boolean;
-}
+import {
+  AuthResponse,
+  AuthTokens,
+  LogoutResponse,
+} from '../interface/auth-module-types';
 
 @Injectable()
 export class AuthService {
