@@ -1,6 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString, Matches } from 'class-validator';
-import { USER_PATTERN, EMAIL_PATTERN } from 'shared/regexp-pattern';
+import {
+  USER_PATTERN,
+  EMAIL_PATTERN,
+  PASSWORD_PATTERN,
+} from 'shared/regexp-pattern';
 
 export class UserDto {
   @ApiProperty({
@@ -10,8 +14,8 @@ export class UserDto {
     minLength: 3,
     maxLength: 20,
   })
-  @IsOptional()
   @IsString()
+  @IsOptional()
   @Matches(USER_PATTERN, {
     message: 'Имя должно быть от 3 до 20 символов без пробелов',
   })
@@ -23,8 +27,8 @@ export class UserDto {
     required: false,
     minLength: 5,
   })
-  @IsOptional()
   @IsString()
+  @IsOptional()
   @Matches(EMAIL_PATTERN, {
     message: 'Некорректный формат email',
   })
@@ -36,5 +40,8 @@ export class UserDto {
   })
   @IsString()
   @IsNotEmpty()
+  @Matches(PASSWORD_PATTERN, {
+    message: 'Некорректный пароль',
+  })
   password: string;
 }

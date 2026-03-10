@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Patch,
-  Req,
   HttpStatus,
   HttpCode,
 } from '@nestjs/common';
@@ -18,9 +17,10 @@ import {
 } from '@nestjs/swagger';
 
 import { applyDecorators } from '@nestjs/common';
-import { Request } from 'express';
 import { UserDto } from './dto/update-user.dto';
-import { UpdateUserPassword } from './dto/update-user-pass';
+import { UpdateUserPassword } from './dto/update-user-pass.dto';
+import { ConfirmPasswordDto } from './dto/delete-user-account.dto';
+import { User } from 'src/decorators/user.decorator';
 
 export const ApiAuth = () => applyDecorators(ApiBearerAuth());
 
@@ -54,8 +54,8 @@ export class UserController {
     description: 'Пользователь не найден',
   })
   @Get()
-  findOne(@Req() req: Request) {
-    return this.userService.findOne(req);
+  findOne(@User('id') id: string) {
+    return this.userService.findOne(id);
   }
 
   @ApiOperation({
@@ -79,7 +79,7 @@ export class UserController {
     description: 'Некорректные данные',
   })
   @ApiResponse({
-    status: 401,
+    status: 403,
     description: 'Неверный пароль',
   })
   @ApiResponse({
@@ -91,8 +91,8 @@ export class UserController {
     description: 'Пользователь не найден',
   })
   @Patch('profile')
-  updateUser(@Req() req: Request, @Body() updateUserDto: UserDto) {
-    return this.userService.updateUser(req, updateUserDto);
+  updateUser(@User('id') id: string, @Body() updateUserDto: UserDto) {
+    return this.userService.updateUser(id, updateUserDto);
   }
 
   @ApiOperation({
@@ -114,7 +114,7 @@ export class UserController {
     description: 'Некорректные данные',
   })
   @ApiResponse({
-    status: 401,
+    status: 403,
     description: 'Неверный старый пароль',
   })
   @ApiResponse({
@@ -124,10 +124,10 @@ export class UserController {
   @Patch('password')
   @HttpCode(HttpStatus.OK)
   updatePassword(
-    @Req() req: Request,
+    @User('id') id: string,
     @Body() updateUserPassword: UpdateUserPassword,
   ) {
-    return this.userService.updatePassword(req, updateUserPassword);
+    return this.userService.updatePassword(id, updateUserPassword);
   }
 
   @ApiOperation({
@@ -150,7 +150,7 @@ export class UserController {
     description: 'Некорректные данные',
   })
   @ApiResponse({
-    status: 401,
+    status: 403,
     description: 'Неверный пароль',
   })
   @ApiResponse({
@@ -158,7 +158,10 @@ export class UserController {
     description: 'Пользователь не найден',
   })
   @Delete()
-  delete(@Req() req: Request, @Body() updateUserDto: UserDto) {
-    return this.userService.deleteUser(req, updateUserDto);
+  delete(
+    @User('id') id: string,
+    @Body() confirmPasswordDto: ConfirmPasswordDto,
+  ) {
+    return this.userService.deleteUser(id, confirmPasswordDto);
   }
 }

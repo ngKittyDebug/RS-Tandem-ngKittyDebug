@@ -1,6 +1,6 @@
 import { validateSync } from 'class-validator';
 import { plainToClass } from 'class-transformer';
-import { UpdateUserPassword } from '../dto/update-user-pass';
+import { UpdateUserPassword } from '../dto/update-user-pass.dto';
 
 const createDto = (overrides: Partial<UpdateUserPassword> = {}) =>
   plainToClass(UpdateUserPassword, {
@@ -61,7 +61,7 @@ describe('UpdateUserPassword', () => {
     const dto = createDto({ newPassword: 'Short1!' });
 
     const errors = validateSync(dto);
-    expect(errors).toHaveLength(0);
+    expect(errors).toHaveLength(1);
   });
 
   it('should pass validation when newPassword is exactly 8 characters', () => {

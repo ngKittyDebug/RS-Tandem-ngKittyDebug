@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, Matches } from 'class-validator';
+import { PASSWORD_PATTERN } from 'shared/regexp-pattern';
 
 export class UpdateUserPassword {
   @ApiProperty({
@@ -8,6 +9,9 @@ export class UpdateUserPassword {
   })
   @IsString()
   @IsNotEmpty()
+  @Matches(PASSWORD_PATTERN, {
+    message: 'Некорректный пароль',
+  })
   oldPassword: string;
 
   @ApiProperty({
@@ -18,5 +22,8 @@ export class UpdateUserPassword {
   })
   @IsString()
   @IsNotEmpty()
+  @Matches(PASSWORD_PATTERN, {
+    message: 'Некорректный пароль',
+  })
   newPassword: string;
 }

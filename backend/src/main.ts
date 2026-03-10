@@ -45,7 +45,7 @@ async function bootstrap() {
 
   const port = config.getOrThrow<number>('PORT');
   const host = config.getOrThrow<number>('DEV_HOST');
-
+  app.enableShutdownHooks();
   await app.listen(port, '0.0.0.0');
   logger.log(`App start: ${host}`);
   logger.log(`Swagger start: ${host}/docs`);

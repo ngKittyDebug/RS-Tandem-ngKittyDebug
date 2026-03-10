@@ -9,28 +9,27 @@ import { Request } from 'express';
 import { PrismaService } from 'prisma/prisma.service';
 import { UserDto } from './dto/update-user.dto';
 import { compare, genSalt, hash } from 'bcrypt-ts';
-import { JwtPayload } from '../interface/jwt-payload';
 import { ConfigService } from '@nestjs/config';
-import { UpdateUserPassword } from './dto/update-user-pass';
+import { UpdateUserPassword } from './dto/update-user-pass.dto';
+import { ConfirmPasswordDto } from './dto/delete-user-account.dto';
+import { Prisma } from 'src/generated/prisma/client';
 
 @Injectable()
 export class UserService {
-  private readonly SALT: number;
+  private readonly SALT: string;
   constructor(
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
   ) {
-    this.SALT = configService.getOrThrow<number>('BCRYPT_SALT');
+    this.SALT = configService.getOrThrow<string>('BCRYPT_SALT');
   }
 
   private readonly logger = new Logger(UserService.name);
 
-  public async findOne(req: Request) {
-    const users = req.user as JwtPayload;
-
+  public async findOne(id: string) {
     return await this.prisma.user.findUnique({
       where: {
-        id: users.id,
+        id: id,
       },
       omit: {
         password: true,
@@ -41,11 +40,14 @@ export class UserService {
     });
   }
 
-  async deleteUser(req: Request, dto: UserDto) {
-    const users = req.user as JwtPayload;
+  async deleteUser(id: string, dto: ConfirmPasswordDto) {
     const user = await this.prisma.user.findUnique({
       where: {
-        id: users.id,
+        id: id,
+      },
+      select: {
+        password: true,
+        id: true,
       },
     });
 
@@ -69,12 +71,10 @@ export class UserService {
     return { success: true };
   }
 
-  async updateUser(req: Request, dto: UserDto) {
-    const users = req.user as JwtPayload;
-
+  async updateUser(id: string, dto: UserDto) {
     const user = await this.prisma.user.findUnique({
       where: {
-        id: users.id,
+        id: id,
       },
     });
 
@@ -91,50 +91,30 @@ export class UserService {
       );
     }
 
-    const isExists = await this.prisma.user.findFirst({
-      where: {
-        OR: [
-          {
-            email: {
-              equals: dto.email,
-              mode: 'insensitive',
-            },
-          },
-          {
-            username: {
-              equals: dto.username,
-              mode: 'insensitive',
-            },
-          },
-        ],
-      },
-    });
-
-    if (isExists) {
-      throw new ConflictException('Имя или Email уже заняты');
+    try {
+      return await this.prisma.user.update({
+        where: { id: user.id },
+        data: { username: dto.username, email: dto.email },
+        select: {
+          username: true,
+          email: true,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error?.code === 'P2002'
+      ) {
+        throw new ConflictException('Имя или Email уже заняты');
+      }
+      throw error;
     }
-
-    return await this.prisma.user.update({
-      where: {
-        id: user.id,
-      },
-      data: {
-        username: dto.username,
-        email: dto.email,
-      },
-      select: {
-        email: true,
-        username: true,
-      },
-    });
   }
 
-  async updatePassword(req: Request, dto: UpdateUserPassword) {
-    const users = req.user as JwtPayload;
-
+  async updatePassword(id: string, dto: UpdateUserPassword) {
     const user = await this.prisma.user.findUnique({
       where: {
-        id: users.id,
+        id: id,
       },
       select: {
         password: true,
