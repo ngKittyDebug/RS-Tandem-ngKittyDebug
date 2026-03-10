@@ -12,6 +12,7 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { ApiOperation, ApiTags, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { Request, Response } from 'express';
+import { Public } from 'src/decorators/public.decorator';
 
 interface AuthResponse {
   accessToken: string;
@@ -22,14 +23,35 @@ interface LogoutResponse {
 }
 
 @ApiTags('Auth')
+@Public()
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiOperation({ summary: 'Регистрация нового пользователя' })
+  @ApiOperation({
+    summary: 'Регистрация нового пользователя',
+    description:
+      'Создаёт новый аккаунт с выдачей JWT токена. Требуются уникальные email и username.',
+  })
   @ApiBody({ type: CreateAuthDto })
-  @ApiResponse({ status: 201, description: 'Пользователь зарегистрирован' })
-  @ApiResponse({ status: 409, description: 'Пользователь уже существует' })
+  @ApiResponse({
+    status: 201,
+    description: 'Пользователь успешно зарегистрирован',
+    schema: {
+      example: {
+        accessToken:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Некорректные данные (невалидный email, username или пароль)',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Пользователь с таким email или username уже существует',
+  })
   @Post('register')
   create(
     @Body() createAuthDto: CreateAuthDto,
@@ -38,10 +60,30 @@ export class AuthController {
     return this.authService.signIn(res, createAuthDto);
   }
 
-  @ApiOperation({ summary: 'Вход в систему' })
+  @ApiOperation({
+    summary: 'Вход в систему',
+    description:
+      'Аутентификация пользователя по email/username и паролю. Возвращает JWT токен.',
+  })
   @ApiBody({ type: LoginAuthDto })
-  @ApiResponse({ status: 200, description: 'Успешный вход' })
-  @ApiResponse({ status: 403, description: 'Неверные учётные данные' })
+  @ApiResponse({
+    status: 200,
+    description: 'Успешный вход',
+    schema: {
+      example: {
+        accessToken:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Некорректные данные',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Неверные учётные данные (email/username или пароль)',
+  })
   @Post('login')
   @HttpCode(HttpStatus.OK)
   login(
@@ -51,10 +93,29 @@ export class AuthController {
     return this.authService.login(res, loginAuthDto);
   }
 
-  @ApiOperation({ summary: 'Обновление токенов' })
-  @ApiResponse({ status: 200, description: 'Токены обновлены' })
-  @ApiResponse({ status: 401, description: 'Токен недействителен' })
-  @ApiResponse({ status: 404, description: 'Пользователь не найден' })
+  @ApiOperation({
+    summary: 'Обновление токенов',
+    description:
+      'Обновляет JWT токен с использованием refresh токена из cookies.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Токены успешно обновлены',
+    schema: {
+      example: {
+        accessToken:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Refresh токен недействителен или истёк',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Пользователь не найден',
+  })
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   refresh(
@@ -64,8 +125,23 @@ export class AuthController {
     return this.authService.refresh(req, res);
   }
 
-  @ApiOperation({ summary: 'Выход из системы' })
-  @ApiResponse({ status: 200, description: 'Успешный выход' })
+  @ApiOperation({
+    summary: 'Выход из системы',
+    description: 'Очищает refresh токен из cookies и завершает сессию.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Успешный выход',
+    schema: {
+      example: {
+        logout: true,
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Ошибка при выходе',
+  })
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   logout(@Res({ passthrough: true }) res: Response): LogoutResponse {

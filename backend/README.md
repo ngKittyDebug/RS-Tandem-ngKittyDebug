@@ -2,115 +2,78 @@
 
 Backend для приложения RS-Tandem-ngKittyDebug на NestJS с использованием Prisma ORM и PostgreSQL.
 
-## Зависимости
-
-### Предварительные требования
+## Требования
 
 - Node.js >= 20
 - npm >= 10
 - Docker и Docker Compose
 
-## Запуск приложения
+---
 
-### Настройка окружения
+## Быстрый старт
 
-Скопируйте файл `.env.example` и настройте переменные окружения:
+### 1. Установка зависимостей
+
+```bash
+npm ci
+```
+
+### 2. Настройка окружения
+
+Скопируйте `.env.example` в `.env` и настройте переменные:
 
 ```bash
 cp .env.example .env
 ```
 
-Необходимые переменные окружения:
+**Необходимые переменные:**
 
-- `DATABASE_URL` — строка подключения к PostgreSQL
-- `PORT` — порт сервера (по умолчанию 3000)
-- `HOST` — хост сервера (по умолчанию http://localhost)
-- `POSTGRES_USER` — пользователь PostgreSQL
-- `POSTGRES_PASSWORD` — пароль PostgreSQL
-- `POSTGRES_DB` — имя базы данных PostgreSQL
+| Переменная          | Описание                        | По умолчанию       |
+| ------------------- | ------------------------------- | ------------------ |
+| `DATABASE_URL`      | Строка подключения к PostgreSQL | —                  |
+| `PORT`              | Порт сервера                    | `3000`             |
+| `DEV_HOST`          | Хост сервера                    | `http://localhost` |
+| `POSTGRES_USER`     | Пользователь PostgreSQL         | —                  |
+| `POSTGRES_PASSWORD` | Пароль PostgreSQL               | —                  |
+| `POSTGRES_DB`       | Имя базы данных                 | —                  |
+| `BCRYPT_SALT`       | Соль для хеширования паролей    | `10`               |
 
-### Запуск в режиме разработки
-
-1. Установите зависимости:
-
-```bash
-npm ci
-```
-
-2. Поднимите Docker контейнер с PostgreSQL:
+### 3. Запуск PostgreSQL (Docker)
 
 ```bash
-# Запуск контейнера postgres (образ: postgres:17.5-alpine3.22)
 npm run docker:dev
 ```
 
 Контейнер будет доступен на порту `5433`.
 
-3. Сгенерируйте Prisma клиента:
+### 4. Генерация Prisma клиента
 
 ```bash
 npm run generate:dev
 ```
 
-4. Примените миграции (при необходимости):
+### 5. Применение миграций
 
 ```bash
 npm run migration:dev
 ```
 
-5. Запустите сервер в режиме разработки:
+### 6. Запуск сервера
 
 ```bash
-# Запуск с авто-перезагрузкой (режим development)
+# Режим разработки (авто-перезагрузка)
 npm run start:dev
 
-# Запуск с отладкой
+# Режим отладки
 npm run start:debug
-```
 
-### Запуск в production режиме
-
-1. Установите зависимости:
-
-```bash
-npm ci
-```
-
-2. Поднимите Docker контейнер с PostgreSQL:
-
-```bash
-npm run docker:dev
-```
-
-3. Сгенерируйте Prisma клиента:
-
-```bash
-npm run generate:dev
-```
-
-4. Примените миграции:
-
-```bash
-npm run migration:dev
-```
-
-5. Соберите проект:
-
-```bash
-npm run build
-```
-
-6. Запустите production сервер:
-
-```bash
+# Production режим
 npm run start:prod
 ```
 
+---
+
 ## Swagger (API документация)
-
-Проект использует Swagger для документирования API.
-
-### Запуск Swagger
 
 После запуска приложения Swagger доступен по адресу:
 
@@ -118,109 +81,116 @@ npm run start:prod
 http://localhost:3000/docs
 ```
 
-### Возможности
+Экспорт спецификации в YAML:
 
-- **Интерактивная документация** — просмотр всех доступных эндпоинтов
-- **Тестирование API** — возможность отправлять запросы прямо из браузера
-- **Bearer Auth** — поддержка авторизации через JWT токены
-- **Экспорт в YAML** — документация доступна по адресу `/openapi.yaml`
+```
+http://localhost:3000/openapi.yaml
+```
 
-### Примеры запросов через Swagger
-
-1. Откройте `http://localhost:3000/docs`
-2. Раздел **auth** содержит следующие эндпоинты:
-   - `POST /auth` — создание нового пользователя
-   - `PATCH /auth/:id` — обновление пользователя
-   - `DELETE /auth/:id` — удаление пользователя
-
-3. Для авторизации нажмите кнопку **Authorize** и введите JWT токен
+📖 **Подробная документация по Swagger:** [SWAGGER_WIKI.md](./SWAGGER_WIKI.md)
 
 ---
 
-## Доступные эндпоинты
+## Структура проекта
 
-### Auth Controller
-
-| Метод  | Эндпоинт    | Описание                      |
-| ------ | ----------- | ----------------------------- |
-| POST   | `/auth`     | Создание нового пользователя  |
-| PATCH  | `/auth/:id` | Обновление пользователя по ID |
-| DELETE | `/auth/:id` | Удаление пользователя по ID   |
-
-### Пример запроса для создания пользователя
-
-```bash
-POST http://localhost:3000/auth
-Content-Type: application/json
-
-{
-  "email": "test@gmail.com",
-  "password": "Alex"
-}
+```
+backend/
+├── prisma/
+│   ├── schema.prisma          # Схема базы данных
+│   └── migrations/            # Миграции Prisma
+│
+├── src/
+│   ├── modules/
+│   │   ├── auth/
+│   │   │   ├── auth.controller.ts    # Эндпоинты: /auth/register, /auth/login, /auth/refresh, /auth/logout
+│   │   │   ├── auth.service.ts       # Логика аутентификации
+│   │   │   ├── auth.module.ts
+│   │   │   └── dto/
+│   │   │       ├── create-auth.dto.ts    # DTO регистрации
+│   │   │       └── login-auth.dto.ts     # DTO входа
+│   │   │
+│   │   ├── user/
+│   │   │   ├── user.controller.ts    # Эндпоинты: /user, /user/profile, /user/password, /user (DELETE)
+│   │   │   ├── user.service.ts       # Логика управления пользователем
+│   │   │   ├── user.module.ts
+│   │   │   └── dto/
+│   │   │       ├── update-user.dto.ts    # DTO обновления профиля
+│   │   │       └── update-user-pass.ts   # DTO смены пароля
+│   │   │
+│   │   └── interface/
+│   │       └── jwt-payload.ts        # Интерфейс JWT payload
+│   │
+│   ├── guards/
+│   │   └── auth.guard.ts             # JWT Guard для защиты маршрутов
+│   │
+│   ├── decorators/
+│   │   └── public.decorator.ts       # Декоратор @Public() для открытых маршрутов
+│   │
+│   ├── utils/
+│   │
+│   ├── app.module.ts                 # Корневой модуль приложения
+│   └── main.ts                       # Точка входа приложения
+│
+├── shared/
+│   └── regexp-pattern.ts             # Паттерны валидации (email, password, username)
+│
+├── test/                             # E2E тесты
+│
+├── .env.example                      # Шаблон переменных окружения
+├── docker-compose.yml                # Конфигурация Docker
+├── nest-cli.json                     # Настройки NestJS CLI
+├── package.json                      # Зависимости и скрипты
+├── tsconfig.json                     # Настройки TypeScript
+└── README.md                         # Этот файл
 ```
 
 ---
 
-## Команды для разработки
+## Доступные скрипты
 
-### Линтинг и форматирование
+### Основные
 
-```bash
-# Форматирование кода
-npm run format
+| Команда               | Описание                                       |
+| --------------------- | ---------------------------------------------- |
+| `npm run start:dev`   | Запуск в режиме разработки (авто-перезагрузка) |
+| `npm run start:debug` | Запуск с отладчиком                            |
+| `npm run start:prod`  | Запуск production версии                       |
+| `npm run build`       | Сборка проекта                                 |
 
-# Проверка форматирования (для CI)
-npm run ci:format
+### База данных (Prisma)
 
-# Линтинг
-npm run lint
+| Команда                 | Описание                                      |
+| ----------------------- | --------------------------------------------- |
+| `npm run docker:dev`    | Запуск PostgreSQL в Docker                    |
+| `npm run generate:dev`  | Генерация Prisma клиента                      |
+| `npm run migration:dev` | Применение миграций (dev)                     |
+| `npm run migration`     | Применение миграций (prod)                    |
+| `npm run prisma-studio` | Запуск Prisma Studio (визуальный редактор БД) |
 
-# Проверка линтинга (для CI)
-npm run ci:lint
+### Проверка кода
 
-# Проверка типов
-npm run typecheck
-```
+| Команда             | Описание                                           |
+| ------------------- | -------------------------------------------------- |
+| `npm run format`    | Форматирование кода (Prettier)                     |
+| `npm run ci:format` | Проверка форматирования (для CI)                   |
+| `npm run lint`      | Линтинг кода (ESLint)                              |
+| `npm run ci:lint`   | Проверка линтинга (для CI)                         |
+| `npm run typecheck` | Проверка типов TypeScript                          |
+| `npm run check-all` | Полная проверка (format + typecheck + lint + test) |
 
 ### Тесты
 
-```bash
-# Запуск тестов
-npm run test
-
-# Запуск тестов в режиме watch
-npm run test:watch
-
-# Покрытие тестами
-npm run test:cov
-
-# E2E тесты
-npm run test:e2e
-```
-
-### Проверка всех (ci:format, typecheck, ci:lint, test)
-
-```bash
-npm run check-all
-```
-
-### Prisma команды
-
-```bash
-# Применение миграций (dev режим)
-npm run migration:dev
-
-# Применение миграций
-npm run migration
-
-# Push схемы БД (dev режим)
-npm run db:push:dev
-
-# Push схемы БД
-npm run db:push
-
-# Генерация Prisma клиента (dev режим)
-npm run generate:dev
-```
+| Команда              | Описание             |
+| -------------------- | -------------------- |
+| `npm run test`       | Запуск тестов        |
+| `npm run test:watch` | Тесты в режиме watch |
+| `npm run test:cov`   | Тесты с покрытием    |
+| `npm run test:e2e`   | E2E тесты            |
 
 ---
+
+## Полезные ссылки
+
+- [Документация по Swagger](./SWAGGER_WIKI.md) — подробное руководство по использованию Swagger UI
+- [NestJS Documentation](https://docs.nestjs.com/)
+- [Prisma Documentation](https://www.prisma.io/docs/)

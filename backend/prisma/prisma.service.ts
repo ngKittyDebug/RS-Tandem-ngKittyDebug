@@ -33,7 +33,7 @@ export class PrismaService
 
       this.logger.log(`Is connected time: ${sec}`);
     } catch (error) {
-      this.logger.log(`Fail to connect ${error}`);
+      this.logger.error(`Fail to connect ${error}`);
       throw error;
     }
   }
@@ -42,7 +42,7 @@ export class PrismaService
     try {
       await this.$disconnect();
     } catch (error) {
-      this.logger.log(`Fail to disconnect ${error}`);
+      this.logger.error(`Fail to disconnect ${error}`);
       throw error;
     }
   }
