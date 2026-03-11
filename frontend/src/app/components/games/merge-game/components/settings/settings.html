@@ -19,8 +19,8 @@
             tuiButton
             type="button"
             size="s"
-            [appearance]="gameMode() === mode ? 'primary' : 'outline'"
-            (click)="switchGameMode(mode)"
+            [appearance]="gameService.gameMode() === mode ? 'primary' : 'outline'"
+            (click)="gameService.setGameMode(mode)"
           >
             {{ t('mergeGame.gameSetup.mode.options.' + mode) }}
           </button>
@@ -28,7 +28,7 @@
       </div>
     </div>
 
-    @if (gameMode() === 'yes') {
+    @if (gameService.gameMode() === 'yes') {
       <div class="settings__options">
         <p>{{ t('mergeGame.gameSetup.personality.question') }}</p>
 
@@ -38,8 +38,8 @@
               tuiButton
               type="button"
               size="s"
-              [appearance]="personalityMode() === mode ? 'primary' : 'outline'"
-              (click)="switchPersonalityMode(mode)"
+              [appearance]="gameService.personalityMode() === mode ? 'primary' : 'outline'"
+              (click)="gameService.setPersonalityMode(mode)"
             >
               {{ t('mergeGame.gameSetup.personality.options.' + mode) }}
             </button>
@@ -59,8 +59,8 @@
             tuiButton
             type="button"
             size="s"
-            [appearance]="questionMode() === mode ? 'primary' : 'outline'"
-            (click)="switchQuestionMode(mode)"
+            [appearance]="gameService.questionMode() === mode ? 'primary' : 'outline'"
+            (click)="gameService.setQuestionMode(mode)"
           >
             {{ t('mergeGame.gameSetup.questions.options.' + mode) }}
           </button>
@@ -69,7 +69,14 @@
     </div>
   </div>
 
-  <button tuiButton appearance="gradient" type="button" size="m" iconStart="@tui.cat">
+  <button
+    tuiButton
+    appearance="gradient"
+    type="button"
+    size="m"
+    iconStart="@tui.cat"
+    (click)="onStart()"
+  >
     {{ t('mergeGame.navigation.start') }}
   </button>
 </div>

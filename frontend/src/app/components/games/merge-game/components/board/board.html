@@ -1,0 +1,26 @@
+<div class="game-grid">
+  @for (row of rows(); track $index; let rowIndex = $index) {
+    @if (row.completed) {
+      <div class="completed-row">
+        <span class="completed-theme">{{ row.theme }}</span>
+      </div>
+    } @else {
+      @for (slot of row.slots; track $index; let slotIndex = $index) {
+        <div
+          class="card-slot"
+          cdkDropList
+          [id]="getSlotId(rowIndex, slotIndex)"
+          [cdkDropListData]="slot"
+          [cdkDropListConnectedTo]="allSlotIds"
+          (cdkDropListDropped)="onDrop($event, rowIndex, slotIndex)"
+        >
+          @if (slot) {
+            <div class="visual-card" cdkDrag [cdkDragData]="slot">
+              <span>{{ slot.word }}</span>
+            </div>
+          }
+        </div>
+      }
+    }
+  }
+</div>

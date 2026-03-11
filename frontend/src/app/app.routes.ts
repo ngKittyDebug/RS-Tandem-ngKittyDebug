@@ -57,6 +57,13 @@ export const routes: Routes = [
           import('./components/games/merge-game/components/theory/theory').then((m) => m.Theory),
         providers: [provideTranslocoScope('merge-game')],
       },
+
+      {
+        path: 'board',
+        loadComponent: () =>
+          import('./components/games/merge-game/components/board/board').then((m) => m.Board),
+        providers: [provideTranslocoScope('merge-game')],
+      },
     ],
   },
   {

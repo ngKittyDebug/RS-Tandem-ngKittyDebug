@@ -1,9 +1,12 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { TuiButton, TuiIcon, TuiSurface } from '@taiga-ui/core';
 import { TuiCardLarge, TuiHeader } from '@taiga-ui/layout';
 import { GameMode, PersonalityMode, QuestionMode } from '../../models/settings.type';
+import { GameService } from '../../services/game-service';
+import { Router } from '@angular/router';
+import { BoardService } from '../../services/board-service';
 
 @Component({
   selector: 'app-settings',
@@ -19,24 +22,22 @@ import { GameMode, PersonalityMode, QuestionMode } from '../../models/settings.t
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
 })
-export class Settings {
-  protected gameMode = signal<GameMode>('no');
-  protected personalityMode = signal<PersonalityMode>('neutral');
-  protected questionMode = signal<QuestionMode>(1);
+export class Settings implements OnInit {
+  private router = inject(Router);
+  private boardService = inject(BoardService);
+  protected readonly gameService = inject(GameService);
 
   protected readonly gameModes: GameMode[] = ['yes', 'no'];
   protected readonly personalityModes: PersonalityMode[] = ['neutral', 'kind', 'strict'];
   protected readonly questionModes: QuestionMode[] = [1, 2, 3, 4, 5];
 
-  protected switchGameMode(mode: GameMode): void {
-    this.gameMode.set(mode);
+  public ngOnInit(): void {
+    this.gameService.reset();
   }
 
-  protected switchPersonalityMode(mode: PersonalityMode): void {
-    this.personalityMode.set(mode);
-  }
-
-  protected switchQuestionMode(mode: QuestionMode): void {
-    this.questionMode.set(mode);
+  protected onStart(): void {
+    this.boardService.initBoard();
+    this.gameService.setStatus('playing');
+    this.router.navigate(['/merge-game/board']);
   }
 }

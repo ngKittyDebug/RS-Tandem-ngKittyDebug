@@ -14,3 +14,14 @@ export interface Question {
   answer: string;
   keywords: string[];
 }
+
+export interface WordCard {
+  word: string;
+  groupId: number;
+}
+
+export interface Row {
+  slots: (WordCard | null)[];
+  completed: boolean;
+  theme?: string;
+}
