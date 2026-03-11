@@ -1,0 +1,10 @@
+{
+  "newGameBtn": "новая игра",
+  "startBtn": "старт",
+  "rulesBtn": "правила",
+  "nextRoundBtn": "следующий раунд",
+  "codesLabels": "Код (1-4):",
+  "hintsLabels": "Подсказки:",
+  "checkBtn": "Проверить",
+  "decrypto": "Декодер работает"
+}

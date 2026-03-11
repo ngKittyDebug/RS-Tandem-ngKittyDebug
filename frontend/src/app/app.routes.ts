@@ -8,6 +8,10 @@ export enum AppRoute {
   MAIN = '',
 }
 
+export enum GameRoute {
+  DECRYPTO = 'decrypto',
+}
+
 export const getRoutePath = (route: AppRoute): `/${AppRoute}` => {
   return `/${route}`;
 };
@@ -32,6 +36,11 @@ export const routes: Routes = [
     path: AppRoute.USER_PROFILE,
     loadComponent: () => import('./pages/user-profile/user-profile').then((m) => m.UserProfile),
     providers: [provideTranslocoScope('user-profile')],
+  },
+  {
+    path: GameRoute.DECRYPTO,
+    loadComponent: () => import('./components/games/decrypto/decrypto').then((m) => m.Decrypto),
+    providers: [provideTranslocoScope('decrypto')],
   },
   {
     path: '**',

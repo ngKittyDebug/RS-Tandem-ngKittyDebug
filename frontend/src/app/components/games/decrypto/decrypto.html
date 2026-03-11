@@ -1,0 +1,84 @@
+<div class="decrypto" *transloco="let t">
+  <div class="decrypto__wrapper">
+    <div class="decrypto__controls">
+      <div class="decrypto__nav">
+        <button tuiButton type="button" size="s" class="decrypto__nav_button">
+          {{ t('decrypto.newGameBtn') }}
+        </button>
+        <button tuiButton type="button" size="s" class="decrypto__nav_button">
+          {{ t('decrypto.startBtn') }}
+        </button>
+        <button tuiButton type="button" size="s" class="decrypto__nav_button">
+          {{ t('decrypto.nextRoundBtn') }}
+        </button>
+        <button tuiButton type="button" size="s" class="decrypto__nav_button">
+          {{ t('decrypto.rulesBtn') }}
+        </button>
+      </div>
+      <div class="decrypto__inf"></div>
+    </div>
+    <div class="decrypto__field">
+      <div class="decrypto__cards">
+        @for (gameCard of gameCards; track $index) {
+          <div class="decrypto__card">
+            <p class="decrypto__card_number">{{ $index + 1 }}</p>
+            <p class="decrypto__card_text">{{ gameCard.cardName }}</p>
+          </div>
+        }
+      </div>
+      <form class="decrypto__form" [formGroup]="decryptoForm">
+        <p class="decrypto__form_codes_label">{{ t('decrypto.codesLabels') }}</p>
+        <div class="decrypto__form_codes_inputs">
+          <tui-textfield>
+            <input
+              class="decrypto__form_codes_input"
+              formControlName="code1"
+              tuiInputNumber
+              id="code1"
+              [max]="4"
+              [min]="1"
+              [step]="1"
+            />
+          </tui-textfield>
+          <tui-textfield>
+            <input
+              class="decrypto__form_codes_input"
+              formControlName="code2"
+              tuiInputNumber
+              id="code2"
+              [max]="4"
+              [min]="1"
+              [step]="1"
+            />
+          </tui-textfield>
+          <tui-textfield>
+            <input
+              class="decrypto__form_codes_input"
+              formControlName="code3"
+              tuiInputNumber
+              id="code3"
+              [max]="4"
+              [min]="1"
+              [step]="1"
+            />
+          </tui-textfield>
+        </div>
+        <p class="decrypto__form_hints_label">{{ t('decrypto.hintsLabels') }}</p>
+        <div class="decrypto__form_hints">
+          <tui-textfield>
+            <input [readOnly]="true" tuiTextfield formControlName="hint1" id="hint1" />
+          </tui-textfield>
+          <tui-textfield>
+            <input [readOnly]="true" tuiTextfield formControlName="hint2" id="hint2" />
+          </tui-textfield>
+          <tui-textfield>
+            <input [readOnly]="true" tuiTextfield formControlName="hint3" id="hint3" />
+          </tui-textfield>
+        </div>
+        <button tuiButton appearance="gradient" class="login__button" type="button">
+          {{ t('decrypto.checkBtn') }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
