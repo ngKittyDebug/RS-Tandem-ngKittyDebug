@@ -1,3 +1,7 @@
-<tui-root>
-  <router-outlet />
+<tui-root [attr.tuiTheme]="themeService.theme()">
+  <app-header></app-header>
+  <main class="main">
+    <router-outlet />
+  </main>
+  <app-footer></app-footer>
 </tui-root>

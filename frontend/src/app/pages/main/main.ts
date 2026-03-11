@@ -1,4 +1,4 @@
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TuiTitle } from '@taiga-ui/core';
 import { TuiLink } from '@taiga-ui/core';
@@ -7,17 +7,18 @@ import { TuiHeader } from '@taiga-ui/layout';
 import { TuiBreakpointService, TuiButton, type TuiSizeL } from '@taiga-ui/core';
 import { TuiBlockStatus } from '@taiga-ui/layout';
 import { map, type Observable } from 'rxjs';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   standalone: true,
   selector: 'app-main',
   imports: [
+    TranslocoDirective,
     TuiHeader,
     TuiTitle,
     TuiElasticContainer,
     TuiLink,
     AsyncPipe,
-    NgIf,
     TuiBlockStatus,
     TuiButton,
   ],

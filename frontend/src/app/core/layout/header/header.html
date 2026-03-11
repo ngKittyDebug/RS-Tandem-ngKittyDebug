@@ -1,0 +1,30 @@
+<header *transloco="let t" class="header" tuiHeader tuiAppearance="secondary-grayscale">
+  <div class="header__wrapper">
+    <a class="logo" routerLink="/">
+      <img class="logo_image" src="assets/images/logo.svg" alt="logo" />
+    </a>
+    <div class="services">
+      <app-theme-switcher></app-theme-switcher>
+      <app-language-switcher></app-language-switcher>
+    </div>
+    <div class="user_bar">
+      <tui-avatar
+        size="s"
+        tuiAvatarOutline="var(--tui-background-accent-2)"
+        class="user_bar__avatar"
+        (click)="avatarClick()"
+      >
+        <img alt="cat-1" src="assets/images/cat-1.png" />
+      </tui-avatar>
+      <button
+        tuiButton
+        appearance="gradient"
+        class="user_bar__logout_button"
+        type="button"
+        (click)="logOutClick()"
+      >
+        {{ t('log-out') }}
+      </button>
+    </div>
+  </div>
+</header>

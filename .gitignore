@@ -22,6 +22,7 @@ yarn-error.log
 
 # Visual Studio Code
 /**/.vscode/*
+.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -44,3 +45,14 @@ __screenshots__/
 Thumbs.db
 
 /**/.env
+
+backend/src/generated
+backend/dist
+backend/coverage
+.env
+
+# Claude Code
+.agents/skills/
+.claude/
+CLAUDE.md
+skills-lock.json

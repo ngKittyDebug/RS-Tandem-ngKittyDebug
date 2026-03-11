@@ -3,6 +3,10 @@
   --tui-background-base: oklch(98.4% 0.003 247.858);
   --tui-background-base-alt: #ffffff;
 
+  --tui-status-positive-pale: oklch(0.696 0.17 162.48 / 35%);
+  --tui-status-negative-pale: oklch(0.637 0.237 25.331 / 35%);
+  --tui-status-warning-pale: oklch(0.769 0.188 70.08 / 35%);
+
   --tui-text-primary: oklch(44.6% 0.043 257.281);
 
   --tui-border-normal: oklch(92.9% 0.013 255.508);
@@ -12,54 +16,68 @@
   --accent-3: #ec4899;
 }
 
+:root,
+[tuiTheme='dark'] tui-alert {
+  --tui-text-primary: #ffffff;
+}
+
 [tuiTheme='dark'] {
   --tui-background-base: oklch(20.8% 0.042 265.755);
   --tui-background-base-alt: oklch(12.9% 0.042 264.695);
 
+  --tui-status-positive-pale: oklch(0.696 0.17 162.48 / 75%);
+  --tui-status-negative-pale: oklch(0.637 0.237 25.331 / 75%);
+  --tui-status-warning-pale: oklch(0.769 0.188 70.08 / 75%);
+
   --tui-text-primary: oklch(70.4% 0.04 256.788);
 
   --tui-border-normal: oklch(44.6% 0.043 257.281);
+
+  --tui-background-elevation-2: oklch(27.9% 0.041 260.031);
 
   --accent-1: #8b5cf6;
   --accent-2: #14b8a6;
   --accent-3: #ec4899;
 }
 
-.gradient-btn {
+tui-notification[data-size='m']:before,
+[tuiNotification][data-size='m']:before {
+  top: calc(50% - 0.625rem);
+}
+
+button[tuiButton][data-appearance='gradient'] {
   background: linear-gradient(90deg, var(--accent-1) 0%, var(--accent-3) 100%);
-
   color: #ffffff;
-  font-family: var(--tui-font-text);
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
 
-  padding: 0 1.25rem;
-  block-size: 3.5rem;
-  border-radius: var(--tui-radius-l);
-  box-shadow: 0 6px 18px rgba(123, 92, 245, 0.35);
-  border: none;
+  box-shadow: 0 6px 18px color-mix(in oklch, var(--accent-1) 35%, transparent);
 
   transition: all 0.2s ease;
 
   @media (hover: hover) {
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 22px rgba(123, 92, 245, 0.45);
+      box-shadow: 0 8px 22px color-mix(in oklch, var(--accent-1) 45%, transparent);
       filter: brightness(1.05);
     }
   }
 
   &:active {
     transform: translateY(0);
-    box-shadow: 0 4px 12px rgba(123, 92, 245, 0.3);
+    box-shadow: 0 4px 12px color-mix(in oklch, var(--accent-1) 30%, transparent);
     filter: brightness(0.95);
   }
 
   &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+    filter: none;
     box-shadow: none;
     transform: none;
+    cursor: not-allowed;
   }
+}
+
+.t-root-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  height: 100%;
 }
