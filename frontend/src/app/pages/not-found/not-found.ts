@@ -2,14 +2,15 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { TuiLink } from '@taiga-ui/core';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-not-found',
-  imports: [TuiLink],
-  standalone: true,
+  imports: [TranslocoDirective, TuiLink],
   templateUrl: './not-found.html',
   styleUrls: ['./not-found.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class NotFound {
   private readonly router = inject(Router);

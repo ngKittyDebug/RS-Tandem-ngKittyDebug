@@ -6,9 +6,11 @@
     <button
       iconStart="@tui.settings"
       tuiLink
+      title="GO BACK HOME"
       type="button"
       (click)="goHome()"
       [textContent]="'GO BACK HOME'"
     ></button>
   </p>
 </div>
+<p *transloco="let t">{{ t('notFound.404Works') }}</p>

@@ -1,0 +1,66 @@
+name: CI
+on: pull_request
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: read
+
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+
+  backend:
+    needs: changes
+    if: ${{ needs.changes.outputs.backend == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+    steps:
+      - name: Install Dependencies
+        uses: actions/checkout@v5
+      - run: npm ci
+      - name: Prisma generate
+        run: npm run generate:dev
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Check Eslint
+        run: npm run ci:lint
+      - name: Check Prettier
+        run: npm run ci:format
+      - name: Tests
+        run: npm run test
+      - name: Build
+        run: npm run build
+
+  frontend:
+    needs: changes
+    if: ${{ needs.changes.outputs.frontend == 'true' }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend
+    steps:
+      - uses: actions/checkout@v5
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Check Eslint
+        run: npm run lint
+      - name: Check Prettier
+        run: npm run ci:format
+      - name: Tests
+        run: npm run test
+      - name: Build
+        run: npm run build
