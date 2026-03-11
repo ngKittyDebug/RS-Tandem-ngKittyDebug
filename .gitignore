@@ -50,3 +50,9 @@ backend/src/generated
 backend/dist
 backend/coverage
 .env
+
+# Claude Code
+.agents/skills/
+.claude/
+CLAUDE.md
+skills-lock.json
