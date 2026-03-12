@@ -6,14 +6,25 @@ import {
   HttpCode,
   HttpStatus,
   Req,
+  UseGuards,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { ApiOperation, ApiTags, ApiResponse, ApiBody } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiTags,
+  ApiResponse,
+  ApiBody,
+  ApiExcludeEndpoint,
+} from '@nestjs/swagger';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { Request, Response } from 'express';
 import { Public } from 'src/decorators/public.decorator';
 import { AuthResponse, LogoutResponse } from '../interface/auth-module-types';
+import { AuthGuard } from '@nestjs/passport';
+import { Github } from 'src/decorators/github.decorator';
+import { Profile } from 'passport-github2';
 
 @ApiTags('Auth')
 @Public()
@@ -50,7 +61,7 @@ export class AuthController {
     @Body() createAuthDto: CreateAuthDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<AuthResponse> {
-    return this.authService.signIn(res, createAuthDto);
+    return this.authService.registration(res, createAuthDto);
   }
 
   @ApiOperation({
@@ -139,5 +150,21 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   logout(@Res({ passthrough: true }) res: Response): LogoutResponse {
     return this.authService.logout(res);
+  }
+
+  @ApiExcludeEndpoint()
+  @Get('github')
+  @UseGuards(AuthGuard('github'))
+  async githubLogin() {}
+
+  @ApiExcludeEndpoint()
+  @Get('github/callback')
+  @UseGuards(AuthGuard('github'))
+  async githubCallback(
+    @Github() profile: Profile,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.authService.githubOauth(res, profile);
+    this.authService.redirect(res);
   }
 }

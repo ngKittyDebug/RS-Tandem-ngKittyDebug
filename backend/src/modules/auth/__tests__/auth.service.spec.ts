@@ -136,7 +136,7 @@ describe('AuthService', () => {
       prismaMock.user.findFirst.mockResolvedValue(mockUser as never);
 
       await expect(
-        service.signIn(responseMock, mockCreateAuthDto),
+        service.registration(responseMock, mockCreateAuthDto),
       ).rejects.toThrow(ConflictException);
 
       expect(prismaMock.user.create).not.toHaveBeenCalled();
@@ -150,7 +150,10 @@ describe('AuthService', () => {
         mockUserWithoutPassword as never,
       );
 
-      const result = await service.signIn(responseMock, mockCreateAuthDto);
+      const result = await service.registration(
+        responseMock,
+        mockCreateAuthDto,
+      );
 
       expect(prismaMock.user.create).toHaveBeenCalledWith({
         data: {

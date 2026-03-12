@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { User } from 'src/generated/prisma/browser';
+import { Provider, User } from 'src/generated/prisma/browser';
 import { hash, genSalt, compare } from 'bcrypt-ts';
 import { ConfigService } from '@nestjs/config';
 import { LoginAuthDto } from './dto/login-auth.dto';
@@ -23,12 +23,14 @@ import {
   AuthTokens,
   LogoutResponse,
 } from '../interface/auth-module-types';
+import { Profile } from 'passport';
 
 @Injectable()
 export class AuthService {
   private readonly SALT: number;
   private readonly JWT_ACCESS_TOKEN_EXPIRE_TIME: string;
   private readonly JWT_REFRESH_TOKEN_EXPIRE_TIME: string;
+  private readonly REDIRECT_FRONTEND: string;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -43,11 +45,13 @@ export class AuthService {
     this.JWT_REFRESH_TOKEN_EXPIRE_TIME = configService.getOrThrow<string>(
       'JWT_REFRESH_TOKEN_EXPIRE_TIME',
     );
+    this.REDIRECT_FRONTEND =
+      configService.getOrThrow<string>('REDIRECT_FRONTEND');
   }
 
   private readonly logger = new Logger(AuthService.name);
 
-  async signIn(res: Response, dto: CreateAuthDto): Promise<AuthResponse> {
+  async registration(res: Response, dto: CreateAuthDto): Promise<AuthResponse> {
     const existingUser = await this.findOne(dto);
 
     if (existingUser) {
@@ -75,6 +79,32 @@ export class AuthService {
     };
 
     this.logger.log(`Пользователь с ${user.id} создан`);
+
+    return this.auth(res, payload);
+  }
+
+  async githubOauth(res: Response, profile: Profile): Promise<AuthResponse> {
+    const user = await this.prisma.user.upsert({
+      where: { providerId: profile.id },
+      update: {
+        username: profile.username,
+        email: profile.displayName,
+      },
+      create: {
+        providerId: profile.id,
+        username: profile.username ?? 'null',
+        email: profile.emails?.[0]?.value ?? 'null',
+        provider: Provider.Github,
+        avatar: profile.photos?.[0].value ?? 'null',
+      },
+    });
+
+    const payload: JwtPayload = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      provider: Provider.Github,
+    };
 
     return this.auth(res, payload);
   }
@@ -196,5 +226,9 @@ export class AuthService {
     this.sendCookie(res, 'refreshToken', new Date(0));
 
     return { logout: true };
+  }
+
+  redirect(res: Response) {
+    res.redirect(this.REDIRECT_FRONTEND);
   }
 }

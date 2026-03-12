@@ -21,6 +21,7 @@ import { UserDto } from './dto/update-user.dto';
 import { UpdateUserPassword } from './dto/update-user-pass.dto';
 import { ConfirmPasswordDto } from './dto/delete-user-account.dto';
 import { User } from 'src/decorators/user.decorator';
+import { AvatarUpdateDto } from './dto/update-avater.dto';
 
 export const ApiAuth = () => applyDecorators(ApiBearerAuth());
 
@@ -55,7 +56,7 @@ export class UserController {
   })
   @Get()
   findOne(@User('id') id: string) {
-    return this.userService.findOne(id);
+    return this.userService.gtUserProfile(id);
   }
 
   @ApiOperation({
@@ -93,6 +94,14 @@ export class UserController {
   @Patch('profile')
   updateUser(@User('id') id: string, @Body() updateUserDto: UserDto) {
     return this.userService.updateUser(id, updateUserDto);
+  }
+
+  @Patch('avatar')
+  updateUserAvatar(
+    @User('id') id: string,
+    @Body() avatarUpdateDto: AvatarUpdateDto,
+  ) {
+    return this.userService.updateUserAvatar(id, avatarUpdateDto);
   }
 
   @ApiOperation({
