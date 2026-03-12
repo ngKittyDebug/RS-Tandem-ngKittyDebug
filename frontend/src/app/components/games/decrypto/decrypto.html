@@ -2,16 +2,31 @@
   <div class="decrypto__wrapper">
     <div class="decrypto__controls">
       <div class="decrypto__nav">
-        <button tuiButton type="button" size="s" class="decrypto__nav_button">
+        <button 
+          tuiButton 
+          type="button" 
+          size="s" 
+          class="decrypto__nav_button"
+          (click)="newGame()"
+        >
           {{ t('decrypto.newGameBtn') }}
         </button>
-        <button tuiButton type="button" size="s" class="decrypto__nav_button">
+        <button 
+          tuiButton 
+          type="button" 
+          size="s" 
+          class="decrypto__nav_button" 
+          (click)="startGame()"
+        >
           {{ t('decrypto.startBtn') }}
         </button>
-        <button tuiButton type="button" size="s" class="decrypto__nav_button">
-          {{ t('decrypto.nextRoundBtn') }}
-        </button>
-        <button tuiButton type="button" size="s" class="decrypto__nav_button">
+        <button 
+          tuiButton 
+          type="button" 
+          size="s" 
+          class="decrypto__nav_button"
+          (click)="openRules()"
+        >
           {{ t('decrypto.rulesBtn') }}
         </button>
       </div>
@@ -19,7 +34,7 @@
     </div>
     <div class="decrypto__field">
       <div class="decrypto__cards">
-        @for (gameCard of gameCards; track $index) {
+        @for (gameCard of gameService.gameCards; track $index) {
           <div class="decrypto__card">
             <p class="decrypto__card_number">{{ $index + 1 }}</p>
             <p class="decrypto__card_text">{{ gameCard.cardName }}</p>
@@ -75,7 +90,13 @@
             <input [readOnly]="true" tuiTextfield formControlName="hint3" id="hint3" />
           </tui-textfield>
         </div>
-        <button tuiButton size="m" appearance="gradient" type="button" class="decrypto__form_check_button">
+        <button
+          tuiButton
+          size="m"
+          appearance="gradient"
+          type="button"
+          class="decrypto__form_check_button"
+        >
           {{ t('decrypto.checkBtn') }}
         </button>
       </form>

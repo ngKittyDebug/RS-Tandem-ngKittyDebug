@@ -1,11 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { TuiButton, TuiTextfield } from '@taiga-ui/core';
-import { GameCards } from './models/decrypto-cards.constants';
-import { Card } from './models/decrypto-card.interface';
 import { TuiInputNumber } from '@taiga-ui/kit';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DecryptoForm } from './models/decrypto-form.interface';
+import { DecryptoGameService } from './services/decrypto-game-service';
 
 @Component({
   selector: 'app-decrypto',
@@ -14,9 +13,23 @@ import { DecryptoForm } from './models/decrypto-form.interface';
   styleUrl: './decrypto.scss',
 })
 export class Decrypto {
-  public gameCards: Card[] = GameCards.slice(0, 4);
-
+  protected readonly gameService = inject(DecryptoGameService);
   private fb = inject(FormBuilder);
+
+  protected startGame(): void {
+    console.log('start game');
+    this.gameService.generateCards();
+  }
+
+  protected newGame(): void {
+    console.log('new game');
+    this.gameService.generateWrightCode();
+    this.gameService.resetGameCards();
+  }
+
+  protected openRules(): void {
+    console.log('rules');
+  }
 
   public readonly decryptoForm = this.fb.nonNullable.group<DecryptoForm>({
     code1: this.fb.nonNullable.control(null, [Validators.required]),

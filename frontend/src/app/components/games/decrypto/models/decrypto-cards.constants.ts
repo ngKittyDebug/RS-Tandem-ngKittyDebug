@@ -1,4 +1,35 @@
-import { Card } from './decrypto-card.interface';
+import { Card, DecryptoCodes } from './decrypto-card.interface';
+
+export const StartGameCards: Card[] = [
+  {
+    id: '1',
+    cardName: '...',
+    cardHints: ['...', '...', '...'],
+    cardDescriptionEn: '...',
+    cardDescriptionRu: '...',
+  },
+  {
+    id: '1',
+    cardName: '...',
+    cardHints: ['...', '...', '...'],
+    cardDescriptionEn: '...',
+    cardDescriptionRu: '...',
+  },
+  {
+    id: '1',
+    cardName: '...',
+    cardHints: ['...', '...', '...'],
+    cardDescriptionEn: '...',
+    cardDescriptionRu: '...',
+  },
+  {
+    id: '1',
+    cardName: '...',
+    cardHints: ['...', '...', '...'],
+    cardDescriptionEn: '...',
+    cardDescriptionRu: '...',
+  },
+];
 
 export const GameCards: Card[] = [
   {
@@ -93,7 +124,7 @@ export const GameCards: Card[] = [
   },
 ];
 
-export const DECRYPTO_CODES = {
+export const DECRYPTO_CODES: DecryptoCodes = {
   1: [1, 2, 3],
   2: [1, 2, 4],
   3: [1, 3, 2],

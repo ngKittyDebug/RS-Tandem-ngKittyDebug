@@ -5,3 +5,5 @@ export interface Card {
   cardDescriptionEn: string;
   cardDescriptionRu: string;
 }
+
+export type DecryptoCodes = Record<number, number[]>;
