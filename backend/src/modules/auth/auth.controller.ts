@@ -17,6 +17,8 @@ import {
   ApiResponse,
   ApiBody,
   ApiExcludeEndpoint,
+  ApiOkResponse,
+  ApiCreatedResponse,
 } from '@nestjs/swagger';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { Request, Response } from 'express';
@@ -38,8 +40,7 @@ export class AuthController {
       'Создаёт новый аккаунт с выдачей JWT токена. Требуются уникальные email и username.',
   })
   @ApiBody({ type: CreateAuthDto })
-  @ApiResponse({
-    status: 201,
+  @ApiCreatedResponse({
     description: 'Пользователь успешно зарегистрирован',
     schema: {
       example: {
@@ -70,8 +71,7 @@ export class AuthController {
       'Аутентификация пользователя по email/username и паролю. Возвращает JWT токен.',
   })
   @ApiBody({ type: LoginAuthDto })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Успешный вход',
     schema: {
       example: {
@@ -100,10 +100,10 @@ export class AuthController {
   @ApiOperation({
     summary: 'Обновление токенов',
     description:
-      'Обновляет JWT токен с использованием refresh токена из cookies.',
+      'Обновляет JWT токен с использованием refresh токена из cookies.\n\n' +
+      '**Требует:** Cookie с именем `refreshToken`',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Токены успешно обновлены',
     schema: {
       example: {
@@ -133,18 +133,13 @@ export class AuthController {
     summary: 'Выход из системы',
     description: 'Очищает refresh токен из cookies и завершает сессию.',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Успешный выход',
     schema: {
       example: {
         logout: true,
       },
     },
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Ошибка при выходе',
   })
   @Post('logout')
   @HttpCode(HttpStatus.OK)

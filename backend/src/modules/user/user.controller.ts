@@ -14,6 +14,7 @@ import {
   ApiResponse,
   ApiBody,
   ApiTags,
+  ApiOkResponse,
 } from '@nestjs/swagger';
 
 import { applyDecorators } from '@nestjs/common';
@@ -35,13 +36,13 @@ export class UserController {
     summary: 'Получение данных пользователя',
     description: 'Возвращает информацию о текущем авторизованном пользователе.',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Данные пользователя',
     schema: {
       example: {
         email: 'user@example.com',
         username: 'john_doe',
+        avatar: 'https://example.com/avatar.jpg',
         createdAt: '2024-01-01T00:00:00.000Z',
       },
     },
@@ -65,8 +66,7 @@ export class UserController {
       'Обновляет username и/или email текущего пользователя. Требует подтверждения пароля.',
   })
   @ApiBody({ type: UserDto })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Профиль успешно обновлён',
     schema: {
       example: {
@@ -96,6 +96,28 @@ export class UserController {
     return this.userService.updateUser(id, updateUserDto);
   }
 
+  @ApiOperation({
+    summary: 'Обновление аватара',
+    description:
+      'Обновляет URL аватара текущего пользователя. Требует валидный URL изображения.',
+  })
+  @ApiBody({ type: AvatarUpdateDto })
+  @ApiOkResponse({
+    description: 'Аватар успешно обновлён',
+    schema: {
+      example: {
+        avatar: 'https://example.com/avatars/user123.jpg',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Некорректный URL аватара',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Пользователь не найден',
+  })
   @Patch('avatar')
   updateUserAvatar(
     @User('id') id: string,
@@ -109,8 +131,7 @@ export class UserController {
     description: 'Изменяет пароль текущего пользователя.',
   })
   @ApiBody({ type: UpdateUserPassword })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Пароль успешно изменён',
     schema: {
       example: {
@@ -144,9 +165,8 @@ export class UserController {
     description:
       'Безвозвратно удаляет аккаунт текущего пользователя и все связанные данные.',
   })
-  @ApiBody({ type: UserDto })
-  @ApiResponse({
-    status: 200,
+  @ApiBody({ type: ConfirmPasswordDto })
+  @ApiOkResponse({
     description: 'Аккаунт успешно удалён',
     schema: {
       example: {

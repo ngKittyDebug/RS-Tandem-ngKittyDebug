@@ -12,7 +12,7 @@ import { compare, genSalt, hash } from 'bcrypt-ts';
 import { ConfigService } from '@nestjs/config';
 import { UpdateUserPassword } from './dto/update-user-pass.dto';
 import { ConfirmPasswordDto } from './dto/delete-user-account.dto';
-import { Prisma, Provider } from 'src/generated/prisma/client';
+import { Provider, Prisma } from 'src/generated/prisma/client';
 import { AvatarUpdateDto } from './dto/update-avater.dto';
 
 @Injectable()
@@ -168,22 +168,12 @@ export class UserService {
       throw new NotFoundException('Пользователь не найден');
     }
 
-    try {
-      return await this.prisma.user.update({
-        where: { id: user.id },
-        data: { avatar: dto.avatar },
-        select: {
-          avatar: true,
-        },
-      });
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error?.code === 'P2002'
-      ) {
-        throw new ConflictException('Имя или Email уже заняты');
-      }
-      throw error;
-    }
+    return await this.prisma.user.update({
+      where: { id: user.id },
+      data: { avatar: dto.avatar },
+      select: {
+        avatar: true,
+      },
+    });
   }
 }
