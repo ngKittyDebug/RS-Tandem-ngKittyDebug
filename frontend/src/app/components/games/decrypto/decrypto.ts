@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { TranslocoDirective } from '@jsverse/transloco';
-import { TuiButton, TuiNumberFormat, TuiTextfield } from '@taiga-ui/core';
+import { TuiButton, TuiTextfield } from '@taiga-ui/core';
 import { GameCards } from './models/decrypto-cards.constants';
 import { Card } from './models/decrypto-card.interface';
 import { TuiInputNumber } from '@taiga-ui/kit';
@@ -9,14 +9,7 @@ import { DecryptoForm } from './models/decrypto-form.interface';
 
 @Component({
   selector: 'app-decrypto',
-  imports: [
-    ReactiveFormsModule,
-    TuiInputNumber,
-    TuiTextfield,
-    TuiNumberFormat,
-    TuiButton,
-    TranslocoDirective,
-  ],
+  imports: [ReactiveFormsModule, TuiInputNumber, TuiTextfield, TuiButton, TranslocoDirective],
   templateUrl: './decrypto.html',
   styleUrl: './decrypto.scss',
 })

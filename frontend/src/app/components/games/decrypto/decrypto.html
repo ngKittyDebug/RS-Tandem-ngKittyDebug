@@ -29,7 +29,7 @@
       <form class="decrypto__form" [formGroup]="decryptoForm">
         <p class="decrypto__form_codes_label">{{ t('decrypto.codesLabels') }}</p>
         <div class="decrypto__form_codes_inputs">
-          <tui-textfield>
+          <tui-textfield tuiTextfieldSize="m" class="decrypto__form_number_field">
             <input
               class="decrypto__form_codes_input"
               formControlName="code1"
@@ -40,7 +40,7 @@
               [step]="1"
             />
           </tui-textfield>
-          <tui-textfield>
+          <tui-textfield tuiTextfieldSize="m" class="decrypto__form_number_field">
             <input
               class="decrypto__form_codes_input"
               formControlName="code2"
@@ -51,7 +51,7 @@
               [step]="1"
             />
           </tui-textfield>
-          <tui-textfield>
+          <tui-textfield tuiTextfieldSize="m" class="decrypto__form_number_field">
             <input
               class="decrypto__form_codes_input"
               formControlName="code3"
@@ -65,17 +65,17 @@
         </div>
         <p class="decrypto__form_hints_label">{{ t('decrypto.hintsLabels') }}</p>
         <div class="decrypto__form_hints">
-          <tui-textfield>
+          <tui-textfield tuiTextfieldSize="m">
             <input [readOnly]="true" tuiTextfield formControlName="hint1" id="hint1" />
           </tui-textfield>
-          <tui-textfield>
+          <tui-textfield tuiTextfieldSize="m">
             <input [readOnly]="true" tuiTextfield formControlName="hint2" id="hint2" />
           </tui-textfield>
-          <tui-textfield>
+          <tui-textfield tuiTextfieldSize="m">
             <input [readOnly]="true" tuiTextfield formControlName="hint3" id="hint3" />
           </tui-textfield>
         </div>
-        <button tuiButton appearance="gradient" class="login__button" type="button">
+        <button tuiButton size="m" appearance="gradient" type="button" class="decrypto__form_check_button">
           {{ t('decrypto.checkBtn') }}
         </button>
       </form>
