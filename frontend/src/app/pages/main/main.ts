@@ -2,7 +2,6 @@ import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TuiTitle } from '@taiga-ui/core';
 import { TuiLink } from '@taiga-ui/core';
-import { TuiElasticContainer } from '@taiga-ui/kit';
 import { TuiHeader } from '@taiga-ui/layout';
 import { TuiBreakpointService, TuiButton, type TuiSizeL } from '@taiga-ui/core';
 import { TuiBlockStatus } from '@taiga-ui/layout';
@@ -12,16 +11,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 @Component({
   standalone: true,
   selector: 'app-main',
-  imports: [
-    TranslocoDirective,
-    TuiHeader,
-    TuiTitle,
-    TuiElasticContainer,
-    TuiLink,
-    AsyncPipe,
-    TuiBlockStatus,
-    TuiButton,
-  ],
+  imports: [TranslocoDirective, TuiHeader, TuiTitle, TuiLink, AsyncPipe, TuiBlockStatus, TuiButton],
   templateUrl: './main.html',
   styleUrls: ['./main.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
