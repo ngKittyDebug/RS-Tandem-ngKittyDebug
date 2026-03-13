@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { WordCard } from '../../models/data.interface';
 import { BoardService } from '../../services/board-service';
 import { GameService } from '../../services/game-service';
@@ -23,9 +23,11 @@ export class Board {
   }
 
   // Список всех id слотов — чтобы каждый слот знал о всех остальных
-  protected readonly allSlotIds: string[] = Array.from({ length: 6 }, (_, r) =>
-    Array.from({ length: 4 }, (_, s) => this.getSlotId(r, s)),
-  ).flat();
+  protected readonly allSlotIds = computed(() =>
+    this.rows().flatMap((row, rowIndex) =>
+      row.completed ? [] : row.slots.map((_, slotIndex) => this.getSlotId(rowIndex, slotIndex)),
+    ),
+  );
 
   protected onDrop(event: CdkDragDrop<WordCard | null>, rowIndex: number, slotIndex: number): void {
     // Если бросили в тот же слот — ничего не делаем

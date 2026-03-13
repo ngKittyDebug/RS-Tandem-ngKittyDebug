@@ -1,7 +1,7 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
 
 import data from '../mock-data/mock-data.json';
-import { Row, WordCard } from '../models/data.interface';
+import { Row } from '../models/data.interface';
 import { Router } from '@angular/router';
 import { GameService } from './game-service';
 
@@ -12,23 +12,10 @@ export class BoardService {
   private router = inject(Router);
   private readonly gameService = inject(GameService);
   private readonly mockGroups = data.mockData;
-  private selectGroups = [...this.mockGroups].sort(() => Math.random() - 0.5).slice(0, 6);
 
-  private shuffledCards: WordCard[] = this.selectGroups
-    .flatMap((group) =>
-      [...group.words]
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 4)
-        .map((item) => ({ word: item.word, groupId: group.id })),
-    )
-    .sort(() => Math.random() - 0.5);
+  private selectGroups: (typeof this.mockGroups)[number][] = [];
+  public readonly rows = signal<Row[]>([]);
 
-  public readonly rows = signal<Row[]>(
-    Array.from({ length: 6 }, (_, rowIndex) => ({
-      slots: this.shuffledCards.slice(rowIndex * 4, rowIndex * 4 + 4),
-      completed: false,
-    })),
-  );
   constructor() {
     effect(() => {
       if (this.gameService.activeQuiz()) {
@@ -38,9 +25,13 @@ export class BoardService {
   }
 
   public initBoard(): void {
+    this.buildBoard();
+  }
+
+  public buildBoard(): void {
     this.selectGroups = [...this.mockGroups].sort(() => Math.random() - 0.5).slice(0, 6);
 
-    this.shuffledCards = this.selectGroups
+    const shuffledCards = this.selectGroups
       .flatMap((group) =>
         [...group.words]
           .sort(() => Math.random() - 0.5)
@@ -51,13 +42,13 @@ export class BoardService {
 
     this.rows.set(
       Array.from({ length: 6 }, (_, rowIndex) => ({
-        slots: this.shuffledCards.slice(rowIndex * 4, rowIndex * 4 + 4),
+        slots: shuffledCards.slice(rowIndex * 4, rowIndex * 4 + 4),
         completed: false,
       })),
     );
   }
 
-  private openQuiz(groupId: number, words: string[]): void {
+  private startQuiz(groupId: number, words: string[]): void {
     const group = this.selectGroups.find((g) => g.id === groupId)!;
     this.gameService.activeQuiz.set({ groupId, theme: group.category, words });
   }
@@ -76,7 +67,7 @@ export class BoardService {
       const group = this.selectGroups.find((g) => g.id === firstGroupId)!;
       const words = slots.map((s) => s!.word);
       rows[rowIndex] = { ...row, completed: true, theme: group.category };
-      this.openQuiz(firstGroupId, words);
+      this.startQuiz(firstGroupId, words);
     }
   }
 }

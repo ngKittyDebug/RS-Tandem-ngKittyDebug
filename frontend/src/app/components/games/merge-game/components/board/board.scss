@@ -18,17 +18,20 @@
   gap: 10px;
   padding: 2rem 1rem;
 
-  &__row--completed {
+  &__row {
     grid-column: span 4;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 1rem;
-    background: linear-gradient(90deg, var(--accent-1) 0%, var(--accent-3) 100%);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+
+    &--completed {
+      background: linear-gradient(90deg, var(--accent-1) 0%, var(--accent-3) 100%);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    }
   }
 
-  &__row--theme {
+  &__row-theme {
     color: white;
     font-weight: 700;
     font-size: 1rem;

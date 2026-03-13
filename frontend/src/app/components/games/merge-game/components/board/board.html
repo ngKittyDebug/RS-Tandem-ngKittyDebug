@@ -1,17 +1,17 @@
 <div class="board">
   @for (row of rows(); track $index; let rowIndex = $index) {
     @if (row.completed) {
-      <div class="board__row--completed">
-        <span class="board__row--theme">{{ row.theme }}</span>
+      <div class="board__row board__row--completed">
+        <span class="board__row-theme">{{ row.theme }}</span>
       </div>
     } @else {
       @for (slot of row.slots; track $index; let slotIndex = $index) {
         <div
-          class="board__row--slot"
+          class="board__slot"
           cdkDropList
           [id]="getSlotId(rowIndex, slotIndex)"
           [cdkDropListData]="slot"
-          [cdkDropListConnectedTo]="allSlotIds"
+          [cdkDropListConnectedTo]="allSlotIds()"
           (cdkDropListDropped)="onDrop($event, rowIndex, slotIndex)"
         >
           @if (slot) {
