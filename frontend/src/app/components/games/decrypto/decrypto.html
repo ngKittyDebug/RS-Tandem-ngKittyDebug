@@ -78,6 +78,7 @@
           appearance="gradient"
           type="button"
           class="decrypto__form_check_button"
+          [disabled]="decryptoForm.invalid"
         >
           {{ t('decrypto.checkBtn') }}
         </button>

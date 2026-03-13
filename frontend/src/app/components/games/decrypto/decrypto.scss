@@ -64,6 +64,9 @@
 }
 
 .decrypto__form_hints {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   width: 100%;
 }
 
