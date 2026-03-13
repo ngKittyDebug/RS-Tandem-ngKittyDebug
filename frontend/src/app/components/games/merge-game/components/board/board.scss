@@ -26,7 +26,11 @@
     border-radius: 1rem;
 
     &--completed {
-      background: linear-gradient(90deg, var(--accent-1) 0%, var(--accent-3) 100%);
+      background: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--accent-1) 55%, white),
+        color-mix(in srgb, var(--accent-3) 55%, white)
+      );
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
     }
   }
@@ -38,9 +42,19 @@
     letter-spacing: 0.02em;
   }
 
+  &__slot {
+    position: relative;
+    width: 100%;
+    height: 70px;
+  }
+
   &__card {
+    position: absolute;
+    inset: 0;
+
     width: 100%;
     height: 100%;
+
     border-radius: 1rem;
     background: var(--tui-background-elevation-1);
     border: 1px solid color-mix(in srgb, var(--accent-3) 35%, transparent);
@@ -49,7 +63,10 @@
     align-items: center;
     overflow-wrap: anywhere;
     hyphens: auto;
-    cursor: pointer;
+    cursor: grab;
+
+    font-weight: 700;
+
     transition:
       transform 0.2s ease,
       box-shadow 0.2s ease;
@@ -59,4 +76,28 @@
       box-shadow: 0 5px 10px rgba(0, 0, 0, 0.08);
     }
   }
+}
+
+.cdk-drag-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--accent-3) 10%, transparent);
+}
+
+.cdk-drag-preview {
+  width: 100%;
+  height: 70px;
+  border-radius: 1rem;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--accent-1) 25%, white),
+    color-mix(in srgb, var(--accent-3) 25%, white)
+  );
+
+  border: 1px solid var(--accent-3);
+}
+
+.cdk-drop-list {
+  min-height: 70px;
 }

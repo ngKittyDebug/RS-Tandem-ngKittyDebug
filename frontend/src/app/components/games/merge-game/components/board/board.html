@@ -11,12 +11,15 @@
           cdkDropList
           [id]="getSlotId(rowIndex, slotIndex)"
           [cdkDropListData]="slot"
+          cdkDropListSortingDisabled
+          cdkDropListOrientation="horizontal"
           [cdkDropListConnectedTo]="allSlotIds()"
           (cdkDropListDropped)="onDrop($event, rowIndex, slotIndex)"
         >
           @if (slot) {
             <div class="board__card" cdkDrag [cdkDragData]="slot">
               <span>{{ slot.word }}</span>
+              <div *cdkDragPlaceholder class="board__card--placeholder"></div>
             </div>
           }
         </div>

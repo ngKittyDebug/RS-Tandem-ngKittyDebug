@@ -1,13 +1,14 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { WordCard } from '../../models/data.interface';
 import { BoardService } from '../../services/board-service';
 import { GameService } from '../../services/game-service';
-import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import { CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList } from '@angular/cdk/drag-drop';
 import { Router } from '@angular/router';
+import { QuizService } from '../../services/quiz-service';
 
 @Component({
   selector: 'app-board',
-  imports: [CdkDrag, CdkDropList],
+  imports: [CdkDrag, CdkDropList, CdkDragPlaceholder],
   templateUrl: './board.html',
   styleUrl: './board.scss',
 })
@@ -15,14 +16,21 @@ export class Board {
   private readonly router = inject(Router);
   private readonly boardService = inject(BoardService);
   protected gameService = inject(GameService);
+  protected quizService = inject(QuizService);
   protected readonly rows = this.boardService.rows;
 
-  // Генерируем уникальный id для каждого слота — нужно для cdkDropListConnectedTo
+  constructor() {
+    effect(() => {
+      if (this.quizService.activeQuiz()) {
+        this.router.navigate(['/merge-game/quiz']);
+      }
+    });
+  }
+
   protected getSlotId(rowIndex: number, slotIndex: number): string {
     return `slot-${rowIndex}-${slotIndex}`;
   }
 
-  // Список всех id слотов — чтобы каждый слот знал о всех остальных
   protected readonly allSlotIds = computed(() =>
     this.rows().flatMap((row, rowIndex) =>
       row.completed ? [] : row.slots.map((_, slotIndex) => this.getSlotId(rowIndex, slotIndex)),
@@ -30,27 +38,20 @@ export class Board {
   );
 
   protected onDrop(event: CdkDragDrop<WordCard | null>, rowIndex: number, slotIndex: number): void {
-    // Если бросили в тот же слот — ничего не делаем
     if (event.previousContainer === event.container) return;
 
     const rows = this.rows();
-
-    // Парсим откуда тащили
     const [, prevRow, prevSlot] = event.previousContainer.id.split('-').map(Number);
 
     const draggedCard = rows[prevRow].slots[prevSlot];
     const targetCard = rows[rowIndex].slots[slotIndex];
 
-    // Делаем глубокую копию чтобы не мутировать signal напрямую
-    const newRows = rows.map((row) => ({ ...row, slots: [...row.slots] }));
-
-    // Swap: меняем карточки местами (даже если целевой слот пустой)
+    let newRows = rows.map((row) => ({ ...row, slots: [...row.slots] }));
     newRows[rowIndex].slots[slotIndex] = draggedCard;
     newRows[prevRow].slots[prevSlot] = targetCard;
 
-    // Проверяем обе затронутые строки
-    this.boardService.checkRow(newRows, rowIndex);
-    this.boardService.checkRow(newRows, prevRow);
+    newRows = this.boardService.checkRow(newRows, rowIndex);
+    newRows = this.boardService.checkRow(newRows, prevRow);
     this.rows.set(newRows);
   }
 
