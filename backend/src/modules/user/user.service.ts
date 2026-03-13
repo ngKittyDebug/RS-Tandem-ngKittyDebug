@@ -58,10 +58,9 @@ export class UserService {
     }
 
     if (user.provider === Provider.Github) {
-      await this.prisma.user.delete({
-        where: { id: user.id },
-      });
-      return { success: true };
+      throw new ForbiddenException(
+        `Функционал пока не доступен, звоните позже`,
+      );
     }
 
     const validPass = await compare(dto.password, user.password);

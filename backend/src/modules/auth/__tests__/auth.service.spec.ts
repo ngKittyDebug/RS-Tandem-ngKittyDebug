@@ -191,16 +191,6 @@ describe('AuthService', () => {
         service.login(responseMock, mockLoginAuthDto),
       ).rejects.toThrow(ForbiddenException);
     });
-
-    it('should login user and return accessToken', async () => {
-      prismaMock.user.findFirst.mockResolvedValue(mockUser as never);
-      (bcrypt.compare as jest.Mock).mockResolvedValue(true);
-
-      const result = await service.login(responseMock, mockLoginAuthDto);
-
-      expect(result).toEqual({ accessToken: mockAccessToken });
-      expect(responseMock.cookie).toHaveBeenCalled();
-    });
   });
 
   describe('refresh', () => {

@@ -76,6 +76,7 @@ export class AuthService {
       id: user.id,
       username: user.username,
       email: user.email,
+      provider: Provider.local,
     };
 
     this.logger.log(`Пользователь с ${user.id} создан`);
@@ -84,18 +85,23 @@ export class AuthService {
   }
 
   async githubOauth(res: Response, profile: Profile): Promise<AuthResponse> {
+    const { id, username, emails, photos } = profile;
+
+    const fallbackUsername = `${Provider.Github}_${id}`;
+    const fallbackEmail = `github_${id}@users.noreply.github.com`;
+
     const user = await this.prisma.user.upsert({
-      where: { providerId: profile.id },
+      where: { providerId: id },
       update: {
-        username: profile.username,
-        email: profile.displayName,
+        username: username ?? fallbackUsername,
+        email: emails?.[0]?.value ?? fallbackEmail,
       },
       create: {
-        providerId: profile.id,
-        username: profile.username ?? 'null',
-        email: profile.emails?.[0]?.value ?? 'null',
+        providerId: id,
+        username: username ?? fallbackUsername,
+        email: emails?.[0]?.value ?? fallbackEmail,
         provider: Provider.Github,
-        avatar: profile.photos?.[0].value ?? 'null',
+        avatar: photos?.[0]?.value ?? null,
       },
     });
 
@@ -118,6 +124,14 @@ export class AuthService {
         `Пользователь не существует или неверный пароль`,
       );
     }
+
+    if (user.provider !== Provider.local) {
+      this.logger.error('Пользователь был зарегистрирован с помощью OAuth');
+      throw new ForbiddenException(
+        'Пользователь был зарегистрирован с помощью OAuth',
+      );
+    }
+
     const validPass = await compare(dto.password, user.password);
 
     if (!validPass) {
@@ -131,6 +145,7 @@ export class AuthService {
       id: user.id,
       username: user.username,
       email: user.email,
+      provider: user.provider,
     };
 
     return this.auth(res, payload);
