@@ -4,6 +4,9 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: var(--tui-background-base-alt);
 }
 
 .decrypto__nav {
@@ -27,11 +30,18 @@
   width: 100%;
 }
 
+.decrypto__inf {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+}
+
 .decrypto__card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: var(--tui-background-base-alt);
+  background-color: var(--tui-background-base);
   color: var(--tui-text-primary);
   border-radius: 5px;
   border: 1px solid var(--tui-border-normal);
@@ -56,11 +66,12 @@
 }
 
 .decrypto__form_codes_input {
-  height: 44px;
+  height: 32px;
 }
 
 .decrypto__form_number_field {
   align-items: flex-start;
+  background-color: var(--tui-background-base);
 }
 
 .decrypto__form_hints {
@@ -68,6 +79,10 @@
   flex-direction: column;
   gap: 5px;
   width: 100%;
+}
+
+.decrypto__form_hints_input {
+  background-color: var(--tui-background-base);
 }
 
 .decrypto__form_check_button {

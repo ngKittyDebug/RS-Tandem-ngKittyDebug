@@ -3,6 +3,7 @@
   "startBtn": "start",
   "rulesBtn": "rules",
   "nextRoundBtn": "next round",
+  "gamePeriods": "period",
   "codesLabels": "Code (1-4):",
   "hintsLabels": "Hints:",
   "checkBtn": "Check",

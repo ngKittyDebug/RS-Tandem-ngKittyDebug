@@ -9,6 +9,7 @@ import { DecryptoGameService } from './services/decrypto-game-service';
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
 import { DecryptoRules } from './components/decrypto-rules/decrypto-rules';
+import { AppTosterService } from '../../../core/services/app-toster-service';
 
 @Component({
   selector: 'app-decrypto',
@@ -20,7 +21,7 @@ export class Decrypto implements OnInit {
   protected readonly gameService = inject(DecryptoGameService);
   private readonly dialogs = inject(TuiDialogService);
   private readonly transloco = inject(TranslocoService);
-
+  private tosterService = inject(AppTosterService);
   private fb = inject(FormBuilder);
   protected gameStarted = signal<boolean>(false);
 
@@ -32,9 +33,9 @@ export class Decrypto implements OnInit {
     code1: this.fb.nonNullable.control({ value: null, disabled: true }, [Validators.required]),
     code2: this.fb.nonNullable.control({ value: null, disabled: true }, [Validators.required]),
     code3: this.fb.nonNullable.control({ value: null, disabled: true }, [Validators.required]),
-    hint1: this.fb.nonNullable.control('...', [Validators.required]),
-    hint2: this.fb.nonNullable.control('...', [Validators.required]),
-    hint3: this.fb.nonNullable.control('...', [Validators.required]),
+    hint1: this.fb.nonNullable.control('', [Validators.required]),
+    hint2: this.fb.nonNullable.control('', [Validators.required]),
+    hint3: this.fb.nonNullable.control('', [Validators.required]),
   });
 
   protected startGame(): void {
@@ -61,9 +62,21 @@ export class Decrypto implements OnInit {
     this.gameService.resetGameHints();
     this.decryptoForm.reset();
     this.gameStarted.set(false);
+    this.gameService.gameResult.set(null);
+    this.gameService.gamePeriod.set(1);
     this.decryptoForm.controls.code1.disable();
     this.decryptoForm.controls.code2.disable();
     this.decryptoForm.controls.code3.disable();
+  }
+
+  protected newRound(): void {
+    console.log('new round');
+    this.decryptoForm.reset();
+    this.decryptoForm.patchValue({
+      hint1: `${this.gameService.gameHints[0].splice(0, 1)}`,
+      hint2: `${this.gameService.gameHints[1].splice(0, 1)}`,
+      hint3: `${this.gameService.gameHints[2].splice(0, 1)}`,
+    });
   }
 
   protected openRules(): void {
@@ -74,5 +87,19 @@ export class Decrypto implements OnInit {
         size: 'l',
       })
       .subscribe();
+  }
+
+  protected submitDecryptoForm(): void {
+    const { code1, code2, code3 } = this.decryptoForm.getRawValue();
+    const resultArr = [code1, code2, code3];
+    this.gameService.checkResult(resultArr);
+    if (this.gameService.gameResult() === null) {
+      this.newRound();
+      this.tosterService.showWarningToster('You lose period. Try better');
+    } else if (this.gameService.gameResult() === false) {
+      this.tosterService.showErrorToster('You lose game. Try again', 'Lose');
+    } else if (this.gameService.gameResult() === true) {
+      this.tosterService.showPositiveToster('You win. Congratulations', 'Win');
+    }
   }
 }
