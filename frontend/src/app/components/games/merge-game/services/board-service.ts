@@ -3,14 +3,14 @@ import { effect, inject, Injectable, signal } from '@angular/core';
 import data from '../mock-data/mock-data.json';
 import { Row } from '../models/data.interface';
 import { Router } from '@angular/router';
-import { GameService } from './game-service';
+import { QuizService } from './quiz-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BoardService {
   private router = inject(Router);
-  private readonly gameService = inject(GameService);
+  private readonly quizService = inject(QuizService);
   private readonly mockGroups = data.mockData;
 
   private selectGroups: (typeof this.mockGroups)[number][] = [];
@@ -18,7 +18,7 @@ export class BoardService {
 
   constructor() {
     effect(() => {
-      if (this.gameService.activeQuiz()) {
+      if (this.quizService.activeQuiz()) {
         this.router.navigate(['/merge-game/quiz']);
       }
     });
@@ -50,7 +50,7 @@ export class BoardService {
 
   private startQuiz(groupId: number, words: string[]): void {
     const group = this.selectGroups.find((g) => g.id === groupId)!;
-    this.gameService.activeQuiz.set({ groupId, theme: group.category, words });
+    this.quizService.activeQuiz.set({ groupId, theme: group.category, words }); // было gameService
   }
 
   public checkRow(rows: Row[], rowIndex: number): void {

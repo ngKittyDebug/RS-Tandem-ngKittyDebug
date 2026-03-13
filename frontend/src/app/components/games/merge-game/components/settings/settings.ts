@@ -32,7 +32,7 @@ export class Settings implements OnInit {
   protected readonly questionModes: QuestionMode[] = [1, 2, 3, 4, 5];
 
   public ngOnInit(): void {
-    this.gameService.reset();
+    this.gameService.resetGame();
   }
 
   protected onStart(): void {

@@ -26,7 +26,7 @@
       [class.quiz__result--correct]="result() === 'correct'"
       [class.quiz__result--wrong]="result() === 'wrong'"
     >
-      {{ aiFeedback() || (result() === 'correct' ? '✓ Верно!' : '✗ Не совсем...') }}
+      {{ result() === 'correct' ? '✓ Верно!' : '✗ Не совсем...' }}
     </div>
 
     <div class="quiz__answer">

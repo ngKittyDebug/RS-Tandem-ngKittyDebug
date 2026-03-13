@@ -1,7 +1,7 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { GameMode, PersonalityMode, QuestionMode, StatusGame } from '../models/settings.type';
 import data from '../mock-data/mock-data.json';
-import { Question } from '../models/data.interface';
+import { QuizService } from './quiz-service';
 
 export interface QuizState {
   groupId: number;
@@ -21,7 +21,7 @@ export interface GameResult {
 })
 export class GameService {
   private readonly mockGroups = data.mockData;
-  // private readonly aiService = inject(AiService);
+  private readonly quizService = inject(QuizService);
 
   public readonly gameMode = signal<GameMode>('withoutAI');
   public readonly personalityMode = signal<PersonalityMode>('neutral');
@@ -48,23 +48,20 @@ export class GameService {
 
   public startGame(): void {
     this.setStatus('playing');
-    this.activeQuiz.set(null);
-    this.correctAnswers.set(0);
-    this.wrongAnswers.set(0);
+    this.quizService.reset();
   }
 
   public resetGame(): void {
     this.setStatus('idle');
-    this.activeQuiz.set(null);
-    this.correctAnswers.set(0);
-    this.wrongAnswers.set(0);
+    this.quizService.reset();
   }
+
   public finishGame(): void {
     const result: GameResult = {
       date: new Date().toISOString(),
       mode: this.gameMode(),
-      correctAnswers: this.correctAnswers(),
-      wrongAnswers: this.wrongAnswers(),
+      correctAnswers: this.quizService.correctAnswers(),
+      wrongAnswers: this.quizService.wrongAnswers(),
     };
 
     const history = JSON.parse(localStorage.getItem('merge-game-history') || '[]');
@@ -72,44 +69,5 @@ export class GameService {
     localStorage.setItem('merge-game-history', JSON.stringify(history));
 
     this.setStatus('finished');
-  }
-
-  public getRandomQuestion(groupId: number, word: string): Question | null {
-    const group = this.mockGroups.find((g) => g.id === groupId);
-    const item = group?.words.find((i) => i.word === word);
-    if (!item) return null;
-
-    const randomIndex = Math.floor(Math.random() * item.questions.length);
-    return item.questions[randomIndex] as Question;
-  }
-
-  public checkAnswer(userAnswer: string, keywords: string[]): boolean {
-    const normalized = userAnswer.toLowerCase();
-    return keywords.some((keyword) => normalized.includes(keyword.toLowerCase()));
-  }
-
-  public submitAnswer(isCorrect: boolean): void {
-    if (isCorrect) {
-      this.correctAnswers.update((v) => v + 1);
-    } else {
-      this.wrongAnswers.update((v) => v + 1);
-    }
-  }
-
-  // public async checkAnswerAi(
-  //   userAnswer: string,
-  //   question: string,
-  //   referenceAnswer: string,
-  // ): Promise<{ isCorrect: boolean; feedback: string }> {
-  //   return this.aiService.checkAnswer(
-  //     userAnswer,
-  //     question,
-  //     referenceAnswer,
-  //     this.selectedPersonality(),
-  //   );
-  // }
-
-  public reset(): void {
-    this.setStatus('idle');
   }
 }

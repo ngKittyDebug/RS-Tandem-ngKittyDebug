@@ -1,12 +1,12 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { GameService } from '../../components/games/merge-game/services/game-service';
+import { QuizService } from '../../components/games/merge-game/services/quiz-service';
 
 export const quizGuard: CanActivateFn = () => {
-  const gameService = inject(GameService);
+  const quizService = inject(QuizService);
   const router = inject(Router);
 
-  if (!gameService.activeQuiz()) {
+  if (!quizService.activeQuiz()) {
     return router.createUrlTree(['/merge-game/board']);
   }
 
