@@ -6,21 +6,27 @@ import {
   HttpCode,
   HttpStatus,
   Req,
+  UseGuards,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { ApiOperation, ApiTags, ApiResponse, ApiBody } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiTags,
+  ApiResponse,
+  ApiBody,
+  ApiExcludeEndpoint,
+  ApiOkResponse,
+  ApiCreatedResponse,
+} from '@nestjs/swagger';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { Request, Response } from 'express';
 import { Public } from 'src/decorators/public.decorator';
-
-interface AuthResponse {
-  accessToken: string;
-}
-
-interface LogoutResponse {
-  logout: boolean;
-}
+import { AuthResponse, LogoutResponse } from '../interface/auth-module-types';
+import { AuthGuard } from '@nestjs/passport';
+import { Github } from 'src/decorators/github.decorator';
+import { Profile } from 'passport-github2';
 
 @ApiTags('Auth')
 @Public()
@@ -34,8 +40,7 @@ export class AuthController {
       'Создаёт новый аккаунт с выдачей JWT токена. Требуются уникальные email и username.',
   })
   @ApiBody({ type: CreateAuthDto })
-  @ApiResponse({
-    status: 201,
+  @ApiCreatedResponse({
     description: 'Пользователь успешно зарегистрирован',
     schema: {
       example: {
@@ -57,7 +62,7 @@ export class AuthController {
     @Body() createAuthDto: CreateAuthDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<AuthResponse> {
-    return this.authService.signIn(res, createAuthDto);
+    return this.authService.registration(res, createAuthDto);
   }
 
   @ApiOperation({
@@ -66,8 +71,7 @@ export class AuthController {
       'Аутентификация пользователя по email/username и паролю. Возвращает JWT токен.',
   })
   @ApiBody({ type: LoginAuthDto })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Успешный вход',
     schema: {
       example: {
@@ -96,10 +100,10 @@ export class AuthController {
   @ApiOperation({
     summary: 'Обновление токенов',
     description:
-      'Обновляет JWT токен с использованием refresh токена из cookies.',
+      'Обновляет JWT токен с использованием refresh токена из cookies.\n\n' +
+      '**Требует:** Cookie с именем `refreshToken`',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Токены успешно обновлены',
     schema: {
       example: {
@@ -129,8 +133,7 @@ export class AuthController {
     summary: 'Выход из системы',
     description: 'Очищает refresh токен из cookies и завершает сессию.',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Успешный выход',
     schema: {
       example: {
@@ -138,13 +141,25 @@ export class AuthController {
       },
     },
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Ошибка при выходе',
-  })
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   logout(@Res({ passthrough: true }) res: Response): LogoutResponse {
     return this.authService.logout(res);
+  }
+
+  @ApiExcludeEndpoint()
+  @Get('github')
+  @UseGuards(AuthGuard('github'))
+  async githubLogin() {}
+
+  @ApiExcludeEndpoint()
+  @Get('github/callback')
+  @UseGuards(AuthGuard('github'))
+  async githubCallback(
+    @Github() profile: Profile,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.authService.githubOauth(res, profile);
+    this.authService.redirect(res);
   }
 }

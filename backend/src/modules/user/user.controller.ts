@@ -14,6 +14,7 @@ import {
   ApiResponse,
   ApiBody,
   ApiTags,
+  ApiOkResponse,
 } from '@nestjs/swagger';
 
 import { applyDecorators } from '@nestjs/common';
@@ -21,6 +22,7 @@ import { UserDto } from './dto/update-user.dto';
 import { UpdateUserPassword } from './dto/update-user-pass.dto';
 import { ConfirmPasswordDto } from './dto/delete-user-account.dto';
 import { User } from 'src/decorators/user.decorator';
+import { AvatarUpdateDto } from './dto/update-avater.dto';
 
 export const ApiAuth = () => applyDecorators(ApiBearerAuth());
 
@@ -34,13 +36,13 @@ export class UserController {
     summary: 'Получение данных пользователя',
     description: 'Возвращает информацию о текущем авторизованном пользователе.',
   })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Данные пользователя',
     schema: {
       example: {
         email: 'user@example.com',
         username: 'john_doe',
+        avatar: 'https://example.com/avatar.jpg',
         createdAt: '2024-01-01T00:00:00.000Z',
       },
     },
@@ -55,7 +57,7 @@ export class UserController {
   })
   @Get()
   findOne(@User('id') id: string) {
-    return this.userService.findOne(id);
+    return this.userService.gtUserProfile(id);
   }
 
   @ApiOperation({
@@ -64,8 +66,7 @@ export class UserController {
       'Обновляет username и/или email текущего пользователя. Требует подтверждения пароля.',
   })
   @ApiBody({ type: UserDto })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Профиль успешно обновлён',
     schema: {
       example: {
@@ -96,12 +97,41 @@ export class UserController {
   }
 
   @ApiOperation({
+    summary: 'Обновление аватара',
+    description:
+      'Обновляет URL аватара текущего пользователя. Требует валидный URL изображения.',
+  })
+  @ApiBody({ type: AvatarUpdateDto })
+  @ApiOkResponse({
+    description: 'Аватар успешно обновлён',
+    schema: {
+      example: {
+        avatar: 'https://example.com/avatars/user123.jpg',
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Некорректный URL аватара',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Пользователь не найден',
+  })
+  @Patch('avatar')
+  updateUserAvatar(
+    @User('id') id: string,
+    @Body() avatarUpdateDto: AvatarUpdateDto,
+  ) {
+    return this.userService.updateUserAvatar(id, avatarUpdateDto);
+  }
+
+  @ApiOperation({
     summary: 'Смена пароля',
     description: 'Изменяет пароль текущего пользователя.',
   })
   @ApiBody({ type: UpdateUserPassword })
-  @ApiResponse({
-    status: 200,
+  @ApiOkResponse({
     description: 'Пароль успешно изменён',
     schema: {
       example: {
@@ -135,9 +165,8 @@ export class UserController {
     description:
       'Безвозвратно удаляет аккаунт текущего пользователя и все связанные данные.',
   })
-  @ApiBody({ type: UserDto })
-  @ApiResponse({
-    status: 200,
+  @ApiBody({ type: ConfirmPasswordDto })
+  @ApiOkResponse({
     description: 'Аккаунт успешно удалён',
     schema: {
       example: {
