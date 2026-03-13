@@ -2,6 +2,7 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { App } from './app/app';
 
-console.info('[MeowVault] API_URL from env:', import.meta.env['NG_APP_API_URL']);
+console.info('[MeowVault] API_URL:', import.meta.env?.['NG_APP_API_URL']);
+console.info('[MeowVault] env:', import.meta.env);
 
 bootstrapApplication(App, appConfig).catch((err) => console.error(err));
