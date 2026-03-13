@@ -10,5 +10,7 @@
     "first": "MeowVault is a system helping students to prepare for their FrontEnd interviews. It consists of funny games, playing which helps them practice their skills in a fun and engaging way.",
     "second": "MeowVault is a soft and comfortable way to learn, as soft as a cat's paws which is the symbol of our project. We believe that learning should be enjoyable and stress-free, just like the gentle touch of a cat's paws.",
     "third": "So, get ready to have fun while sharpening your FrontEnd skills with MeowVault!"
-  }
+  },
+  "game": "Game",
+  "play": "Play"
 }
