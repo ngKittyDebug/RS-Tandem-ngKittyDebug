@@ -1,4 +1,4 @@
 cd backend
 
 npx validate-branch-name
-npm run lint
+npm run test

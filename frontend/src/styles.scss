@@ -3,6 +3,10 @@
   --tui-background-base: oklch(98.4% 0.003 247.858);
   --tui-background-base-alt: #ffffff;
 
+  --tui-status-positive-pale: oklch(0.696 0.17 162.48 / 35%);
+  --tui-status-negative-pale: oklch(0.637 0.237 25.331 / 35%);
+  --tui-status-warning-pale: oklch(0.769 0.188 70.08 / 35%);
+
   --tui-text-primary: oklch(44.6% 0.043 257.281);
 
   --tui-border-normal: oklch(92.9% 0.013 255.508);
@@ -12,17 +16,33 @@
   --accent-3: #ec4899;
 }
 
+:root,
+[tuiTheme='dark'] tui-alert {
+  --tui-text-primary: #ffffff;
+}
+
 [tuiTheme='dark'] {
   --tui-background-base: oklch(20.8% 0.042 265.755);
   --tui-background-base-alt: oklch(12.9% 0.042 264.695);
+
+  --tui-status-positive-pale: oklch(0.696 0.17 162.48 / 75%);
+  --tui-status-negative-pale: oklch(0.637 0.237 25.331 / 75%);
+  --tui-status-warning-pale: oklch(0.769 0.188 70.08 / 75%);
 
   --tui-text-primary: oklch(70.4% 0.04 256.788);
 
   --tui-border-normal: oklch(44.6% 0.043 257.281);
 
+  --tui-background-elevation-2: oklch(27.9% 0.041 260.031);
+
   --accent-1: #8b5cf6;
   --accent-2: #14b8a6;
   --accent-3: #ec4899;
+}
+
+tui-notification[data-size='m']:before,
+[tuiNotification][data-size='m']:before {
+  top: calc(50% - 0.625rem);
 }
 
 button[tuiButton][data-appearance='gradient'] {
@@ -53,4 +73,11 @@ button[tuiButton][data-appearance='gradient'] {
     transform: none;
     cursor: not-allowed;
   }
+}
+
+.t-root-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  height: 100%;
 }
