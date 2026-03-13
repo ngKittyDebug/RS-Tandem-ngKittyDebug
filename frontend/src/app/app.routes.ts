@@ -52,16 +52,23 @@ export const routes: Routes = [
       },
 
       {
-        path: 'theory',
+        path: 'board',
         loadComponent: () =>
-          import('./components/games/merge-game/components/theory/theory').then((m) => m.Theory),
+          import('./components/games/merge-game/components/board/board').then((m) => m.Board),
         providers: [provideTranslocoScope('merge-game')],
       },
 
       {
-        path: 'board',
+        path: 'quiz',
         loadComponent: () =>
-          import('./components/games/merge-game/components/board/board').then((m) => m.Board),
+          import('./components/games/merge-game/components/quiz/quiz').then((m) => m.Quiz),
+        providers: [provideTranslocoScope('merge-game')],
+      },
+
+      {
+        path: 'theory',
+        loadComponent: () =>
+          import('./components/games/merge-game/components/theory/theory').then((m) => m.Theory),
         providers: [provideTranslocoScope('merge-game')],
       },
     ],

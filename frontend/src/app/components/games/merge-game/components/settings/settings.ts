@@ -27,7 +27,7 @@ export class Settings implements OnInit {
   private boardService = inject(BoardService);
   protected readonly gameService = inject(GameService);
 
-  protected readonly gameModes: GameMode[] = ['yes', 'no'];
+  protected readonly gameModes: GameMode[] = ['withoutAI', 'withAI'];
   protected readonly personalityModes: PersonalityMode[] = ['neutral', 'kind', 'strict'];
   protected readonly questionModes: QuestionMode[] = [1, 2, 3, 4, 5];
 

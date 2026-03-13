@@ -1,0 +1,43 @@
+<div class="quiz">
+  <div class="quiz__header">
+    <div class="quiz__progress">{{ currentIndex() + 1 }} / {{ wordCount() }}</div>
+
+    <p class="quiz__question">
+      {{ currentQuestion()?.question }}
+    </p>
+  </div>
+
+  @if (!showAnswer()) {
+    <textarea
+      class="quiz__input"
+      tuiTextfield
+      [ngModel]="userAnswer()"
+      (ngModelChange)="userAnswer.set($event)"
+      placeholder="Введите ответ"
+      rows="3"
+    ></textarea>
+
+    <div class="quiz__footer">
+      <button tuiButton appearance="gradient" size="m" (click)="onSubmit()">Проверить</button>
+    </div>
+  } @else {
+    <div
+      class="quiz__result"
+      [class.quiz__result--correct]="result() === 'correct'"
+      [class.quiz__result--wrong]="result() === 'wrong'"
+    >
+      {{ aiFeedback() || (result() === 'correct' ? '✓ Верно!' : '✗ Не совсем...') }}
+    </div>
+
+    <div class="quiz__answer">
+      <span class="quiz__answer-label">Правильный ответ:</span>
+      <p class="quiz__answer-text">{{ currentQuestion()!.answer }}</p>
+    </div>
+
+    <div class="quiz__footer">
+      <button tuiButton appearance="gradient" size="m" (click)="onNext()">
+        {{ currentIndex() === wordCount() - 1 ? 'Вернуться на поле' : 'Следующий вопрос' }}
+      </button>
+    </div>
+  }
+</div>

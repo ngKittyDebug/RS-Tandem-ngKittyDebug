@@ -16,8 +16,8 @@
     "mode": {
       "question": "Играть с помощником AI?",
       "options": {
-        "yes": "С AI",
-        "no": "Без AI"
+        "withAI": "С AI",
+        "withoutAI": "Без AI"
       }
     },
 

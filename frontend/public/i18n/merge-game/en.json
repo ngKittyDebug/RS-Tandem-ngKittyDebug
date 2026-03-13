@@ -16,8 +16,8 @@
     "mode": {
       "question": "Play with AI helper?",
       "options": {
-        "yes": "With AI",
-        "no": "Without AI"
+        "withAI": "With AI",
+        "withoutAI": "Without AI"
       }
     },
 
