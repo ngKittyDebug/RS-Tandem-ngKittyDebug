@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { provideTranslocoScope } from '@jsverse/transloco';
+import { quizGuard } from './core/guards/quiz-guard';
+import { boardGuard } from './core/guards/board-guard';
 
 export enum AppRoute {
   REGISTRATION = 'registration',
@@ -56,6 +58,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/games/merge-game/components/board/board').then((m) => m.Board),
         providers: [provideTranslocoScope('merge-game')],
+        canActivate: [boardGuard],
       },
 
       {
@@ -63,6 +66,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/games/merge-game/components/quiz/quiz').then((m) => m.Quiz),
         providers: [provideTranslocoScope('merge-game')],
+        canActivate: [quizGuard],
       },
 
       {
