@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { TuiAppearance, TuiButton, TuiTextfield, TuiError } from '@taiga-ui/core';
-import {} from '@taiga-ui/kit';
+import { TuiAppearance, TuiButton, TuiTextfield, TuiError, TuiIcon, TuiLink } from '@taiga-ui/core';
+import { TuiPassword } from '@taiga-ui/kit';
 import { TuiCardLarge, TuiForm } from '@taiga-ui/layout';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TranslocoService, TranslocoModule } from '@jsverse/transloco';
@@ -11,6 +11,8 @@ import { EMAIL_PATTERN } from '../../core/patterns/email-pattern';
 import { RegisterDto } from './models/register.interfaces';
 import { RegisterField } from './models/register-field.type';
 import { firstValueFrom } from 'rxjs';
+import { AppRoute, getRoutePath } from '../../app.routes';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-registration',
@@ -26,6 +28,10 @@ import { firstValueFrom } from 'rxjs';
     ReactiveFormsModule,
     TranslocoModule,
     TuiError,
+    TuiIcon,
+    TuiPassword,
+    TuiLink,
+    RouterModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -33,6 +39,7 @@ export class Registration {
   private translocoService = inject(TranslocoService);
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  protected loginRouterPath = getRoutePath(AppRoute.LOGIN);
   public t(key: string): string {
     return this.translocoService.translate(key);
   }
@@ -50,7 +57,8 @@ export class Registration {
 
   public async submit(): Promise<void> {
     const { username, email, password } = this.registrationForm.getRawValue();
-    if (!username || !email || !password) throw new Error('Что-то не так');
+    if (!username || !email || !password)
+      throw new Error('Форма регистрации заполнена некорректно');
     const User: RegisterDto = {
       username: username,
       email: email,
@@ -59,10 +67,8 @@ export class Registration {
     console.log(User);
     try {
       await firstValueFrom(this.authService.register(User));
-      console.log('Регистрация прошла успешно!');
     } catch (error) {
       console.error(error);
-      console.log('Произошла ошибка при регистрации');
     }
   }
   protected getInputError(typeInput: RegisterField): string | null {
@@ -77,10 +83,7 @@ export class Registration {
       return this.translocoService.translate(`registration.error.${typeInput}Pattern`);
     }
     if (typeInput === 'passwordRepeat' && this.registrationForm.hasError('passwords')) {
-      return (
-        this.translocoService.translate('registration.error.passwordMismatch') ||
-        'Пароли не совпадают'
-      );
+      return this.translocoService.translate('registration.error.passwordMismatch');
     }
 
     return null;

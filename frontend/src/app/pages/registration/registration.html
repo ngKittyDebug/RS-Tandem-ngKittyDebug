@@ -18,12 +18,14 @@
     <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.lock">
       <label tuiLabel for="password">{{ t('registration.form.password') }}</label>
       <input formControlName="password" tuiTextfield type="password" autocomplete="current-password" id="password" />
+      <tui-icon tuiPassword />
     </tui-textfield>
     <tui-error [error]="getInputError('password')"></tui-error>
     <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.lock">
       <label tuiLabel for="passwordRepeat">{{ t('registration.form.passwordRepeat') }}</label>
       <input formControlName="passwordRepeat" tuiTextfield type="password" autocomplete="current-password"
         id="passwordRepeat" />
+      <tui-icon tuiPassword />
     </tui-textfield>
     <tui-error [error]="getInputError('passwordRepeat')"></tui-error>
     <div class="registration__bottom">
@@ -31,7 +33,9 @@
       <button class="registration__btn" tuiButton appearance="gradient" type="submit" size="m"
         [disabled]="!registrationForm.valid"> {{
         t('registration.form.button') }} </button>
-      <a class="registration__link" href="/login">{{t('registration.link') }}</a>
+      <a tuiLink class="registration__link" [routerLink]= "loginRouterPath">
+        {{ t('registration.link') }}
+      </a>
     </div>
   </form>
 </div>

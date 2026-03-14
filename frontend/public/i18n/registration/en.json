@@ -7,7 +7,7 @@
     "email": "Email",
     "password": "Password",
     "passwordRepeat": "Repeat password",
-    "button": "Registration"
+    "button": "Register"
   },
   "error": {
     "required": "This field is required",
