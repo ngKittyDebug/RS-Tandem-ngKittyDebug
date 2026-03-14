@@ -29,6 +29,9 @@
       <div class="decrypto__cards">
         @for (gameCard of gameService.gameCards; track $index) {
           <div class="decrypto__card">
+            <button tuiButton type="button" class="decrypto__card_button" size="s" (click)="openCardDescription(gameCard.cardDescription, gameCard.cardName)" [disabled]="this.gameService.gameResult() === null">
+              <tui-icon icon="@tui.circle-question-mark" class="decrypto__card_button_icon"></tui-icon>
+            </button>
             <p class="decrypto__card_number">{{ $index + 1 }}</p>
             <p class="decrypto__card_text">{{ gameCard.cardName }}</p>
           </div>

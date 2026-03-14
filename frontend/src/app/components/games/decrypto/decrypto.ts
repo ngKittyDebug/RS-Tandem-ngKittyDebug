@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
-import { TuiButton, TuiTextfield } from '@taiga-ui/core';
+import { TuiButton, TuiIcon, TuiTextfield } from '@taiga-ui/core';
 import { TuiInputNumber } from '@taiga-ui/kit';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DecryptoForm } from './models/decrypto-form.interface';
@@ -10,10 +10,19 @@ import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { TuiDialogService } from '@taiga-ui/core';
 import { DecryptoRules } from './components/decrypto-rules/decrypto-rules';
 import { AppTosterService } from '../../../core/services/app-toster-service';
+import { PopupService } from '../../../core/services/popup/popup-service';
+import { CardDescription } from './models/decrypto-card.interface';
 
 @Component({
   selector: 'app-decrypto',
-  imports: [ReactiveFormsModule, TuiInputNumber, TuiTextfield, TuiButton, TranslocoDirective],
+  imports: [
+    ReactiveFormsModule,
+    TuiInputNumber,
+    TuiIcon,
+    TuiTextfield,
+    TuiButton,
+    TranslocoDirective,
+  ],
   templateUrl: './decrypto.html',
   styleUrl: './decrypto.scss',
 })
@@ -24,6 +33,7 @@ export class Decrypto implements OnInit {
   private tosterService = inject(AppTosterService);
   private fb = inject(FormBuilder);
   protected gameStarted = signal<boolean>(false);
+  private popupService = inject(PopupService);
 
   public ngOnInit(): void {
     this.newGame();
@@ -80,13 +90,21 @@ export class Decrypto implements OnInit {
   }
 
   protected openRules(): void {
-    console.log('rules');
-    this.dialogs
-      .open(new PolymorpheusComponent(DecryptoRules), {
-        label: this.transloco.translate('decrypto.gameRulesLabel'),
-        size: 'l',
-      })
-      .subscribe();
+    this.popupService.openPopup(
+      new PolymorpheusComponent(DecryptoRules),
+      this.transloco.translate('decrypto.gameRulesLabel'),
+      'l',
+    );
+  }
+
+  protected openCardDescription(
+    cardDescription: CardDescription | undefined,
+    cardName: string,
+  ): void {
+    const lang = this.transloco.getActiveLang();
+    if (cardDescription && cardName) {
+      this.popupService.openPopup(cardDescription[lang], cardName, 'no-dialog-buttons', 'm');
+    }
   }
 
   protected submitDecryptoForm(): void {
