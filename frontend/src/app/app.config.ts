@@ -1,13 +1,22 @@
 import { provideEventPlugins } from '@taiga-ui/event-plugins';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, isDevMode } from '@angular/core';
+import {
+  ApplicationConfig,
+  provideBrowserGlobalErrorListeners,
+  isDevMode,
+  provideAppInitializer,
+  inject,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideTranslocoPersistLang } from '@jsverse/transloco-persist-lang';
 
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { TranslocoHttpLoader } from './transloco-loader';
 import { provideTransloco } from '@jsverse/transloco';
+import { AuthService } from './core/services/auth/auth-service';
+import { catchError, of } from 'rxjs';
+import { authInterceptor } from './core/services/auth/auth-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,7 +24,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
     provideEventPlugins(),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
     provideTransloco({
       config: {
         availableLangs: ['ru', 'en'],
@@ -29,6 +38,10 @@ export const appConfig: ApplicationConfig = {
       storage: {
         useValue: localStorage,
       },
+    }),
+    provideAppInitializer(() => {
+      const authService = inject(AuthService);
+      return authService.refresh().pipe(catchError(() => of(void 0)));
     }),
   ],
 };
