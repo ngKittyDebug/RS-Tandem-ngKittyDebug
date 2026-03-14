@@ -4,7 +4,8 @@
   "navigation": {
     "theory": "Теория",
     "catalog": "Все игры",
-    "start": "Начать игру"
+    "start": "Начать игру",
+    "settings": "Настройки игры"
   },
 
   "gameSetup": {
@@ -40,5 +41,15 @@
         "5": "5"
       }
     }
+  },
+
+  "gameQuiz": {
+    "placeholder": "Введите ответ...",
+    "check": "Проверить",
+    "correctAnswer": "Правильный ответ:",
+    "backToBoard": "Вернуться на поле",
+    "NextQuestion": "Следующий вопрос",
+    "right": "✓ Верно!",
+    "wrong": "✗ Не совсем..."
   }
 }

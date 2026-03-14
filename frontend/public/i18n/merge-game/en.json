@@ -4,7 +4,8 @@
   "navigation": {
     "theory": "Theory",
     "catalog": "All Games",
-    "start": "Start Game"
+    "start": "Start Game",
+    "settings": "Settings Game"
   },
 
   "gameSetup": {
@@ -40,5 +41,15 @@
         "5": "5"
       }
     }
+  },
+
+  "gameQuiz": {
+    "placeholder": "Enter answer...",
+    "check": "Check",
+    "correctAnswer": "Correct answer:",
+    "backToBoard": "Back to board",
+    "NextQuestion": "Next question",
+    "right": "✓ Right!",
+    "wrong": "✗ Not quite..."
   }
 }

@@ -46,6 +46,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/games/merge-game/merge-game').then((m) => m.MergeGame),
     providers: [provideTranslocoScope('merge-game')],
+    canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'settings', pathMatch: 'full' },
 
@@ -55,14 +56,12 @@ export const routes: Routes = [
           import('./components/games/merge-game/components/settings/settings').then(
             (m) => m.Settings,
           ),
-        providers: [provideTranslocoScope('merge-game')],
       },
 
       {
         path: 'board',
         loadComponent: () =>
           import('./components/games/merge-game/components/board/board').then((m) => m.Board),
-        providers: [provideTranslocoScope('merge-game')],
         canActivate: [boardGuard],
       },
 
@@ -70,7 +69,6 @@ export const routes: Routes = [
         path: 'quiz',
         loadComponent: () =>
           import('./components/games/merge-game/components/quiz/quiz').then((m) => m.Quiz),
-        providers: [provideTranslocoScope('merge-game')],
         canActivate: [quizGuard],
       },
 
@@ -78,7 +76,6 @@ export const routes: Routes = [
         path: 'theory',
         loadComponent: () =>
           import('./components/games/merge-game/components/theory/theory').then((m) => m.Theory),
-        providers: [provideTranslocoScope('merge-game')],
       },
     ],
   },

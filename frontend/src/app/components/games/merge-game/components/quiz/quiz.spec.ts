@@ -3,6 +3,7 @@ import { Quiz } from './quiz';
 import { GameService } from '../../services/game-service';
 import { Router } from '@angular/router';
 import { signal } from '@angular/core';
+import { TranslocoTestingModule } from '@jsverse/transloco';
 
 const gameServiceMock = {
   activeQuiz: signal({
@@ -24,7 +25,16 @@ describe('Quiz', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Quiz],
+      imports: [
+        Quiz,
+        TranslocoTestingModule.forRoot({
+          langs: { en: {}, ru: {} },
+          translocoConfig: {
+            availableLangs: ['ru', 'en'],
+            defaultLang: 'ru',
+          },
+        }),
+      ],
       providers: [
         { provide: GameService, useValue: gameServiceMock },
         {

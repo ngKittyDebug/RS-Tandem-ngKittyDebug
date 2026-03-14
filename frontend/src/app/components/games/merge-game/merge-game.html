@@ -8,10 +8,9 @@
       size="xs"
       appearance="outline-grayscale"
       tuiButton
-      type="button"
       (click)="goToSettingsGame()"
     >
-      настройка игры
+      {{ t('mergeGame.navigation.settings') }}
     </button>
 
     <button
@@ -20,7 +19,6 @@
       size="xs"
       appearance="outline-grayscale"
       tuiButton
-      type="button"
       (click)="goToTheory()"
       [disabled]="
         gameService.statusGame() === 'playing' || gameService.statusGame() === 'answering'
@@ -35,7 +33,6 @@
       size="xs"
       appearance="outline-grayscale"
       tuiButton
-      type="button"
       (click)="goToMain()"
     >
       {{ t('mergeGame.navigation.catalog') }}

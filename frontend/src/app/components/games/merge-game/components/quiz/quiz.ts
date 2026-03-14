@@ -5,10 +5,11 @@ import { Question } from '../../models/data.interface';
 import { GameService } from '../../services/game-service';
 import { TuiButton } from '@taiga-ui/core';
 import { QuizService } from '../../services/quiz-service';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-quiz',
-  imports: [FormsModule, TuiButton],
+  imports: [TranslocoDirective, FormsModule, TuiButton],
   templateUrl: './quiz.html',
   styleUrl: './quiz.scss',
 })
