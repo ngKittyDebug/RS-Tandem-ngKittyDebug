@@ -1,1 +1,71 @@
-<p *transloco="let t">{{ t('registration.registrationWorks') }}</p>
+<div class="registration" *transloco="let t">
+  <form
+    class="registration__form"
+    [formGroup]="registrationForm"
+    tuiAppearance="floating"
+    tuiCardLarge
+    tuiForm="m"
+    (ngSubmit)="submit()"
+  >
+    <div class="registration__title-wrapper">
+      <h2 class="registration__title" tuiTitle>{{ t('registration.heading') }}</h2>
+      <p class="registration__subtitle" tuiSubtitle>{{ t('registration.subtitle') }}</p>
+    </div>
+    <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.user">
+      <label tuiLabel for="username">{{ t('registration.form.username') }}</label>
+      <input
+        formControlName="username"
+        tuiTextfield
+        type="text"
+        autocomplete="username"
+        id="username"
+      />
+    </tui-textfield>
+    <tui-error [error]="getInputError('username')"></tui-error>
+    <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.mail">
+      <label tuiLabel for="email">{{ t('registration.form.email') }}</label>
+      <input formControlName="email" tuiTextfield type="email" autocomplete="email" id="email" />
+    </tui-textfield>
+    <tui-error [error]="getInputError('email')"></tui-error>
+    <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.lock">
+      <label tuiLabel for="password">{{ t('registration.form.password') }}</label>
+      <input
+        formControlName="password"
+        tuiTextfield
+        type="password"
+        autocomplete="current-password"
+        id="password"
+      />
+      <tui-icon tuiPassword />
+    </tui-textfield>
+    <tui-error [error]="getInputError('password')"></tui-error>
+    <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.lock">
+      <label tuiLabel for="passwordRepeat">{{ t('registration.form.passwordRepeat') }}</label>
+      <input
+        formControlName="passwordRepeat"
+        tuiTextfield
+        type="password"
+        autocomplete="current-password"
+        id="passwordRepeat"
+      />
+      <tui-icon tuiPassword />
+    </tui-textfield>
+    <tui-error [error]="getInputError('passwordRepeat')"></tui-error>
+    <div class="registration__bottom">
+      <img class="registration__img" src="/assets/images/kittysvg.svg" alt="cat" />
+      <button
+        class="registration__btn"
+        tuiButton
+        appearance="gradient"
+        type="submit"
+        size="m"
+        [disabled]="!registrationForm.valid"
+      >
+        {{ t('registration.form.button') }}
+      </button>
+      <a tuiLink class="registration__link" [routerLink]="loginRouterPath">
+        {{ t('registration.link') }}
+      </a>
+    </div>
+  </form>
+</div>

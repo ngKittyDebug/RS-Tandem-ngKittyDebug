@@ -1,3 +1,19 @@
 {
-  "registrationWorks": "Registration page works"
+  "heading": "Registration",
+  "subtitle": "Registration to MeowVault community",
+  "link": "Alredy have an account?",
+  "form": {
+    "username": "Name",
+    "email": "Email",
+    "password": "Password",
+    "passwordRepeat": "Repeat password",
+    "button": "Register"
+  },
+  "error": {
+    "required": "This field is required",
+    "emailPattern": "Invalid email format",
+    "passwordPattern": "Minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number",
+    "usernamePattern": "Any 3–20 characters, no spaces required",
+    "passwordMismatch": "Passwords do not match"
+  }
 }
