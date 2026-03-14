@@ -5,7 +5,14 @@
         <button tuiButton type="button" size="s" class="decrypto__nav_button" (click)="newGame()">
           {{ t('decrypto.newGameBtn') }}
         </button>
-        <button tuiButton type="button" size="s" class="decrypto__nav_button" (click)="startGame()" [disabled]="gameStarted()">
+        <button
+          tuiButton
+          type="button"
+          size="s"
+          class="decrypto__nav_button"
+          (click)="startGame()"
+          [disabled]="gameStarted()"
+        >
           {{ t('decrypto.startBtn') }}
         </button>
         <button tuiButton type="button" size="s" class="decrypto__nav_button" (click)="openRules()">
@@ -13,7 +20,9 @@
         </button>
       </div>
       <div class="decrypto__inf">
-        <p class="decrypto__inf_period">{{ t('decrypto.gamePeriods') }}: {{this.gameService.gamePeriod()}} / 3</p>
+        <p class="decrypto__inf_period">
+          {{ t('decrypto.gamePeriods') }}: {{ this.gameService.gamePeriod() }} / 3
+        </p>
       </div>
     </div>
     <div class="decrypto__field">
@@ -80,7 +89,9 @@
           appearance="gradient"
           type="submit"
           class="decrypto__form_check_button"
-          [disabled]="decryptoForm.invalid || decryptoForm.pristine || this.gameService.gameResult() !== null"
+          [disabled]="
+            decryptoForm.invalid || decryptoForm.pristine || this.gameService.gameResult() !== null
+          "
         >
           {{ t('decrypto.checkBtn') }}
         </button>
