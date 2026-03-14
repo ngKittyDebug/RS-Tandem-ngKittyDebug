@@ -11,6 +11,11 @@
     align-items: center;
     justify-content: space-between;
     background: transparent;
+
+    @media (max-width: 500px) {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
   }
 
   .nav {

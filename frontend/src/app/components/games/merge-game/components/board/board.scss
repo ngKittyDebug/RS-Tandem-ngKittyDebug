@@ -6,6 +6,10 @@
   padding: 1rem;
   min-height: 0;
   box-sizing: border-box;
+
+  @media (max-width: 600px) {
+    padding: 0;
+  }
 }
 
 .board {
@@ -16,7 +20,11 @@
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(6, 1fr);
   gap: 10px;
-  padding: 2rem 1rem;
+  padding: 1rem;
+
+  @media (max-width: 600px) {
+    padding: 0;
+  }
 
   &__row {
     grid-column: span 4;
