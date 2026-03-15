@@ -24,6 +24,10 @@
   &__btn {
     width: 100%;
     margin-bottom: 5px;
+
+    &:not(:disabled):hover ~ .registration__img {
+      transform: translateY(-2px);
+    }
   }
 
   &__bottom {
@@ -43,9 +47,11 @@
 
   &__img {
     position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    transform: translate(-75px, -87px) scale(0.4);
+    width: 105px;
+    height: auto;
+    z-index: 2;
+    top: 42px;
+    right: -7px;
+    transition: all 0.2s ease;
   }
 }
