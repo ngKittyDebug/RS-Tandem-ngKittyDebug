@@ -36,9 +36,7 @@ model User {
 
 model Storage {
   id String @id @default(uuid())
-
   key String @unique
-
   storage Json
 
   @@map("storages")
