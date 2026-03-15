@@ -13,6 +13,8 @@ import { RegisterField } from './models/register-field.type';
 import { firstValueFrom } from 'rxjs';
 import { AppRoute, getRoutePath } from '../../app.routes';
 import { RouterModule } from '@angular/router';
+import { AppTosterService } from '../../core/services/app-toster-service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-registration',
@@ -39,6 +41,7 @@ export class Registration {
   private translocoService = inject(TranslocoService);
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private toster = inject(AppTosterService);
   protected loginRouterPath = getRoutePath(AppRoute.LOGIN);
   public t(key: string): string {
     return this.translocoService.translate(key);
@@ -64,17 +67,24 @@ export class Registration {
       email: email,
       password: password,
     };
-    console.log(User);
     try {
       await firstValueFrom(this.authService.register(User));
     } catch (error) {
       console.error(error);
+      if (error instanceof HttpErrorResponse) {
+        let key = 'registration.error.unknown';
+        if (error.status === 400) key = 'registration.error.invalidData';
+        if (error.status === 409) key = 'registration.error.userExists';
+        const message = this.translocoService.translate(key);
+        this.toster.showErrorToster(message);
+      } else {
+        this.toster.showErrorToster(this.translocoService.translate('registration.erro.unknown'));
+      }
     }
   }
   protected getInputError(typeInput: RegisterField): string | null {
     const control = this.registrationForm.get(typeInput);
     if (!control || !control.touched) return null;
-
     if (control.hasError('required')) {
       return this.translocoService.translate('registration.error.required');
     }
@@ -85,7 +95,6 @@ export class Registration {
     if (typeInput === 'passwordRepeat' && this.registrationForm.hasError('passwords')) {
       return this.translocoService.translate('registration.error.passwordMismatch');
     }
-
     return null;
   }
 }
