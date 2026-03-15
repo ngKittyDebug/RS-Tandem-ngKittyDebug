@@ -1,7 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { TuiIcon, tuiIconResolverProvider } from '@taiga-ui/core';
 import { TuiTitle, TuiSurface } from '@taiga-ui/core';
-import { TuiLink } from '@taiga-ui/core';
 import { TuiCardLarge, TuiHeader } from '@taiga-ui/layout';
 import { TuiBreakpointService, TuiButton, type TuiSizeL } from '@taiga-ui/core';
 import { TuiBlockStatus } from '@taiga-ui/layout';
@@ -15,9 +15,9 @@ import { TranslocoDirective } from '@jsverse/transloco';
     TranslocoDirective,
     TuiCardLarge,
     TuiHeader,
+    TuiIcon,
     TuiTitle,
     TuiSurface,
-    TuiLink,
     AsyncPipe,
     TuiBlockStatus,
     TuiButton,
@@ -25,6 +25,9 @@ import { TranslocoDirective } from '@jsverse/transloco';
   templateUrl: './main.html',
   styleUrls: ['./main.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    tuiIconResolverProvider((icon) => (icon.includes('/') ? icon : `/assets/icons/${icon}.svg`)),
+  ],
 })
 export class Main {
   protected readonly breakpointService = inject(TuiBreakpointService);
