@@ -42,4 +42,12 @@ describe('LaguageSwitcher', () => {
     expect(mockTranslocoService.setActiveLang).toHaveBeenCalledWith(newLang);
     expect(component.currentLang).toBe(newLang);
   });
+
+  it('should be initialized with the current language from the service', async () => {
+    expect(mockTranslocoService.getActiveLang).toHaveBeenCalled();
+  });
+
+  it('should receive a list of available languages', async () => {
+    expect(mockTranslocoService.getAvailableLangs).toHaveBeenCalled();
+  });
 });
