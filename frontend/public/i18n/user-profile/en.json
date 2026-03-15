@@ -1,3 +1,60 @@
 {
-  "userProfileWorks": "User profile page works"
+  "title": "My  Profile",
+  "subtitle": "Manage your account and view statistics",
+
+  "userInfo": {
+    "createdTitle": "Member since",
+    "genresTitle": "Favorite genres"
+  },
+
+  "statistic": {
+    "gamesPlayed": "Games played",
+    "score": "Total score",
+    "hoursPlayed": "Hours in game",
+    "achievements": "Achievements"
+  },
+
+  "accountSettings": {
+    "title": "Account Settings",
+
+    "editButton": "Edit",
+    "cancelButton": "Cancel",
+
+    "accountTitle": "Account Information",
+    "passwordTitle": "Change Password",
+    "hint": "Click Edit to change",
+
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "john_doe",
+
+    "emailLabel": "Email",
+    "emailPlaceholder": "mail@example.com",
+
+    "currentPasswordLabel": "Current password",
+    "newPasswordLabel": "New password",
+    "confirmPasswordLabel": "Confirm new password",
+    "passwordPlaceholder": "Aa888888",
+
+    "accountChangeButton": "Save Changes",
+    "passwordChangeButton": "Change Password",
+
+    "error": {
+      "required": "This field is required",
+      "passwordPattern": "Minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number",
+      "usernamePattern": "Any 3–20 characters, no spaces required",
+      "mismathPassword": "Passwords do not match"
+    }
+  },
+
+  "recentActivity": {
+    "title": "Recent Activity",
+
+    "game1Title": "Neon Racing",
+    "game1Description": "Achieved high score",
+    "game1Date": "hours ago",
+
+    "game2Title": "Puzzle Master",
+    "game2Description": "Completed level 50",
+    "game2Date": "hours ago"
+  }
 }

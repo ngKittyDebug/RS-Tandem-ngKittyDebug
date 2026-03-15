@@ -17,6 +17,12 @@ import { provideTransloco } from '@jsverse/transloco';
 import { AuthService } from './core/services/auth/auth-service';
 import { catchError, of } from 'rxjs';
 import { authInterceptor } from './core/services/auth/auth-interceptor';
+import { registerLocaleData } from '@angular/common';
+import localeRu from '@angular/common/locales/ru';
+import localeEn from '@angular/common/locales/en';
+
+registerLocaleData(localeRu);
+registerLocaleData(localeEn);
 
 export const appConfig: ApplicationConfig = {
   providers: [
