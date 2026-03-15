@@ -13,7 +13,13 @@
     </div>
     <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.user">
       <label tuiLabel for="username">{{ t('registration.form.username') }}</label>
-      <input formControlName="username" type="text" autocomplete="username" id="username" />
+      <input
+        formControlName="username"
+        tuiTextfield
+        type="text"
+        autocomplete="username"
+        id="username"
+      />
     </tui-textfield>
     <tui-error [error]="getInputError('username')"></tui-error>
     <tui-textfield class="reg__inp" tuiTextfieldSize="m" iconStart="@tui.mail">
