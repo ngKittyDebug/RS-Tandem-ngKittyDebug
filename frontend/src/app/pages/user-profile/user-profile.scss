@@ -1,0 +1,29 @@
+.page {
+  &_user-profile {
+    max-width: 80rem;
+    width: 100vw;
+    padding: 2rem;
+  }
+}
+
+.page-header {
+  gap: 0.75rem;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+}
+
+.user-profile-layout {
+  display: flex;
+  gap: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.user-settings {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  gap: 1rem;
+}

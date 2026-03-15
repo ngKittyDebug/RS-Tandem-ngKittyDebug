@@ -1,0 +1,33 @@
+<div tuiCardLarge tuiAppearance="floating" *transloco="let t">
+  <header tuiHeader="xs">
+    <h2 tuiTitle>{{ t('userProfile.recentActivity.title') }}</h2>
+  </header>
+
+  <div class="activity-list">
+    <article class="activity-item" tuiCardLarge="compact" tuiHeader tuiAppearance="neutral">
+      <tui-icon icon="@tui.cat" size="xl" tuiBadge [style.background]="'var(--accent-1)'" />
+
+      <div class="activity-item__content">
+        <p tuiText class="activity-item__title">{{ t('userProfile.recentActivity.game1Title') }}</p>
+        <p tuiText class="activity-item__subtitle">
+          {{ t('userProfile.recentActivity.game1Description') }}
+        </p>
+      </div>
+
+      <div class="activity-item__time">2 {{ t('userProfile.recentActivity.game1Date') }}</div>
+    </article>
+
+    <article class="activity-item" tuiCardLarge="compact" tuiHeader tuiAppearance="neutral">
+      <tui-icon icon="@tui.cat" size="xl" tuiBadge [style.background]="'var(--accent-2)'" />
+
+      <div class="activity-item__content">
+        <p tuiText class="activity-item__title">{{ t('userProfile.recentActivity.game2Title') }}</p>
+        <p tuiText class="activity-item__subtitle">
+          {{ t('userProfile.recentActivity.game2Description') }}
+        </p>
+      </div>
+
+      <div class="activity-item__time">5 {{ t('userProfile.recentActivity.game2Date') }}</div>
+    </article>
+  </div>
+</div>

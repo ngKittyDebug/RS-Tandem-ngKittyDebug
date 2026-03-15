@@ -1,0 +1,23 @@
+.profile-stats {
+  display: flex;
+  gap: 1rem;
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 0.1rem;
+  }
+
+  &__icon {
+    margin-bottom: 0.6rem;
+  }
+
+  &__count {
+    font-size: 1.5rem;
+  }
+
+  &__description {
+    font-size: 0.875rem;
+  }
+}

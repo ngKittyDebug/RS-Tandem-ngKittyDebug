@@ -63,6 +63,7 @@
     "@commitlint/config-conventional": "^20.4.2",
     "@jsverse/transloco": "^8.2.1",
     "@ngx-env/builder": "^21.0.1",
+    "@vitest/coverage-v8": "^4.0.18",
     "angular-eslint": "21.2.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
