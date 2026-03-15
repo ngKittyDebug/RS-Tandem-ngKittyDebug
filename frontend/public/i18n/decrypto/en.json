@@ -4,6 +4,7 @@
   "rulesBtn": "rules",
   "nextRoundBtn": "next round",
   "gamePeriods": "period",
+  "gameAttempts": "attempts",
   "codesLabels": "Code (1-4):",
   "hintsLabels": "Hints:",
   "checkBtn": "Check",

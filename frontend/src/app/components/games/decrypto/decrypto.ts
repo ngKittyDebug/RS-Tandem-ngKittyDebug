@@ -48,32 +48,37 @@ export class Decrypto implements OnInit {
     hint3: this.fb.nonNullable.control('', [Validators.required]),
   });
 
+  protected updateGameHintsInputs(): void {
+    this.decryptoForm.patchValue({
+      hint1: `${this.gameService.gameHints[0][this.gameService.gamePeriod() - 1]}`,
+      hint2: `${this.gameService.gameHints[1][this.gameService.gamePeriod() - 1]}`,
+      hint3: `${this.gameService.gameHints[2][this.gameService.gamePeriod() - 1]}`,
+    });
+  }
+
   protected startGame(): void {
     console.log('start game');
+    this.gameService.generateCardsForGame();
     this.gameService.generateCards();
     this.gameService.generateGameHints();
-    this.decryptoForm.patchValue({
-      hint1: `${this.gameService.gameHints[0].splice(0, 1)}`,
-      hint2: `${this.gameService.gameHints[1].splice(0, 1)}`,
-      hint3: `${this.gameService.gameHints[2].splice(0, 1)}`,
-    });
+    this.updateGameHintsInputs();
     this.decryptoForm.controls.code1.enable();
     this.decryptoForm.controls.code2.enable();
     this.decryptoForm.controls.code3.enable();
     this.gameStarted.set(true);
-
-    console.log(this.gameService.gameHints);
   }
 
   protected newGame(): void {
     console.log('new game');
+    this.gameService.generateWrightCodesForGame();
     this.gameService.generateWrightCode();
     this.gameService.resetGameCards();
     this.gameService.resetGameHints();
     this.decryptoForm.reset();
     this.gameStarted.set(false);
     this.gameService.gameResult.set(null);
-    this.gameService.gamePeriod.set(1);
+    this.gameService.gamePeriod.set(1); // magic number
+    this.gameService.gameAttempts.set(3); // magic number
     this.decryptoForm.controls.code1.disable();
     this.decryptoForm.controls.code2.disable();
     this.decryptoForm.controls.code3.disable();
@@ -81,12 +86,24 @@ export class Decrypto implements OnInit {
 
   protected newRound(): void {
     console.log('new round');
+    this.gameService.roundResult.set(false);
+    this.gameService.gamePeriod.update((current) => current + 1);
+    this.gameService.resetGameCards();
+    this.gameService.resetGameHints();
     this.decryptoForm.reset();
-    this.decryptoForm.patchValue({
-      hint1: `${this.gameService.gameHints[0].splice(0, 1)}`,
-      hint2: `${this.gameService.gameHints[1].splice(0, 1)}`,
-      hint3: `${this.gameService.gameHints[2].splice(0, 1)}`,
-    });
+    this.gameService.generateWrightCode();
+    this.gameService.generateCards();
+    this.gameService.generateGameHints();
+    this.updateGameHintsInputs();
+    this.decryptoForm.controls.code1.enable();
+    this.decryptoForm.controls.code2.enable();
+    this.decryptoForm.controls.code3.enable();
+  }
+
+  protected newPeriod(): void {
+    console.log('new period');
+    this.decryptoForm.reset();
+    this.updateGameHintsInputs();
   }
 
   protected openRules(): void {
@@ -101,6 +118,8 @@ export class Decrypto implements OnInit {
     cardDescription: CardDescription | undefined,
     cardName: string,
   ): void {
+    console.log(cardDescription);
+    console.log(cardName);
     const lang = this.transloco.getActiveLang();
     if (cardDescription && cardName) {
       this.popupService.openPopup(cardDescription[lang], cardName, 'no-dialog-buttons', 'm');
@@ -111,13 +130,21 @@ export class Decrypto implements OnInit {
     const { code1, code2, code3 } = this.decryptoForm.getRawValue();
     const resultArr = [code1, code2, code3];
     this.gameService.checkResult(resultArr);
-    if (this.gameService.gameResult() === null) {
-      this.newRound();
-      this.tosterService.showWarningToster('You lose period. Try better');
-    } else if (this.gameService.gameResult() === false) {
-      this.tosterService.showErrorToster('You lose game. Try again', 'Lose');
+    console.log('this.gameService');
+    if (this.gameService.roundResult() === true) {
+      console.log('win round');
+      this.tosterService.showPositiveToster('You win round', 'Win round'); // вставить перевод
+    } else if (this.gameService.roundResult() === false && this.gameService.gameResult() !== true) {
+      // lose attempt
+      this.tosterService.showWarningToster('Your attempt wrong. Try again', 'Wrong attempt'); // вставить перевод
+      this.gameService.roundResult.set(null);
+      this.newPeriod();
+    }
+
+    if (this.gameService.gameResult() === false) {
+      this.tosterService.showErrorToster('You lose game. Try again', 'Lose'); // вставить перевод
     } else if (this.gameService.gameResult() === true) {
-      this.tosterService.showPositiveToster('You win. Congratulations', 'Win');
+      this.tosterService.showPositiveToster('You win. Congratulations', 'Win'); // вставить перевод
     }
   }
 }
