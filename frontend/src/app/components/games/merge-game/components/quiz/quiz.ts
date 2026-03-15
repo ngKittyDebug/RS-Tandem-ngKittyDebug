@@ -24,19 +24,14 @@ export class Quiz {
     Math.min(this.gameService.questionMode(), this.activeQuiz()?.words.length ?? 1),
   );
 
-  // какие слова будем спрашивать — берём случайные N из группы
   private readonly wordsToAsk = computed(() => {
     const words = [...(this.activeQuiz()?.words ?? [])];
     return words.sort(() => Math.random() - 0.5).slice(0, this.wordCount());
   });
 
-  // текущий индекс вопроса
   protected readonly currentIndex = signal(0);
-
-  // текущее слово
   protected readonly currentWord = computed(() => this.wordsToAsk()[this.currentIndex()]);
 
-  // текущий вопрос
   protected readonly currentQuestion = computed((): Question | null => {
     const quiz = this.activeQuiz();
     const word = this.currentWord();

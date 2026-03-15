@@ -123,10 +123,20 @@
   }
 
   &__footer {
+    position: relative;
     margin-top: auto;
     display: flex;
     justify-content: flex-end;
     padding-top: 1rem;
     border-top: 1px solid color-mix(in srgb, var(--accent-3) 35%, transparent);
+  }
+
+  &__cat {
+    position: absolute;
+    width: 110px;
+    top: -53px;
+    left: 15px;
+    transform: scaleX(-1);
+    z-index: 3;
   }
 }
