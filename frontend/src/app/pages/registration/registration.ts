@@ -61,7 +61,7 @@ export class Registration {
   public async submit(): Promise<void> {
     const { username, email, password } = this.registrationForm.getRawValue();
     if (!username || !email || !password)
-      throw new Error('Форма регистрации заполнена некорректно');
+      throw new Error(this.translocoService.translate('registration.erro.invalidData'));
     const User: RegisterDto = {
       username: username,
       email: email,

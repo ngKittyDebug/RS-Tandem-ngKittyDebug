@@ -2,18 +2,18 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { LoginResponse, RegisterDto } from '../../pages/registration/models/register.interfaces';
 import { Observable, map, tap } from 'rxjs';
+import { API_BASE_URL, AUTH_ENDPOINT } from '../constants/api.constants';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private readonly url = 'https://meow-vault-pr-44.onrender.com/auth';
   private accessToken = signal<string | null>(null);
 
   public register(data: RegisterDto): Observable<void> {
     return this.http
-      .post<LoginResponse>(`${this.url}/register`, data, {
+      .post<LoginResponse>(`${API_BASE_URL}${AUTH_ENDPOINT}/register`, data, {
         withCredentials: true,
       })
       .pipe(
