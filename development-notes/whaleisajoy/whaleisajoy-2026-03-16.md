@@ -50,7 +50,7 @@
 
 ### userService
 
-Проверила, что:
+У меня есть 3 метода: `getUser`, `updateUser` и `changePassword`. Проверила, что:
 
 - по эндпоинтам получаются ожидаемые данные
 - используется правильный HTTP-метод
@@ -59,7 +59,7 @@
 
 ### profileSidebar
 
-Тестировала, что отображаются данные, взятые из `userStore`. Также здесь из стора берется дата регистрации пользователя, и ее нужно форматировать.
+Тестировала, что отображаются данные, взятые из `userStore`. Также здесь из стора берется дата регистрации пользователя, и ее нужно форматировать, в том числе после смены языка.
 
 Было два варианта:
 
@@ -95,7 +95,11 @@ new Intl.DateTimeFormat();
 ## Code Review
 
 Продолжаем ревьюить PR.
-Я добавляла свои комментарии в [pr#24](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/pull/24), [pr#54](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/pull/54), [pr#67](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/pull/67)
+Я добавляла свои комментарии в
+
+- [pr#24](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/pull/24): нашла опечатку, предложила вынести название ключа `localStorage` в отдельную переменную, предложила обернуть `outlet` в `main`
+- [pr#54](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/pull/54): предложила переименовать сервис, тк с таким названием сервис уже есть, нашла лишний файл, нашла, что отсутствует файл .spec у сервиса, и пара опечаток
+- [pr#67](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/pull/67): указала на лишние файлы и предложила изменить ссылку на переменную
 
 ## Планы
 
