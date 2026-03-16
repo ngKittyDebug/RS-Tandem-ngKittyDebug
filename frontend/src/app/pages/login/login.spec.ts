@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
 import { Login } from './login';
+import { provideRouter } from '@angular/router';
 
 describe('Login', () => {
   let component: Login;
@@ -19,6 +20,7 @@ describe('Login', () => {
           },
         }),
       ],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Login);

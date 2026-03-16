@@ -2,18 +2,48 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '../auth.controller';
 import { AuthService } from '../auth.service';
 import { CreateAuthDto } from '../dto/create-auth.dto';
+import { LoginAuthDto } from '../dto/login-auth.dto';
+import { Response, Request } from 'express';
+import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
+
+interface AuthResponse {
+  accessToken: string;
+}
+
+interface LogoutResponse {
+  logout: boolean;
+}
+
+const createResponseMock = (): Response =>
+  ({
+    cookie: jest.fn(),
+  }) as unknown as Response;
+
+const createRequestMock = (cookies?: Record<string, string>): Request =>
+  ({
+    cookies: cookies || {},
+  }) as unknown as Request;
 
 describe('AuthController', () => {
   let controller: AuthController;
-  let authServiceMock: jest.Mocked<AuthService>;
+  let authServiceMock: DeepMockProxy<AuthService>;
+  let responseMock: Response;
+
+  const mockCreateAuthDto: CreateAuthDto = {
+    email: 'test@example.com',
+    username: 'testuser',
+    password: 'password123',
+  };
+
+  const mockLoginAuthDto: LoginAuthDto = {
+    email: 'test@example.com',
+    username: '',
+    password: 'password123',
+  };
 
   beforeEach(async () => {
-    authServiceMock = {
-      create: jest.fn(),
-      findOne: jest.fn(),
-      update: jest.fn(),
-      remove: jest.fn(),
-    } as unknown as jest.Mocked<AuthService>;
+    authServiceMock = mockDeep<AuthService>();
+    responseMock = createResponseMock();
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
@@ -32,53 +62,58 @@ describe('AuthController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('create', () => {
-    const createAuthDto: CreateAuthDto = {
-      email: 'test@gmail.com',
-      password: 'password123',
-    };
+  describe('create (register)', () => {
+    it('should call authService.signIn and return result', async () => {
+      const mockResult: AuthResponse = { accessToken: 'access-token' };
+      authServiceMock.registration.mockResolvedValue(mockResult);
 
-    const mockUser = {
-      id: 'test-uuid',
-      email: createAuthDto.email,
-      password: createAuthDto.password,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+      const result = await controller.create(mockCreateAuthDto, responseMock);
 
-    it('should create a new user', async () => {
-      authServiceMock.create.mockResolvedValue(mockUser);
-
-      const result = await controller.create(createAuthDto);
-
-      expect(result).toEqual(mockUser);
-      expect(authServiceMock.create).toHaveBeenCalledWith(createAuthDto);
+      expect(authServiceMock.registration).toHaveBeenCalledWith(
+        responseMock,
+        mockCreateAuthDto,
+      );
+      expect(result).toEqual(mockResult);
     });
   });
 
-  describe('update', () => {
-    const updateAuthDto: Partial<CreateAuthDto> = {
-      email: 'updated@gmail.com',
-    };
+  describe('login', () => {
+    it('should call authService.login and return result', async () => {
+      const mockResult: AuthResponse = { accessToken: 'access-token' };
+      authServiceMock.login.mockResolvedValue(mockResult);
 
-    it('should update auth by id', () => {
-      authServiceMock.update.mockReturnValue('This action updates a #1 auth');
+      const result = await controller.login(mockLoginAuthDto, responseMock);
 
-      const result = controller.update('1', updateAuthDto);
-
-      expect(result).toBe('This action updates a #1 auth');
-      expect(authServiceMock.update).toHaveBeenCalledWith(1, updateAuthDto);
+      expect(authServiceMock.login).toHaveBeenCalledWith(
+        responseMock,
+        mockLoginAuthDto,
+      );
+      expect(result).toEqual(mockResult);
     });
   });
 
-  describe('remove', () => {
-    it('should remove auth by id', () => {
-      authServiceMock.remove.mockReturnValue('This action removes a #1 auth');
+  describe('refresh', () => {
+    it('should call authService.refresh and return result', async () => {
+      const mockResult: AuthResponse = { accessToken: 'new-access-token' };
+      authServiceMock.refresh.mockResolvedValue(mockResult);
+      const req = createRequestMock();
 
-      const result = controller.remove('1');
+      const result = await controller.refresh(responseMock, req);
 
-      expect(result).toBe('This action removes a #1 auth');
-      expect(authServiceMock.remove).toHaveBeenCalledWith(1);
+      expect(authServiceMock.refresh).toHaveBeenCalledWith(req, responseMock);
+      expect(result).toEqual(mockResult);
+    });
+  });
+
+  describe('logout', () => {
+    it('should call authService.logout and return result', () => {
+      const mockResult: LogoutResponse = { logout: true };
+      authServiceMock.logout.mockReturnValue(mockResult);
+
+      const result = controller.logout(responseMock);
+
+      expect(authServiceMock.logout).toHaveBeenCalledWith(responseMock);
+      expect(result).toEqual(mockResult);
     });
   });
 });

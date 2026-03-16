@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { STORAGE_KEYS } from '../../shared/constants/storage-constants';
-import { ThemeNames } from '../../shared/constants/enum';
+import { ThemeNames } from '../../shared/enums/theme-names.enum';
 
 @Injectable({
   providedIn: 'root',

@@ -1,1 +1,100 @@
-<p *transloco="let t">{{ t('main.mainWorks') }}</p>
+<div class="main-container" *transloco="let t">
+  <div class="header-container">
+    <header tuiHeader="h1">
+      <img alt="cat inbox" src="assets/images/cat110.svg" class="image" />
+      <hgroup tuiTitle>
+        <h1>{{ t('main.title') }}</h1>
+        <p tuiSubtitle>{{ t('main.subtitle') }}</p>
+      </hgroup>
+    </header>
+  </div>
+  <div class="description">
+    <p tuiSubtitle>
+      <tui-icon icon="https://cdn-icons-png.flaticon.com/64/12710/12710759.png" class="hover" />
+      {{ t('main.description.first') }}
+    </p>
+    <p tuiSubtitle>{{ t('main.description.second') }}</p>
+    <p tuiSubtitle>{{ t('main.description.third') }}</p>
+  </div>
+
+  @if (size$ | async; as size) {
+    <div class="container">
+      <tui-block-status class="card" [card]="true">
+        <img alt="cat inbox" src="assets/images/cat116.svg" tuiSlot="top" class="image" />
+
+        {{ t('main.register') }}
+        <button appearance="secondary" tuiButton type="button" [size]="size" class="reg-button">
+          {{ t('main.button.start') }}
+        </button>
+      </tui-block-status>
+    </div>
+    <div class="card-container">
+      <div tuiCardLarge tuiSurface="floating">
+        <header tuiHeader>
+          <h2 tuiTitle>{{ t('main.game') }}</h2>
+        </header>
+        <section>Replace me</section>
+        <footer>
+          <button appearance="gradient" size="m" tuiButton type="button">
+            {{ t('main.play') }}
+          </button>
+        </footer>
+      </div>
+      <div tuiCardLarge tuiSurface="floating">
+        <header tuiHeader>
+          <h2 tuiTitle>{{ t('main.game') }}</h2>
+        </header>
+        <section>Replace me</section>
+        <footer>
+          <button appearance="gradient" size="m" tuiButton type="button">
+            {{ t('main.play') }}
+          </button>
+        </footer>
+      </div>
+      <div tuiCardLarge tuiSurface="floating">
+        <header tuiHeader>
+          <h2 tuiTitle>{{ t('main.game') }}</h2>
+        </header>
+        <section>Replace me</section>
+        <footer>
+          <button appearance="gradient" size="m" tuiButton type="button">
+            {{ t('main.play') }}
+          </button>
+        </footer>
+      </div>
+      <div tuiCardLarge tuiSurface="floating">
+        <header tuiHeader>
+          <h2 tuiTitle>{{ t('main.game') }}</h2>
+        </header>
+        <section>Replace me</section>
+        <footer>
+          <button appearance="gradient" size="m" tuiButton type="button">
+            {{ t('main.play') }}
+          </button>
+        </footer>
+      </div>
+      <div tuiCardLarge tuiSurface="floating">
+        <header tuiHeader>
+          <h2 tuiTitle>{{ t('main.game') }}</h2>
+        </header>
+        <section>Replace me</section>
+        <footer>
+          <button appearance="gradient" size="m" tuiButton type="button">
+            {{ t('main.play') }}
+          </button>
+        </footer>
+      </div>
+      <div tuiCardLarge tuiSurface="floating">
+        <header tuiHeader>
+          <h2 tuiTitle>{{ t('main.game') }}</h2>
+        </header>
+        <section>Replace me</section>
+        <footer>
+          <button appearance="gradient" size="m" tuiButton type="button">
+            {{ t('main.play') }}
+          </button>
+        </footer>
+      </div>
+    </div>
+  }
+</div>

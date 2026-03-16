@@ -1,0 +1,30 @@
+<aside class="profile-sidebar" *transloco="let t">
+  <div tuiCardLarge tuiAppearance="floating">
+    <header tuiHeader>
+      <div class="avatar">
+        <tui-avatar size="xxl" tuiAvatarOutline="var(--tui-background-accent-2)">
+          <img alt="cat-1" src="assets/images/cat-1.png" />
+        </tui-avatar>
+        <button class="avatar__button" tuiButton type="button" size="s" appearance="gradient">
+          <tui-icon icon="@tui.camera" />
+        </button>
+      </div>
+
+      <h2 tuiTitle>{{ userStore.user()?.username || '' }}</h2>
+      <p>{{ userStore.user()?.email || '' }}</p>
+    </header>
+
+    <section class="profile-sidebar__content">
+      <h3 tuiTitle class="profile-sidebar__title">{{ t('userProfile.userInfo.createdTitle') }}</h3>
+      <p class="profile-sidebar__subtitle">
+        {{ userStore.user()?.createdAt | date: 'MMMM yyyy' : undefined : activeLang() || '' }}
+      </p>
+
+      <h3 tuiTitle class="profile-sidebar__title">{{ t('userProfile.userInfo.genresTitle') }}</h3>
+      <div class="profile-sidebar__content-genres">
+        <tui-badge appearance="primary">Racing</tui-badge>
+        <tui-badge appearance="accent">Puzzle</tui-badge>
+      </div>
+    </section>
+  </div>
+</aside>

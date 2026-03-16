@@ -46,7 +46,19 @@ Thumbs.db
 
 /**/.env
 
+# BE specific(s)
 backend/src/generated
 backend/dist
 backend/coverage
+
+# FE specific(s)
+frontend/src/generated
+frontend/dist
+frontend/coverage
 .env
+
+# Claude Code
+.agents/skills/
+.claude/
+CLAUDE.md
+skills-lock.json
