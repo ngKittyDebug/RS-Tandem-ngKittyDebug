@@ -1,32 +1,41 @@
-import { Directive, ElementRef, AfterViewInit, inject } from '@angular/core';
+import { Directive, ElementRef, AfterViewInit, inject, OnDestroy } from '@angular/core';
 
 @Directive({
   selector: '[appEyeCompass]',
   standalone: true,
 })
-export class EyeCompassDirective implements AfterViewInit {
+export class EyeCompassDirective implements AfterViewInit, OnDestroy {
   private el = inject<ElementRef<HTMLElement>>(ElementRef);
-  public ngAfterViewInit(): void {
+
+  private mouseMoveHandler = (e: MouseEvent): void => {
     const pupils = this.el.nativeElement.querySelectorAll<SVGElement>('[data-pupil]');
-    document.addEventListener('mousemove', (e) => {
-      const mouseX = e.clientX;
-      const mouseY = e.clientY;
-      pupils.forEach((pupil) => {
-        const rect = pupil.getBoundingClientRect();
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
 
-        const eyeX = rect.left + rect.width / 2;
-        const eyeY = rect.top + rect.height / 2;
+    pupils.forEach((pupil): void => {
+      const rect = pupil.getBoundingClientRect();
 
-        const dx = mouseX - eyeX;
-        const dy = mouseY - eyeY;
+      const eyeX = rect.left + rect.width / 2;
+      const eyeY = rect.top + rect.height / 2;
 
-        const angle = Math.atan2(dy, dx);
-        const distance = 7;
+      const dx = mouseX - eyeX;
+      const dy = mouseY - eyeY;
 
-        const x = Math.cos(angle) * distance;
-        const y = Math.sin(angle) * distance;
-        pupil.style.transform = `translate(${x}px, ${y}px)`;
-      });
+      const angle = Math.atan2(dy, dx);
+      const distance = 7;
+
+      const x = Math.cos(angle) * distance;
+      const y = Math.sin(angle) * distance;
+
+      pupil.style.transform = `translate(${x}px, ${y}px)`;
     });
+  };
+
+  public ngAfterViewInit(): void {
+    document.addEventListener('mousemove', this.mouseMoveHandler);
+  }
+
+  public ngOnDestroy(): void {
+    document.removeEventListener('mousemove', this.mouseMoveHandler);
   }
 }
