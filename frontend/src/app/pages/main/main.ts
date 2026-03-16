@@ -30,9 +30,9 @@ import { TranslocoDirective } from '@jsverse/transloco';
   ],
 })
 export class Main {
-  protected readonly breakpointService = inject(TuiBreakpointService);
+  public breakpointService = inject(TuiBreakpointService);
 
-  protected size$: Observable<TuiSizeL> = this.breakpointService.pipe(
+  public size$: Observable<TuiSizeL> = this.breakpointService.pipe(
     map((key) => (key === 'mobile' ? 'm' : 'l')),
   );
 }
