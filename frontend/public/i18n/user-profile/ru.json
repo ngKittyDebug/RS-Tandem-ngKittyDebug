@@ -1,3 +1,60 @@
 {
-  "userProfileWorks": "Страница профиля работает"
+  "title": "Мой профиль",
+  "subtitle": "Управляйте своей учетной записью и просматривайте статистику",
+
+  "userInfo": {
+    "createdTitle": "Участник с",
+    "genresTitle": "Любимые жанры"
+  },
+
+  "statistic": {
+    "gamesPlayed": "Сыграно игр",
+    "score": "Общий счет",
+    "hoursPlayed": "Часов в игре",
+    "achievements": "Достижения"
+  },
+
+  "accountSettings": {
+    "title": "Настройки учетной записи",
+
+    "editButton": "Редактировать",
+    "cancelButton": "Отменить",
+
+    "accountTitle": "Информация об учетной записи",
+    "passwordTitle": "Изменить пароль",
+    "hint": "Нажмите Редактировать, чтобы изменить",
+
+    "usernameLabel": "Имя пользователя",
+    "usernamePlaceholder": "john_doe",
+
+    "emailLabel": "Email",
+    "emailPlaceholder": "mail@example.com",
+
+    "currentPasswordLabel": "Текущий пароль",
+    "newPasswordLabel": "Новый пароль",
+    "confirmPasswordLabel": "Подтвердите новый пароль",
+    "passwordPlaceholder": "Aa888888",
+
+    "accountChangeButton": "Сохранить изменения",
+    "passwordChangeButton": "Изменить пароль",
+
+    "error": {
+      "required": "Поле обязательно для заполнения",
+      "passwordPattern": "Минимум 8 символов на англ., одна заглавная буква, одна строчная и одна цифра",
+      "usernamePattern": "Любые 3–20 символов, без пробелов",
+      "mismathPassword": "Пароли не совпадают"
+    }
+  },
+
+  "recentActivity": {
+    "title": "Недавняя активность",
+
+    "game1Title": "Neon Racing",
+    "game1Description": "Достигнут высокий счет",
+    "game1Date": "часов назад",
+
+    "game2Title": "Puzzle Master",
+    "game2Description": "Завершен уровень 50",
+    "game2Date": "часов назад"
+  }
 }

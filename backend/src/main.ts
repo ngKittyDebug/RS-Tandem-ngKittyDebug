@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { SwaggerModule } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { JwtAuthGuard } from './guards/auth.guard';
-import { swaggerConfig } from './modules/auth/config/swagger.config';
+import { swaggerConfig } from './config/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

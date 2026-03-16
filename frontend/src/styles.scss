@@ -75,6 +75,10 @@ button[tuiButton][data-appearance='gradient'] {
   }
 }
 
+* {
+  box-sizing: border-box;
+}
+
 .t-root-content {
   display: flex;
   flex-direction: column;

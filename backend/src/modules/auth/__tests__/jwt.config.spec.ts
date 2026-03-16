@@ -1,5 +1,5 @@
 import { ConfigService } from '@nestjs/config';
-import { getJwtConfig } from '../config/jwt.config';
+import { getJwtConfig } from 'src/config/jwt.config';
 
 describe('getJwtConfig', () => {
   let configServiceMock: jest.Mocked<ConfigService>;

@@ -12,14 +12,32 @@ enum Role {
   admin
 }
 
+enum Provider {
+  local
+  Github
+  Google
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
   username  String   @unique
-  password  String
+  password  String   @default("null")
   role      Role     @default(user)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  avatar    String?   
+  provider  Provider? @default(local)
+  providerId String?  @unique 
 
   @@map("users")
+}
+
+
+model Storage {
+  id String @id @default(uuid())
+  key String @unique
+  storage Json
+
+  @@map("storages")
 }

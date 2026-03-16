@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { LoginDto, LoginResponse, RegisterDto } from './models/auth.interfaces';
-import { map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { API_BASE_URL, AUTH_ENDPOINT } from '../../constants/api.constants';
 import { AUTH_PATHS } from './models/auth-path.enum';
 
@@ -13,6 +13,8 @@ export class AuthService {
   private accessToken = signal<string | null>(null);
 
   public isLoggedIn = computed(() => this.accessToken() !== null);
+  public isRefreshing = false;
+  public refreshSubject = new BehaviorSubject<string | null>(null);
 
   private getUrl(path: string): string {
     return `${API_BASE_URL}${AUTH_ENDPOINT}${path}`;
@@ -24,10 +26,12 @@ export class AuthService {
         withCredentials: true,
       })
       .pipe(
-        tap((res) => {
-          this.accessToken.set(res.accessToken);
-        }),
+        tap((res) => this.accessToken.set(res.accessToken)),
         map(() => void 0),
+        catchError((err) => {
+          this.accessToken.set(null);
+          return throwError(() => err);
+        }),
       );
   }
 
@@ -37,10 +41,12 @@ export class AuthService {
         withCredentials: true,
       })
       .pipe(
-        tap((res) => {
-          this.accessToken.set(res.accessToken);
-        }),
+        tap((res) => this.accessToken.set(res.accessToken)),
         map(() => void 0),
+        catchError((err) => {
+          this.accessToken.set(null);
+          return throwError(() => err);
+        }),
       );
   }
 
@@ -52,6 +58,10 @@ export class AuthService {
       .pipe(
         tap((res) => this.accessToken.set(res.accessToken)),
         map(() => void 0),
+        catchError((err) => {
+          this.accessToken.set(null);
+          return throwError(() => err);
+        }),
       );
   }
 
