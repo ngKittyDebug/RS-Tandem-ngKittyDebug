@@ -31,4 +31,25 @@ describe('Registration', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('RegistrationForm', () => {
+    it('should have username input', () => {
+      expect(component.registrationForm.contains('username')).toBeTruthy();
+    });
+    it('should have email input', () => {
+      expect(component.registrationForm.contains('email')).toBeTruthy();
+    });
+    it('should have password input', () => {
+      expect(component.registrationForm.contains('password')).toBeTruthy();
+    });
+    it('should have passwordRepeat input', () => {
+      expect(component.registrationForm.contains('passwordRepeat')).toBeTruthy();
+    });
+  });
+
+  describe('RegistrationInvalidForm', () => {
+    it('Form is invalid', () => {
+      expect(component.registrationForm.valid).toBeFalsy();
+    });
+  });
 });
