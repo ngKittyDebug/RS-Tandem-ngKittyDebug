@@ -11,10 +11,34 @@
 
   &__icon {
     margin-bottom: 0.6rem;
+
+    &_accent-1 {
+      background-color: var(--accent-1);
+    }
+
+    &_accent-2 {
+      background-color: var(--accent-2);
+    }
+
+    &_accent-3 {
+      background-color: var(--accent-3);
+    }
   }
 
   &__count {
     font-size: 1.5rem;
+
+    &_accent-1 {
+      color: var(--accent-1);
+    }
+
+    &_accent-2 {
+      color: var(--accent-2);
+    }
+
+    &_accent-3 {
+      color: var(--accent-3);
+    }
   }
 
   &__description {

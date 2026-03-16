@@ -1,8 +1,13 @@
+:host {
+  flex: 1;
+}
+
 .page {
   &_user-profile {
     max-width: 80rem;
     width: 100vw;
     padding: 2rem;
+    align-items: start;
   }
 }
 
@@ -24,6 +29,8 @@
 .user-settings {
   display: flex;
   flex-direction: column;
-  flex: 1 1 auto;
+  // flex: 1 1 auto;
+  flex: 2 1 0;
+  min-width: 0;
   gap: 1rem;
 }

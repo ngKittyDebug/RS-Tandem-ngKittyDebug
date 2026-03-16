@@ -11,6 +11,16 @@
   align-items: center;
   gap: 1rem;
 
+  &__icon {
+    &_accent-1 {
+      background-color: var(--accent-1);
+    }
+
+    &_accent-2 {
+      background-color: var(--accent-2);
+    }
+  }
+
   &__content {
     min-width: 0;
     flex: 1;

@@ -1,5 +1,6 @@
 :host {
-  flex: 0.5 1 auto;
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .profile-sidebar {
@@ -22,6 +23,10 @@
   &__subtitle {
     margin-top: 0;
     margin-bottom: 5;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
   }
 
   &__content-genres {

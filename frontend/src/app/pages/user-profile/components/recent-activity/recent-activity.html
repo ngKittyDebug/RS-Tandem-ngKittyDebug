@@ -5,7 +5,12 @@
 
   <div class="activity-list">
     <article class="activity-item" tuiCardLarge="compact" tuiHeader tuiAppearance="neutral">
-      <tui-icon icon="@tui.cat" size="xl" tuiBadge [style.background]="'var(--accent-1)'" />
+      <tui-icon
+        class="activity-item__icon activity-item__icon_accent-1"
+        icon="@tui.cat"
+        size="xl"
+        tuiBadge
+      />
 
       <div class="activity-item__content">
         <p tuiText class="activity-item__title">{{ t('userProfile.recentActivity.game1Title') }}</p>
@@ -18,7 +23,12 @@
     </article>
 
     <article class="activity-item" tuiCardLarge="compact" tuiHeader tuiAppearance="neutral">
-      <tui-icon icon="@tui.cat" size="xl" tuiBadge [style.background]="'var(--accent-2)'" />
+      <tui-icon
+        class="activity-item__icon activity-item__icon_accent-2"
+        icon="@tui.cat"
+        size="xl"
+        tuiBadge
+      />
 
       <div class="activity-item__content">
         <p tuiText class="activity-item__title">{{ t('userProfile.recentActivity.game2Title') }}</p>
