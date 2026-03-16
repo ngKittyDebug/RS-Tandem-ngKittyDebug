@@ -7,7 +7,7 @@ import { API_BASE_URL, AUTH_ENDPOINT } from '../constants/api.constants';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
+export class RegistrationService {
   private http = inject(HttpClient);
   private accessToken = signal<string | null>(null);
 

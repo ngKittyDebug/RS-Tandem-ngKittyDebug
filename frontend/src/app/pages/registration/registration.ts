@@ -5,7 +5,7 @@ import { TuiCardLarge, TuiForm } from '@taiga-ui/layout';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TranslocoService, TranslocoModule } from '@jsverse/transloco';
 import { passwordsValidator } from './validators';
-import { AuthService } from '../../core/services/register-service';
+import { RegistrationService } from '../../core/services/register-service';
 import { PASSWORD_PATTERN } from '../../core/patterns/password-pattern';
 import { EMAIL_PATTERN } from '../../core/patterns/email-pattern';
 import { RegisterDto } from './models/register.interfaces';
@@ -40,7 +40,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class Registration {
   private translocoService = inject(TranslocoService);
   private fb = inject(FormBuilder);
-  private authService = inject(AuthService);
+  private registrationService = inject(RegistrationService);
   private toster = inject(AppTosterService);
   protected loginRouterPath = getRoutePath(AppRoute.LOGIN);
   public t(key: string): string {
@@ -61,14 +61,14 @@ export class Registration {
   public async submit(): Promise<void> {
     const { username, email, password } = this.registrationForm.getRawValue();
     if (!username || !email || !password)
-      throw new Error(this.translocoService.translate('registration.erro.invalidData'));
+      throw new Error(this.translocoService.translate('registration.error.invalidData'));
     const User: RegisterDto = {
       username: username,
       email: email,
       password: password,
     };
     try {
-      await firstValueFrom(this.authService.register(User));
+      await firstValueFrom(this.registrationService.register(User));
     } catch (error) {
       console.error(error);
       if (error instanceof HttpErrorResponse) {
@@ -78,7 +78,7 @@ export class Registration {
         const message = this.translocoService.translate(key);
         this.toster.showErrorToster(message);
       } else {
-        this.toster.showErrorToster(this.translocoService.translate('registration.erro.unknown'));
+        this.toster.showErrorToster(this.translocoService.translate('registration.error.unknown'));
       }
     }
   }
