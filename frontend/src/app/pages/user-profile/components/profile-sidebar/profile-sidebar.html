@@ -11,12 +11,12 @@
       </div>
 
       <h2 tuiTitle>{{ userStore.user()?.username || '' }}</h2>
-      <p tuiText>{{ userStore.user()?.email || '' }}</p>
+      <p>{{ userStore.user()?.email || '' }}</p>
     </header>
 
     <section class="profile-sidebar__content">
       <h3 tuiTitle class="profile-sidebar__title">{{ t('userProfile.userInfo.createdTitle') }}</h3>
-      <p tuiText class="profile-sidebar__subtitle">
+      <p class="profile-sidebar__subtitle">
         {{ userStore.user()?.createdAt | date: 'MMMM yyyy' : undefined : activeLang() || '' }}
       </p>
 

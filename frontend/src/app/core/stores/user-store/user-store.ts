@@ -54,7 +54,9 @@ export class UserStore {
     try {
       const updatedUser = await firstValueFrom(this.userService.updateUser(data));
       this._user.set(updatedUser);
-      this.toaster.showPositiveToster('serverResponse.updateAccount.success');
+      this.toaster.showPositiveToster(
+        this.transloco.translate('serverResponse.updateAccount.success'),
+      );
     } catch (error) {
       const message = this.getMessageByStatus(error, {
         400: 'serverResponse.updateAccount.invalidData',
@@ -76,7 +78,9 @@ export class UserStore {
 
     try {
       await firstValueFrom(this.userService.changePassword(data));
-      this.toaster.showPositiveToster('serverResponse.updatePassword.success');
+      this.toaster.showPositiveToster(
+        this.transloco.translate('serverResponse.updatePassword.success'),
+      );
     } catch (error) {
       const message = this.getMessageByStatus(error, {
         400: 'serverResponse.updatePassword.invalidData',

@@ -6,7 +6,7 @@ import { TuiCardLarge, TuiHeader } from '@taiga-ui/layout';
 
 @Component({
   selector: 'app-recent-activity',
-  imports: [TranslocoDirective, TuiIcon, TuiCardLarge, TuiAppearance, TuiHeader, TuiIcon, TuiBadge],
+  imports: [TranslocoDirective, TuiIcon, TuiCardLarge, TuiAppearance, TuiHeader, TuiBadge],
   templateUrl: './recent-activity.html',
   styleUrl: './recent-activity.scss',
 })
