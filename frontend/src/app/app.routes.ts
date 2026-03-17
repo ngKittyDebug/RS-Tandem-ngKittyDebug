@@ -10,7 +10,7 @@ export enum AppRoute {
   MAIN = '',
 }
 
-export const getRoutePath = (route: AppRoute): `/${AppRoute}` => {
+export const getRoutePath = <T extends AppRoute>(route: T): `/${T}` => {
   return `/${route}`;
 };
 
