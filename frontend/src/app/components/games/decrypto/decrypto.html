@@ -33,6 +33,11 @@
         <p class="decrypto__inf_attempts">
           {{ t('decrypto.gameAttempts') }}: {{ this.gameService.gameAttempts() }}
         </p>
+        <app-timer
+          [timerMode]="timerMode"
+          [startValue]="initialTime"
+          (finishedTimer)="checkFinishedTimer()"
+        ></app-timer>
         <p class="decrypto__inf_period">
           {{ t('decrypto.gamePeriods') }}: {{ this.gameService.gamePeriod() }} / 3
         </p>

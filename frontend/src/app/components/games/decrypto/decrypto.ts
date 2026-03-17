@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, viewChild } from '@angular/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { TuiButton, TuiIcon, TuiTextfield } from '@taiga-ui/core';
 import { TuiInputNumber } from '@taiga-ui/kit';
@@ -12,6 +12,7 @@ import { DecryptoRules } from './components/decrypto-rules/decrypto-rules';
 import { AppTosterService } from '../../../core/services/app-toster-service';
 import { PopupService } from '../../../core/services/popup/popup-service';
 import { CardDescription } from './models/decrypto-card.interface';
+import { Timer, TimerMode } from '../../timer/timer';
 
 @Component({
   selector: 'app-decrypto',
@@ -22,6 +23,7 @@ import { CardDescription } from './models/decrypto-card.interface';
     TuiTextfield,
     TuiButton,
     TranslocoDirective,
+    Timer,
   ],
   templateUrl: './decrypto.html',
   styleUrl: './decrypto.scss',
@@ -34,6 +36,10 @@ export class Decrypto implements OnInit {
   private fb = inject(FormBuilder);
   protected gameStarted = signal<boolean>(false);
   private popupService = inject(PopupService);
+
+  private timer = viewChild(Timer);
+  public timerMode = TimerMode.Down;
+  public initialTime = 90;
 
   public ngOnInit(): void {
     this.newGame();
@@ -56,16 +62,27 @@ export class Decrypto implements OnInit {
     });
   }
 
+  protected enableGameCodeInputs(): void {
+    this.decryptoForm.controls.code1.enable();
+    this.decryptoForm.controls.code2.enable();
+    this.decryptoForm.controls.code3.enable();
+  }
+
+  protected disableGameCodeInputs(): void {
+    this.decryptoForm.controls.code1.disable();
+    this.decryptoForm.controls.code2.disable();
+    this.decryptoForm.controls.code3.disable();
+  }
+
   protected startGame(): void {
     console.log('start game');
     this.gameService.generateCardsForGame();
     this.gameService.generateCards();
     this.gameService.generateGameHints();
     this.updateGameHintsInputs();
-    this.decryptoForm.controls.code1.enable();
-    this.decryptoForm.controls.code2.enable();
-    this.decryptoForm.controls.code3.enable();
+    this.enableGameCodeInputs();
     this.gameStarted.set(true);
+    this.timer()?.start();
   }
 
   protected newGame(): void {
@@ -79,9 +96,8 @@ export class Decrypto implements OnInit {
     this.gameService.gameResult.set(null);
     this.gameService.gamePeriod.set(1); // magic number
     this.gameService.gameAttempts.set(3); // magic number
-    this.decryptoForm.controls.code1.disable();
-    this.decryptoForm.controls.code2.disable();
-    this.decryptoForm.controls.code3.disable();
+    this.disableGameCodeInputs();
+    this.timer()?.reset();
   }
 
   protected newRound(): void {
@@ -95,9 +111,7 @@ export class Decrypto implements OnInit {
     this.gameService.generateCards();
     this.gameService.generateGameHints();
     this.updateGameHintsInputs();
-    this.decryptoForm.controls.code1.enable();
-    this.decryptoForm.controls.code2.enable();
-    this.decryptoForm.controls.code3.enable();
+    this.enableGameCodeInputs();
   }
 
   protected newPeriod(): void {
@@ -131,20 +145,29 @@ export class Decrypto implements OnInit {
     const resultArr = [code1, code2, code3];
     this.gameService.checkResult(resultArr);
     console.log('this.gameService');
+    this.disableGameCodeInputs();
     if (this.gameService.roundResult() === true) {
       console.log('win round');
       this.tosterService.showPositiveToster('You win round', 'Win round'); // вставить перевод
     } else if (this.gameService.roundResult() === false && this.gameService.gameResult() !== true) {
-      // lose attempt
       this.tosterService.showWarningToster('Your attempt wrong. Try again', 'Wrong attempt'); // вставить перевод
       this.gameService.roundResult.set(null);
+      this.enableGameCodeInputs();
       this.newPeriod();
     }
 
     if (this.gameService.gameResult() === false) {
       this.tosterService.showErrorToster('You lose game. Try again', 'Lose'); // вставить перевод
+      this.timer()?.stop();
     } else if (this.gameService.gameResult() === true) {
       this.tosterService.showPositiveToster('You win. Congratulations', 'Win'); // вставить перевод
+      this.timer()?.stop();
     }
+  }
+
+  public checkFinishedTimer(): void {
+    this.tosterService.showErrorToster('You lose game. Try again', 'Lose');
+    this.gameService.gameResult.set(false);
+    this.disableGameCodeInputs();
   }
 }

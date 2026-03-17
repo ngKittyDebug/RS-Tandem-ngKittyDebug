@@ -46,16 +46,6 @@ export class DecryptoGameService {
 
   public generateCards(): void {
     this.gameCards = this.gameCardsForGame.splice(0, 4);
-    // const cardsIdsArr: number[] = [];
-    // const cardsArr: Card[] = [];
-    // while (cardsIdsArr.length < DEFAULT_CARDS_COUNT) {
-    //   const cardNumber = generateNumber(Object.values(GameCards).length - 1, START_CARDS_COUNT);
-    //   if (!cardsIdsArr.includes(cardNumber)) {
-    //     cardsIdsArr.push(cardNumber);
-    //     cardsArr.push(GameCards[cardNumber]);
-    //   }
-    // }
-    // this.gameCards = JSON.parse(JSON.stringify(cardsArr));
   }
 
   public generateCardsForGame(): void {
@@ -100,11 +90,9 @@ export class DecryptoGameService {
       this.gameResult.set(true);
       console.log('you win game');
     } else if (gamePeriodResult) {
-      // this.gamePeriod.update((current) => current + 1);
       this.roundResult.set(true);
       console.log('you win period');
     } else if (this.gameAttempts() > 1) {
-      // this.gamePeriod.update((current) => current + 1);
       this.gameAttempts.update((current) => current - 1);
       this.roundResult.set(false);
       console.log('you lose period');

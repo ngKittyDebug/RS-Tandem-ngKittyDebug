@@ -133,7 +133,7 @@ export const GameCards: Card[] = [
   {
     id: '11',
     cardName: 'NaN',
-    cardHints: ['Invalid Calculation', 'Numeric Type', 'Not Number'],
+    cardHints: ['invalid calculation', 'numeric type', 'not number'],
     cardDescription: {
       en: 'NaN (short for Not-a-Number, "not a number") in JavaScript is a special value of the "number" type, which indicates the result of an incorrect or indefinite mathematical operation. typeof NaN will return "number", although technically it is "not a number".',
       ru: 'NaN (сокращение от Not-a-Number, «не число») в JavaScript — это специальное значение типа «число» (number), которое обозначает результат некорректной или неопределенной математической операции. typeof NaN вернет "number", хотя технически это «не число».',
@@ -142,7 +142,7 @@ export const GameCards: Card[] = [
   {
     id: '12',
     cardName: 'console',
-    cardHints: ['Log Data', 'Debug Code', 'Inspect Objects'],
+    cardHints: ['log data', 'debug code', 'inspect objects'],
     cardDescription: {
       en: "A console in JavaScript is an embedded object that provides access to the browser's debugging console (or environment Node.js ). It allows developers to output messages, check the values of variables, and track errors in the code.",
       ru: 'Console (консоль) в JavaScript — это встроенный объект, предоставляющий доступ к отладочной консоли браузера (или среды Node.js). Она позволяет разработчикам выводить сообщения, проверять значения переменных и отслеживать ошибки в коде.',
@@ -151,7 +151,7 @@ export const GameCards: Card[] = [
   {
     id: '13',
     cardName: 'RegExp',
-    cardHints: ['Pattern Matching', 'String Search', 'Text Validation'],
+    cardHints: ['pattern matching', 'string search', 'text validation'],
     cardDescription: {
       en: 'Regular expressions (RegExp) in JavaScript is a powerful tool for searching, replacing, and verifying substrings in strings based on the use of special templates. They are an object that defines a search pattern used to match sequences of characters.',
       ru: 'Регулярные выражения (RegExp) в JavaScript — это мощный инструмент для поиска, замены и проверки подстрок в строках, основанный на использовании специальных шаблонов. Они представляют собой объект, который определяет шаблон поиска, используемый для сопоставления последовательностей символов.',
@@ -159,8 +159,8 @@ export const GameCards: Card[] = [
   },
   {
     id: '14',
-    cardName: 'Set',
-    cardHints: ['Unique values', 'Fast lookup', 'No duplicates'],
+    cardName: 'set',
+    cardHints: ['unique values', 'fast lookup', 'no duplicates'],
     cardDescription: {
       en: 'Set objects are a collection of values. A value in a Set can occur only once; it is unique in the collection. You can iterate through the set elements in the insertion order. The insertion order corresponds to the order in which each item was successfully inserted into the collection by the add() method (that is, when add() was called, there was no such item in the set yet).',
       ru: 'Объекты "Set" - это коллекция значений. Значение в Set может встречаться только один раз; оно уникально в коллекции. Вы можете перебирать элементы набора в порядке вставки. Порядок вставки соответствует порядку, в котором каждый элемент был успешно вставлен в коллекцию методом add() (то есть, когда был вызван add(), в наборе ещё не было такого элемента).',
@@ -169,7 +169,7 @@ export const GameCards: Card[] = [
   {
     id: '15',
     cardName: 'undefined',
-    cardHints: ['Implicitly set', 'Missing value', 'Not assigned'],
+    cardHints: ['implicitly set', 'missing value', 'not assigned'],
     cardDescription: {
       en: 'Undefined is a data type in JavaScript. This is a primitive value that is assigned to a variable declared without initializing or assigning any value to it. By default, the variable is saved with the Undefined value.',
       ru: 'Undefined — это тип данных в JavaScript. Это примитивное значение, которое присваивается переменной, объявленной без инициализации или присвоения ей какого-либо значения. По умолчанию переменная сохраняется со значением Undefined.',
@@ -178,7 +178,7 @@ export const GameCards: Card[] = [
   {
     id: '16',
     cardName: 'null',
-    cardHints: ['Intentional absence', 'Empty object', 'Assigned value'],
+    cardHints: ['intentional absence', 'empty object', 'assigned value'],
     cardDescription: {
       en: "In JavaScript, `null` indicates the deliberate absence of any object value. It's a primitive value that denotes the absence of a value or serves as a placeholder for an object that isn't present. `null` differs from `undefined`, which signifies a variable that has been declared but hasn't been assigned a value.",
       ru: 'В JavaScript "null" указывает на намеренное отсутствие какого-либо значения объекта. Это примитивное значение, которое обозначает отсутствие значения или служит заполнителем для объекта, которого нет. `null` отличается от `undefined`, что означает переменную, которая была объявлена, но которой не было присвоено значение.',
@@ -186,8 +186,8 @@ export const GameCards: Card[] = [
   },
   {
     id: '17',
-    cardName: 'Promise',
-    cardHints: ['Pending / Settled', 'Resolve / Reject', 'Then / Catch'],
+    cardName: 'promise',
+    cardHints: ['pending / settled', 'resolve / reject', 'then / catch'],
     cardDescription: {
       en: 'JavaScript Promises make handling asynchronous operations like API calls, file loading, or time delays easier. Think of a Promise as a placeholder for a value that will be available in the future. It can be in one of three states: pending (The task is in the initial state), fulfilled (The task was completed successfully, and the result is available), rejected (The task failed, and an error is provided)',
       ru: 'Promises в JavaScript упрощают обработку асинхронных операций, таких как вызовы API, загрузка файлов или временные задержки. Думайте о обещании как о заполнителе значения, которое будет доступно в будущем. Оно может находиться в одном из трех состояний: pending (задача находится в исходном состоянии), fulfilled (задача была успешно выполнена, и результат доступен), rejected (задача не выполнена, и выдано сообщение об ошибке).',
@@ -196,7 +196,7 @@ export const GameCards: Card[] = [
   {
     id: '18',
     cardName: 'switch',
-    cardHints: ['Case Value', 'Break Statement', 'Default Clause'],
+    cardHints: ['case value', 'break statement', 'default clause'],
     cardDescription: {
       en: 'The switch construct in JavaScript is a conditional statement that replaces several if-else checks at once. It is useful when you need to compare one variable with many specific values. The switch operator first evaluates its expression. Then it searches for the first case clause, the value of which matches the result of the input expression (using a strict equality comparison), and passes control to that clause by following all instructions following that clause.',
       ru: 'Конструкция switch в JavaScript — это условный оператор, который заменяет сразу несколько проверок if-else. Он удобен, когда нужно сравнить одну переменную с множеством конкретных значений. Оператор switch сначала вычисляет свое выражение. Затем он ищет первое предложение case, значение выражения которого совпадает с результатом входного выражения (используя сравнение на основе строгого равенства), и передает управление этому предложению, выполняя все инструкции, следующие за этим предложением.',
@@ -205,7 +205,7 @@ export const GameCards: Card[] = [
   {
     id: '19',
     cardName: 'Temporal Dead Zone',
-    cardHints: ['Reference Error', 'Before Initialization', 'Hoisting Trap'],
+    cardHints: ['reference error', 'before initialization', 'hoisting trap'],
     cardDescription: {
       en: 'The Temporary Dead Zone (TDZ, temporary dead zone) is the period of time from the beginning of the scope (block of code) to the moment when a variable is declared using let or const. At this time, the variable already exists, but accessing it causes a ReferenceError error.',
       ru: 'Temporal Dead Zone (TDZ, временная мертвая зона) — это период времени от начала области видимости (блока кода) до момента объявления переменной с помощью let или const. В это время переменная уже существует, но обращение к ней вызывает ошибку ReferenceError.',
@@ -213,8 +213,8 @@ export const GameCards: Card[] = [
   },
   {
     id: '20',
-    cardName: 'Hoisting',
-    cardHints: ['Declarations first', 'Top move', 'Initialization stays'],
+    cardName: 'hoisting',
+    cardHints: ['declarations first', 'top move', 'initialization stays'],
     cardDescription: {
       en: 'Hoisting is a mechanism in JavaScript in which declarations of variables, functions, or classes are "moved" to the beginning of their scope (up the current script or function) before executing the code. Only declarations are raised, not initialization: values are assigned only in the line where they are written.',
       ru: 'Hoisting (поднятие) — это механизм в JavaScript, при котором объявления переменных, функций или классов «перемещаются» в начало своей области видимости (вверх текущего скрипта или функции) перед выполнением кода. Поднимаются только объявления, а не инициализация: значения присваиваются только в той строке, где они написаны.',
@@ -223,7 +223,7 @@ export const GameCards: Card[] = [
   {
     id: '21',
     cardName: 'const',
-    cardHints: ['Immutable reference', 'Block scope', 'Initial value'],
+    cardHints: ['immutable reference', 'block scope', 'initial value'],
     cardDescription: {
       en: 'The keyword `const` in JavaScript is a modern way of declaring variables, introduced in ES6. It is used to declare variables, the values of which must remain constant throughout the entire duration of the application. The const parameter has a block scope, similar to let, and is useful for ensuring immutability in your code. Unlike let, the main feature of const is that it cannot be reassigned after initialization.',
       ru: 'Ключевое слово `const` в JavaScript — это современный способ объявления переменных, введенный в ES6. Оно используется для объявления переменных, значения которых должны оставаться постоянными на протяжении всего времени работы приложения. Параметр const имеет блочную область видимости, подобно let, и полезен для обеспечения неизменяемости в вашем коде. В отличие от let, основная особенность const заключается в том, что его нельзя переназначить после инициализации.',
@@ -232,7 +232,7 @@ export const GameCards: Card[] = [
   {
     id: '22',
     cardName: 'var',
-    cardHints: ['Legacy Keyword', 'Function Scoped', 'Hoisting Enabled'],
+    cardHints: ['legacy keyword', 'function scoped', 'hoisting enabled'],
     cardDescription: {
       en: 'Var is a keyword in JavaScript used to declare variables. This is an old way of declaring (before ES6/2015), which has a number of features that distinguish it from modern let and const. Variables declared via var are visible throughout the function in which they are created, regardless of block levels (for example, inside if or for).  var variables are "lifted" to the beginning of their scope. var variables can be declared repeatedly in the same scope without errors.',
       ru: 'Var — это ключевое слово в JavaScript, используемое для объявления переменных. Это старый способ объявления (до ES6/2015), который имеет ряд особенностей, отличающих его от современных let и const. Переменные, объявленные через var, видны во всей функции, в которой они созданы, независимо от блочных уровней (например, внутри if или for).  Переменные var «поднимаются» в начало своей области видимости. Переменные var можно объявлять повторно в одной и той же области видимости без ошибок.',
@@ -241,7 +241,7 @@ export const GameCards: Card[] = [
   {
     id: '23',
     cardName: 'try...catch',
-    cardHints: ['Error Handling', 'Catch Exceptions', 'Prevent Crashing'],
+    cardHints: ['error handling', 'catch exceptions', 'prevent crashing'],
     cardDescription: {
       en: 'The try...catch construct in JavaScript is used to handle errors that may occur during code execution, so that the program does not "crash", but continues to work. The try...catch construct tries to execute the instructions in the try block, and, in case of an error, executes the catch block. The try construct contains a try block containing one or more instructions (the ({} ) block must be present, even if only one instruction is executed), and at least one catch or finally block.',
       ru: 'Конструкция try...catch в JavaScript используется для обработки ошибок, которые могут возникнуть во время выполнения кода, чтобы программа не «падала», а продолжала работать. Конструкция try...catch пытается выполнить инструкции в блоке try, и, в случае ошибки, выполняет блок catch. Конструкция try содержит блок try, в котором находится одна или несколько инструкций (Блок ({} ) обязательно должен присутствовать, даже если выполняется всего одна инструкция), и хотя бы один блок catch или finally.',
@@ -250,7 +250,7 @@ export const GameCards: Card[] = [
   {
     id: '24',
     cardName: 'throw',
-    cardHints: ['Custom error', 'Stop execution', 'Trigger catch'],
+    cardHints: ['custom error', 'stop execution', 'trigger catch'],
     cardDescription: {
       en: 'The throw instruction allows you to generate user-defined exceptions. In this case, the execution of the current function will be stopped (instructions after the throw will not be executed), and control will be transferred to the first catch block in the call stack. If there are no catch blocks among the called functions, the program execution will be stopped.  It is used to handle situations when the data is incorrect or the program execution cannot be continued.',
       ru: 'Инструкция throw позволяет генерировать исключения, определяемые пользователем. При этом выполнение текущей функции будет остановлено (инструкции после throw не будут выполнены), и управление будет передано в первый блок catch в стеке вызовов. Если catch блоков среди вызванных функций нет, выполнение программы будет остановлено.  Используется для обработки ситуаций, когда данные некорректны или выполнение программы невозможно продолжать. ',
@@ -259,7 +259,7 @@ export const GameCards: Card[] = [
   {
     id: '25',
     cardName: 'instanceof',
-    cardHints: ['Check prototype', 'Inheritance link', 'Object type'],
+    cardHints: ['check prototype', 'inheritance link', 'object type'],
     cardDescription: {
       en: 'The instanceof operator checks whether an object belongs to a specific class. In other words, the object instanceof constructor checks whether the constructor.prototype object is present in the object prototype chain. It returns a boolean value, if true, it indicates that the object is an instance of a certain class, and if false, it is not.',
       ru: 'Оператор instanceof проверяет, принадлежит ли объект к определённому классу. Другими словами, object instanceof constructor проверяет, присутствует ли объект constructor.prototype в цепочке прототипов object. Он возвращает логическое значение, если true, то это указывает на то, что объект является экземпляром определенного класса, а если false, то это не так.',
@@ -268,7 +268,7 @@ export const GameCards: Card[] = [
   {
     id: '26',
     cardName: 'typeof',
-    cardHints: ['Check Type', 'Data Type', 'Variable Inspection'],
+    cardHints: ['check type', 'data type', 'variable inspection'],
     cardDescription: {
       en: 'The typeof operator in JavaScript is used to determine the data type of a value or variable. It returns a string indicating the type, such as "string", "number", "boolean", "object", etc. Used without parentheses (typeof x) or with parentheses (typeof(x)). typeof null returns "object", not "null". This is considered a bug in the very first version of JavaScript, which was left out for compatibility.',
       ru: 'Оператор typeof в JavaScript используется для определения типа данных значения или переменной. Он возвращает строку, указывающую на тип, например "string", "number", "boolean", "object" и т.д. Используется без скобок (typeof x) или со скобками (typeof(x)). typeof null возвращает "object", а не "null". Это считается ошибкой в самой первой версии JavaScript, которую оставили для совместимости.',
@@ -277,7 +277,7 @@ export const GameCards: Card[] = [
   {
     id: '27',
     cardName: 'JSON',
-    cardHints: ['Parse String', 'Stringify Object', 'Data Format'],
+    cardHints: ['parse String', 'stringify object', 'data format'],
     cardDescription: {
       en: 'JSON (JavaScript Object Notation) is a light text data exchange format based on the syntax of JavaScript objects. JSON is a syntax for serializing objects, arrays, numbers, strings of boolean values, and null values. It is based on JavaScript syntax, but still differs from it: not every JavaScript code is JSON, and not every JSON is JavaScript code.',
       ru: 'JSON (JavaScript Object Notation) — это легкий текстовый формат обмена данными, основанный на синтаксисе объектов JavaScript. JSON является синтаксисом для сериализации объектов, массивов, чисел, строк логических значений и значения null. Он основывается на синтаксисе JavaScript, однако всё же отличается от него: не каждый код на JavaScript является JSON, и не каждый JSON является кодом на JavaScript.',
@@ -286,7 +286,7 @@ export const GameCards: Card[] = [
   {
     id: '28',
     cardName: 'localStorage ',
-    cardHints: ['String', 'Persistent Storage', 'Key-Value'],
+    cardHints: ['string', 'persistent storage', 'key-Value'],
     cardDescription: {
       en: 'The localStorage property allows you to access the Storage object. localStorage is similar to the sessionStorage property. The only difference is that the sessionStorage property stores data during the session (until the browser is closed), unlike the data in the localStorage property, which has no storage time limits and can only be deleted using JavaScript. Keys and values are always strings (just like objects, integer keys will automatically be converted to strings).',
       ru: 'Свойство localStorage позволяет получить доступ к Storage объекту. localStorage аналогично свойству sessionStorage. Разница только в том, что свойство sessionStorage хранит данные в течение сеанса (до закрытия браузера), в отличие от данных, находящихся в свойстве localStorage, которые не имеют ограничений по времени хранения и могут быть удалены только с помощью JavaScript. Ключи и значения всегда строки (так же, как и объекты, целочисленные ключи автоматически будут преобразованы в строки).',
@@ -295,7 +295,7 @@ export const GameCards: Card[] = [
   {
     id: '29',
     cardName: 'recursion',
-    cardHints: ['Base Case', 'Stack Depth', 'Self Call'],
+    cardHints: ['base case', 'stack Depth', 'self Call'],
     cardDescription: {
       en: 'Recursion in JavaScript is a programming technique in which a function calls itself inside its body. It is used to break down a complex task into simpler, similar subtasks.',
       ru: 'Рекурсия в JavaScript — это приём программирования, при котором функция вызывает саму себя внутри своего тела. Она используется для разбиения сложной задачи на более простые, аналогичные подзадачи.',
@@ -304,7 +304,7 @@ export const GameCards: Card[] = [
   {
     id: '30',
     cardName: 'symbol',
-    cardHints: ['Unique identity', 'Hidden property', 'Collision avoidance'],
+    cardHints: ['unique identity', 'hidden property', 'collision avoidance'],
     cardDescription: {
       en: 'A symbol is a primitive data type used to create unique identifiers. Symbols are created by calling the Symbol() function, to which you can pass the description (name) of the symbol. Even if the characters have the same name, they are different characters.',
       ru: 'Символ (symbol) – примитивный тип данных, использующийся для создания уникальных идентификаторов. Символы создаются вызовом функции Symbol(), в которую можно передать описание (имя) символа. Даже если символы имеют одно и то же имя, это – разные символы. ',
