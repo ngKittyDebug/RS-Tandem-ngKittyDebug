@@ -8,6 +8,7 @@ export enum AppRoute {
   LOGIN = 'login',
   USER_PROFILE = 'user-profile',
   MAIN = '',
+  CITIES_GAME = 'cities-game',
 }
 
 export const getRoutePath = <T extends AppRoute>(route: T): `/${T}` => {
@@ -37,6 +38,12 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/user-profile/user-profile').then((m) => m.UserProfile),
     providers: [provideTranslocoScope('user-profile')],
     canActivate: [authGuard],
+  },
+  {
+    path: AppRoute.CITIES_GAME,
+    loadComponent: () =>
+      import('./components/games/cities-game/cities-game').then((m) => m.CitiesGame),
+    providers: [provideTranslocoScope('cities-game')],
   },
   {
     path: '**',
