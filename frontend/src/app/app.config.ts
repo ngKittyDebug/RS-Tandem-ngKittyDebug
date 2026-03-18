@@ -42,7 +42,7 @@ export const appConfig: ApplicationConfig = {
     }),
     provideTranslocoPersistLang({
       storage: {
-        useValue: localStorage,
+        useFactory: () => localStorage,
       },
     }),
     provideAppInitializer(() => {
