@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ThemeSwitcher } from './theme-switcher';
 import { ThemeService } from '../../services/theme-service';
 
-describe('ThemeSwither', () => {
+describe('ThemeSwitcher', () => {
   let component: ThemeSwitcher;
   let fixture: ComponentFixture<ThemeSwitcher>;
   const themeServiceMock = {
