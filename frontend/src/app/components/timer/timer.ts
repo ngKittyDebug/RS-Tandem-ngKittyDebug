@@ -1,9 +1,5 @@
 import { Component, input, signal, OnInit, OnDestroy, output, computed } from '@angular/core';
-
-export enum TimerMode {
-  Up = 'up',
-  Down = 'down',
-}
+import { TIMER_MODE } from './models/timer-mode.enum';
 
 @Component({
   selector: 'app-timer',
@@ -12,7 +8,7 @@ export enum TimerMode {
   styleUrl: './timer.scss',
 })
 export class Timer implements OnInit, OnDestroy {
-  public timerMode = input<TimerMode>(TimerMode.Up);
+  public timerMode = input<TIMER_MODE>(TIMER_MODE.UP);
   public startValue = input<number>(0);
   public finishedTimer = output<void>();
 
@@ -40,7 +36,7 @@ export class Timer implements OnInit, OnDestroy {
     this.timerIsActive.set(true);
     this.timerId = setInterval(() => {
       this.timerSeconds.update((value) => {
-        const nextValue = this.timerMode() === TimerMode.Up ? value + 1 : value - 1;
+        const nextValue = this.timerMode() === TIMER_MODE.UP ? value + 1 : value - 1;
         if (nextValue <= 0) {
           this.stop();
           this.finishedTimer.emit();

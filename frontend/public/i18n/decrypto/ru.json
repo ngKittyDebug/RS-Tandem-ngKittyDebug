@@ -9,5 +9,12 @@
   "hintsLabels": "Подсказки:",
   "checkBtn": "Проверить",
   "gameRulesLabel": "Правила игры",
-  "decrypto": "Декодер работает"
+  "decryptoWarningMsg": "Попытка неверная. Попробуй снова.",
+  "decryptoWarningMsgLabel": "Попытка неверная",
+  "decryptoErrorMsg": "Проиграли. Нерастраивайся. Попробуй снова.",
+  "decryptoErrorMsgLabel": "Поражение",
+  "decryptoWinRoundMsg": "Вы выиграли раунд. Не останавливайтесь на достигнутом.",
+  "decryptoWinRoundMsgLabel": "Раунд выигран",
+  "decryptoWinGameMsg": "Поздравляем. Вы выиграли игру.",
+  "decryptoWinGameMsgLabel": "Победа"
 }

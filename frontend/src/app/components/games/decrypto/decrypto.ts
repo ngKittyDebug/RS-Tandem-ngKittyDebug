@@ -7,12 +7,15 @@ import { DecryptoForm } from './models/decrypto-form.interface';
 import { DecryptoGameService } from './services/decrypto-game-service';
 
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
-import { TuiDialogService } from '@taiga-ui/core';
 import { DecryptoRules } from './components/decrypto-rules/decrypto-rules';
 import { AppTosterService } from '../../../core/services/app-toster-service';
 import { PopupService } from '../../../core/services/popup/popup-service';
 import { CardDescription } from './models/decrypto-card.interface';
-import { Timer, TimerMode } from '../../timer/timer';
+import { Timer } from '../../timer/timer';
+import { DecryptoCardsLoadService } from './services/decrypto-cards-load-service';
+import { POPUP_SIZES } from '../../../core/services/popup/models/popup.enum';
+import { TIMER_MODE } from '../../timer/models/timer-mode.enum';
+import { CONFIG } from './services/models/decrypto.constants';
 
 @Component({
   selector: 'app-decrypto',
@@ -30,7 +33,8 @@ import { Timer, TimerMode } from '../../timer/timer';
 })
 export class Decrypto implements OnInit {
   protected readonly gameService = inject(DecryptoGameService);
-  private readonly dialogs = inject(TuiDialogService);
+  private readonly gameLoadCardsService = inject(DecryptoCardsLoadService);
+
   private readonly transloco = inject(TranslocoService);
   private tosterService = inject(AppTosterService);
   private fb = inject(FormBuilder);
@@ -38,8 +42,8 @@ export class Decrypto implements OnInit {
   private popupService = inject(PopupService);
 
   private timer = viewChild(Timer);
-  public timerMode = TimerMode.Down;
-  public initialTime = 90;
+  public timerMode = TIMER_MODE.DOWN;
+  public initialTime = CONFIG.gameTime;
 
   public ngOnInit(): void {
     this.newGame();
@@ -94,10 +98,11 @@ export class Decrypto implements OnInit {
     this.decryptoForm.reset();
     this.gameStarted.set(false);
     this.gameService.gameResult.set(null);
-    this.gameService.gamePeriod.set(1); // magic number
-    this.gameService.gameAttempts.set(3); // magic number
+    this.gameService.gamePeriod.set(CONFIG.startRound);
+    this.gameService.gameAttempts.set(CONFIG.attempts);
     this.disableGameCodeInputs();
     this.timer()?.reset();
+    this.gameLoadCardsService.getGameData();
   }
 
   protected newRound(): void {
@@ -136,7 +141,12 @@ export class Decrypto implements OnInit {
     console.log(cardName);
     const lang = this.transloco.getActiveLang();
     if (cardDescription && cardName) {
-      this.popupService.openPopup(cardDescription[lang], cardName, 'no-dialog-buttons', 'm');
+      this.popupService.openPopup(
+        cardDescription[lang],
+        cardName,
+        'no-dialog-buttons',
+        POPUP_SIZES.MEDIUM,
+      );
     }
   }
 
@@ -148,25 +158,39 @@ export class Decrypto implements OnInit {
     this.disableGameCodeInputs();
     if (this.gameService.roundResult() === true) {
       console.log('win round');
-      this.tosterService.showPositiveToster('You win round', 'Win round'); // вставить перевод
+      this.tosterService.showPositiveToster(
+        this.transloco.translate('decrypto.decryptoWinRoundMsg'),
+        this.transloco.translate('decrypto.decryptoWinRoundMsgLabel'),
+      );
     } else if (this.gameService.roundResult() === false && this.gameService.gameResult() !== true) {
-      this.tosterService.showWarningToster('Your attempt wrong. Try again', 'Wrong attempt'); // вставить перевод
+      this.tosterService.showWarningToster(
+        this.transloco.translate('decrypto.decryptoWarningMsg'),
+        this.transloco.translate('decrypto.decryptoWarningMsgLabel'),
+      ); // вставить перевод
       this.gameService.roundResult.set(null);
       this.enableGameCodeInputs();
       this.newPeriod();
     }
 
     if (this.gameService.gameResult() === false) {
-      this.tosterService.showErrorToster('You lose game. Try again', 'Lose'); // вставить перевод
+      this.tosterService.showErrorToster(
+        this.transloco.translate('decrypto.decryptoErrorMsg'),
+        this.transloco.translate('decrypto.decryptoErrorMsgLabel'),
+      );
       this.timer()?.stop();
     } else if (this.gameService.gameResult() === true) {
-      this.tosterService.showPositiveToster('You win. Congratulations', 'Win'); // вставить перевод
-      this.timer()?.stop();
+      this.tosterService.showPositiveToster(
+        this.transloco.translate('decrypto.decryptoWinGameMsg'),
+        this.transloco.translate('decrypto.decryptoWinGameMsgLabel'),
+      );
     }
   }
 
   public checkFinishedTimer(): void {
-    this.tosterService.showErrorToster('You lose game. Try again', 'Lose');
+    this.tosterService.showErrorToster(
+      this.transloco.translate('decrypto.decryptoErrorMsg'),
+      this.transloco.translate('decrypto.decryptoErrorMsgLabel'),
+    );
     this.gameService.gameResult.set(false);
     this.disableGameCodeInputs();
   }

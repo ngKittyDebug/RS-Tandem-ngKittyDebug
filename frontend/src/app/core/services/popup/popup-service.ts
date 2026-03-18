@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { TuiDialogService } from '@taiga-ui/core';
 import { PolymorpheusComponent, PolymorpheusContent } from '@taiga-ui/polymorpheus';
+import { POPUP_SIZES } from './models/popup.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ export class PopupService {
     content: PolymorpheusComponent<T> | PolymorpheusContent,
     label = '',
     appearance = 'flat',
-    size: 's' | 'm' | 'l' | 'auto' | 'fullscreen' = 'm',
+    size: POPUP_SIZES = POPUP_SIZES.MEDIUM,
   ): void {
     this.dialogs
       .open(content, {

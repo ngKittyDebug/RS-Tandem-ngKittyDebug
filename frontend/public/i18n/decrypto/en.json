@@ -9,5 +9,12 @@
   "hintsLabels": "Hints:",
   "checkBtn": "Check",
   "gameRulesLabel": "Game rules",
-  "decrypto": "Decrypto works"
+  "decryptoWarningMsg": "The attempt is incorrect. Try again.",
+  "decryptoWarningMsgLabel": "Wrong attempt",
+  "decryptoErrorMsg": "You lose. Don't get upset. Try again.",
+  "decryptoErrorMsgLabel": "Lose",
+  "decryptoWinRoundMsg": "You've won the round. Don't stop there.",
+  "decryptoWinRoundMsgLabel": "Win round",
+  "decryptoWinGameMsg": "Congratulation. You have won the game.",
+  "decryptoWinGameMsgLabel": "Win game"
 }
