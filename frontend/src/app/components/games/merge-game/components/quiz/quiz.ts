@@ -6,6 +6,9 @@ import { GameService } from '../../services/game-service';
 import { TuiButton } from '@taiga-ui/core';
 import { QuizService } from '../../services/quiz-service';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { AiService } from '../../services/ai-service';
+import { ResponseCheckAnswerAi } from '../../models/ai-metods.interface';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-quiz',
@@ -15,8 +18,10 @@ import { TranslocoDirective } from '@jsverse/transloco';
 })
 export class Quiz {
   private readonly quizService = inject(QuizService);
-  private readonly gameService = inject(GameService);
+  public readonly gameService = inject(GameService);
+  private readonly aiService = inject(AiService);
   private readonly router = inject(Router);
+  protected aiFeedback = signal<string | null>(null);
 
   protected readonly activeQuiz = this.quizService.activeQuiz;
 
@@ -46,10 +51,28 @@ export class Quiz {
   protected onSubmit(): void {
     const question = this.currentQuestion();
     if (!question) return;
-
-    const isCorrect = this.quizService.checkAnswer(this.userAnswer(), question.keywords);
-    this.result.set(isCorrect ? 'correct' : 'wrong');
-    this.showAnswer.set(true);
+    if (this.gameService.gameMode() === 'withAI') {
+      console.log('ai');
+      this.aiService
+        .checkAnswerAi({
+          userAnswer: this.userAnswer(),
+          question: question.question,
+          answer: question.answer,
+          personality: this.gameService.personalityMode(),
+        })
+        .pipe(
+          tap((res: ResponseCheckAnswerAi) => {
+            this.result.set(res.isCorrect ? 'correct' : 'wrong');
+            this.aiFeedback.set(res.feedback);
+            this.showAnswer.set(true);
+          }),
+        )
+        .subscribe();
+    } else {
+      const isCorrect = this.quizService.checkAnswer(this.userAnswer(), question.keywords);
+      this.result.set(isCorrect ? 'correct' : 'wrong');
+      this.showAnswer.set(true);
+    }
   }
 
   protected onNext(): void {
@@ -62,6 +85,7 @@ export class Quiz {
       this.currentIndex.update((i) => i + 1);
       this.userAnswer.set('');
       this.result.set(null);
+      this.aiFeedback.set(null);
       this.showAnswer.set(false);
     }
   }

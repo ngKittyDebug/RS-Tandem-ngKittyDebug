@@ -29,7 +29,7 @@ export class Settings implements OnInit {
 
   protected readonly gameModes: GameMode[] = ['withoutAI', 'withAI'];
   protected readonly personalityModes: PersonalityMode[] = ['neutral', 'kind', 'strict'];
-  protected readonly questionModes: QuestionMode[] = [1, 2, 3, 4, 5];
+  protected readonly questionModes: QuestionMode[] = [1, 2, 3, 4];
 
   public ngOnInit(): void {
     this.gameService.resetGame();

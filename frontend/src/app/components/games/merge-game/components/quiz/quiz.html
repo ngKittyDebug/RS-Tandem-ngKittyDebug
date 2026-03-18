@@ -34,7 +34,13 @@
 
     <div class="quiz__answer">
       <span class="quiz__answer-label">{{ t('mergeGame.gameQuiz.correctAnswer') }}</span>
-      <p class="quiz__answer-text">{{ currentQuestion()!.answer }}</p>
+      <p class="quiz__answer-text">
+        @if (gameService.gameMode() === 'withAI') {
+          {{ aiFeedback() }}
+        } @else {
+          {{ currentQuestion()!.answer }}
+        }
+      </p>
     </div>
 
     <div class="quiz__footer">
