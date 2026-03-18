@@ -16,6 +16,7 @@ import { DecryptoCardsLoadService } from './services/decrypto-cards-load-service
 import { POPUP_SIZES } from '../../../core/services/popup/models/popup.enum';
 import { TIMER_MODE } from '../../timer/models/timer-mode.enum';
 import { CONFIG } from './services/models/decrypto.constants';
+import { KeyStorageService } from '../../../core/services/key-storage/key-storage-service';
 
 @Component({
   selector: 'app-decrypto',
@@ -34,6 +35,7 @@ import { CONFIG } from './services/models/decrypto.constants';
 export class Decrypto implements OnInit {
   protected readonly gameService = inject(DecryptoGameService);
   private readonly gameLoadCardsService = inject(DecryptoCardsLoadService);
+  private readonly loadDataServerService = inject(KeyStorageService);
 
   private readonly transloco = inject(TranslocoService);
   private tosterService = inject(AppTosterService);
@@ -102,7 +104,16 @@ export class Decrypto implements OnInit {
     this.gameService.gameAttempts.set(CONFIG.attempts);
     this.disableGameCodeInputs();
     this.timer()?.reset();
-    this.gameLoadCardsService.getGameData();
+    // this.loadDataServerService.sentData().subscribe();
+    this.loadDataServerService.getData().subscribe((data) => {
+      this.gameService.gameCardsFromServer = data.storage.gameCards;
+    });
+    // this.loadDataServerService.getAllData().subscribe((data) => {
+    //   console.log(data);
+    // });
+    // this.loadDataServerService.removeData().subscribe();
+    // this.gameLoadCardsService.getGameData();
+    // this.gameLoadCardsService.getGameDataAll();
   }
 
   protected newRound(): void {
