@@ -13,7 +13,7 @@ export enum AppRoute {
   MERGE_GAME = 'merge-game',
 }
 
-export const getRoutePath = (route: AppRoute): `/${AppRoute}` => {
+export const getRoutePath = <T extends AppRoute>(route: T): `/${T}` => {
   return `/${route}`;
 };
 

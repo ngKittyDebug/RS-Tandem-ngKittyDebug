@@ -1,247 +1,243 @@
 # Frontend Code Review — MeowVault
 
-## Дата ревью: 2026-03-09
+## Дата ревью: 2026-03-16
 
-## Общая оценка: 4.5/10
+## Общая оценка: 5.5/10
 
-Состояние кода по сравнению с предыдущим ревью практически не изменилось. Ни одно из замечаний CRITICAL или MAJOR уровня не было исправлено. Auth Guard отсутствует, HTTP Interceptor не создан, refresh при загрузке не вызывается, `ThemeService` по-прежнему обращается к `localStorage` напрямую, `provideTranslocoPersistLang` использует `useValue: localStorage`, опечатки в именах классов сохранились, `ChangeDetectionStrategy.OnPush` отсутствует в большинстве компонентов, тесты остались smoke-тестами. Единственное позитивное изменение — в тест-сьютах `ThemeSwitcher` и `LaguageSwitcher` добавлены реальные тесты функциональности.
+С предыдущего ревью (2026-03-09): реализованы **ключевые архитектурные элементы** — `AuthGuard`, `GuestGuard`, HTTP Interceptor с поддержкой token refresh, `provideAppInitializer` для восстановления сессии при перезагрузке. Исправлен `header.scss` grid layout. Добавлены тесты для `AuthService`, Guards, `Header`, `AppTosterService`. Это значительный прогресс в архитектуре. Критические SSR-несовместимости `ThemeService` и `provideTranslocoPersistLang` остаются нетронутыми. Большинство MAJOR-замечаний не исправлены.
 
-> **Источники best practices:** [Angular v20+ Docs](https://v20.angular.dev), Angular Signals Skill, Angular Component Skill, [Taiga UI](https://taiga-ui.dev)
+> **Источники best practices:** [Angular v20+ Docs](https://angular.dev), Angular Signals Skill, Angular Component Skill, [Taiga UI](https://taiga-ui.dev)
+
+---
 
 ## Сводная таблица оценок
 
 | Категория | Оценка | Статус | Δ |
-| ---------------------------------------- | ------ | ---------------------- | --- |
-| 1. Архитектура и структура проекта | 4/10 | Критические проблемы | = |
+|-----------|--------|--------|---|
+| 1. Архитектура и структура проекта | 7/10 | Есть замечания | ↑↑ |
 | 2. Компоненты и Angular-паттерны | 5/10 | Существенные замечания | = |
 | 3. Управление состоянием (Signals, RxJS) | 5/10 | Существенные замечания | = |
 | 4. Формы и валидация | 6/10 | Есть замечания | = |
-| 5. Безопасность (фронтенд) | 2/10 | Критические проблемы | = |
+| 5. Безопасность (фронтенд) | 4/10 | Существенные замечания | ↑↑ |
 | 6. i18n и локализация | 6/10 | Есть замечания | = |
-| 7. Стили и UI/UX | 5/10 | Существенные замечания | = |
-| 8. Тестирование | 3/10 | Критические проблемы | ↑ |
+| 7. Стили и UI/UX | 5/10 | Есть замечания | = |
+| 8. Тестирование | 4/10 | Существенные замечания | ↑ |
 | 9. Конфигурация и сборка | 5/10 | Существенные замечания | = |
 
 ---
 
-## 1. Архитектура и структура проекта (4/10)
+## 1. Архитектура и структура проекта (7/10)
 
-Структура каталогов правильная: `core/` для сервисов, layout, компонентов; `pages/` для маршрутов. Lazy loading настроен для всех роутов. Однако критически отсутствуют ключевые архитектурные элементы auth-flow.
+Реализованы критически важные элементы auth-flow. Структура приближается к production-стандартам.
 
-### `[CRITICAL]` Отсутствует Auth Guard — `/user-profile` доступен без аутентификации
+### `[RESOLVED]` AuthGuard для `/user-profile` реализован
 
-**Файл:** `src/app/app.routes.ts:31-35`
-
-> Из [Angular v20 Docs — Route Guards](https://v20.angular.dev/guide/routing/route-guards): Functional guards с `CanActivateFn` — рекомендуемый подход в Angular 20+.
-
-Статус: **Не исправлено.** `AuthService.isLoggedIn` — computed signal, доступный для использования в guard, но guard так и не создан.
+**Файл:** `src/app/app.routes.ts:39`
 
 ```ts
-{
-  path: AppRoute.USER_PROFILE,
-  loadComponent: () => import('./pages/user-profile/user-profile').then((m) => m.UserProfile),
-  providers: [provideTranslocoScope('user-profile')],
-  // ← нет canActivate!
-},
+canActivate: [authGuard],
 ```
 
-**Исправление:** Создать `core/guards/auth.guard.ts`:
+Создан `core/guards/auth-guard.ts` с `CanActivateFn` — корректный функциональный guard Angular 20+.
 
-```ts
-import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../services/auth/auth-service';
-
-export const authGuard: CanActivateFn = () => {
-  const auth = inject(AuthService);
-  const router = inject(Router);
-  return auth.isLoggedIn() ? true : router.createUrlTree(['/login']);
-};
-```
-
-Добавить `canActivate: [authGuard]` к роуту `user-profile`.
+> [Angular — Route Guards](https://angular.dev/guide/routing/route-guards)
 
 ---
 
-### `[CRITICAL]` Отсутствует HTTP Interceptor — access token никогда не отправляется в API
+### `[RESOLVED]` GuestGuard добавлен для `/login` и `/registration`
 
-**Файл:** `src/app/app.config.ts:18`
-
-> Из [Angular v20 Docs — HttpInterceptorFn](https://v20.angular.dev/api/common/http/HttpInterceptorFn): Functional interceptors регистрируются через `provideHttpClient(withInterceptors([...]))`.
-
-Статус: **Не исправлено.** `provideHttpClient()` вызывается без `withInterceptors`. Любой защищённый API-запрос уйдёт без `Authorization: Bearer`.
+**Файл:** `src/app/app.routes.ts:27,33`
 
 ```ts
-// app.config.ts:18
-provideHttpClient(), // ← нет withInterceptors
+canActivate: [guestGuard],
 ```
 
-**Исправление:** Создать `core/interceptors/auth.interceptor.ts`:
-
-```ts
-import { inject } from '@angular/core';
-import { HttpInterceptorFn } from '@angular/common/http';
-import { AuthService } from '../services/auth/auth-service';
-
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = inject(AuthService).getAccessToken();
-  if (!token) return next(req);
-  return next(req.clone({ headers: req.headers.set('Authorization', `Bearer ${token}`) }));
-};
-```
-
-Зарегистрировать: `provideHttpClient(withInterceptors([authInterceptor]))`
+Авторизованный пользователь не попадёт на страницы входа/регистрации.
 
 ---
 
-### `[CRITICAL]` Нет token refresh при загрузке страницы — auth теряется при F5
+### `[RESOLVED]` HTTP Interceptor с Authorization header реализован
 
-**Файл:** `src/app/core/services/auth/auth-service.ts:13`
-
-Статус: **Не исправлено.** `accessToken` — in-memory signal, инициализирован `null`. При перезагрузке страницы пользователь немедленно становится "не залогиненным", несмотря на httpOnly cookie с refresh token.
+**Файл:** `src/app/app.config.ts:27`
 
 ```ts
-private accessToken = signal<string | null>(null); // всегда null после F5
+provideHttpClient(withInterceptors([authInterceptor])),
 ```
 
-**Исправление:** Вызывать `auth.refresh()` в `APP_INITIALIZER` в `app.config.ts`:
+Интерцептор добавляет `Bearer` токен и обрабатывает 401 с очередью pending-запросов.
+
+---
+
+### `[RESOLVED]` `provideAppInitializer` — сессия восстанавливается при перезагрузке
+
+**Файл:** `src/app/app.config.ts:42-45`
 
 ```ts
-{
-  provide: APP_INITIALIZER,
-  useFactory: () => {
-    const auth = inject(AuthService);
-    return () => auth.refresh().pipe(catchError(() => of(void 0)));
-  },
-  multi: true,
+provideAppInitializer(() => {
+  const authService = inject(AuthService);
+  return authService.refresh().pipe(catchError(() => of(void 0)));
+}),
+```
+
+> [Angular — APP_INITIALIZER](https://angular.dev/api/core/APP_INITIALIZER)
+
+---
+
+### `[MAJOR]` Header всегда отображает аватар и кнопку logout без проверки авторизации — НОВОЕ
+
+**Файл:** `src/app/core/layout/header/header.html:10-28`
+
+```html
+<div class="user_bar">
+  <tui-avatar ...>
+  <button ...>{{ t('log-out') }}</button>
+</div>
+```
+
+Неавторизованный пользователь видит кнопку "Log out" и аватар. Клик на аватар вызывает навигацию на `/user-profile`, которая редиректит на `/login` через `authGuard` — UX запутывает. Нет кнопки "Войти" для гостей.
+
+**Исправление:** Инжектировать `AuthService` в компонент и использовать `@if`:
+```html
+@if (authService.isLoggedIn()) {
+  <div class="user_bar">...</div>
+} @else {
+  <button routerLink="/login">{{ t('login') }}</button>
 }
 ```
 
 ---
 
-### `[MAJOR]` 4 из 5 страниц — пустые заглушки
+### `[MAJOR]` 3 из 5 страниц — пустые заглушки — НЕ ИСПРАВЛЕНО (частично)
 
-**Файлы:** `pages/registration/registration.html`, `pages/main/main.html`, `pages/user-profile/user-profile.html`, `pages/not-found/not-found.html`
+**Файлы:** `pages/main/main.html`, `pages/registration/registration.html`, `pages/user-profile/user-profile.html`
 
-Статус: **Не исправлено.** Все четыре страницы рендерят один `<p>` с debug-текстом. Registration не имеет формы регистрации.
+Login реализован полностью. Три страницы рендерят debug-текст через `t('*.mainWorks')` / `t('*.registrationWorks')`.
 
 ---
 
 ## 2. Компоненты и Angular-паттерны (5/10)
 
-> **Angular Component Skill:** В Angular v20+ `standalone: true` не нужно указывать. Обязательно: `ChangeDetectionStrategy.OnPush`.
-
-### `[MAJOR]` Опечатка в имени класса: `LaguageSwitcher` (пропущена буква `n`)
+### `[MAJOR]` Опечатка в имени класса: `LaguageSwitcher` — НЕ ИСПРАВЛЕНО
 
 **Файлы:**
 - `core/components/language-switcher/language-switcher.ts:15`
-- `core/layout/header/header.ts:6` (импорт)
-- `core/components/language-switcher/language-switcher.spec.ts:4,6,8,30,43`
-
-Статус: **Не исправлено.**
+- `core/layout/header/header.ts:6,21`
+- `core/components/language-switcher/language-switcher.spec.ts:4-8`
 
 ```ts
-export class LaguageSwitcher implements OnInit { // должно быть LanguageSwitcher
+export class LaguageSwitcher // должно быть LanguageSwitcher
 ```
+
+**Исправление:** Переименовать класс, файл и все импорты.
 
 ---
 
-### `[MAJOR]` Опечатка в имени сервиса: `AppTosterService` (должно быть `Toaster`)
+### `[MAJOR]` Опечатка в имени сервиса: `AppTosterService` — НЕ ИСПРАВЛЕНО
 
 **Файлы:**
 - `core/services/app-toster-service.ts:21`
 - `pages/login/login.ts:27,57`
-- `core/services/app-toster-service.spec.ts`
-
-Статус: **Не исправлено.**
 
 ```ts
-export class AppTosterService { // должно быть AppToasterService
+export class AppTosterService // должно быть AppToasterService
 ```
 
-**Исправление:** Переименовать файл, класс и enum'ы `TosterLabels`/`TosterAppearances`.
+**Исправление:** Переименовать сервис, enum `TosterLabels`/`TosterAppearances`, файл и все импорты.
 
 ---
 
-### `[MAJOR]` Большинство компонентов не используют `ChangeDetectionStrategy.OnPush`
+### `[MAJOR]` Большинство компонентов без `ChangeDetectionStrategy.OnPush` — НЕ ИСПРАВЛЕНО (частично)
 
-**Файлы:** `pages/login/login.ts`, `pages/registration/registration.ts`, `pages/main/main.ts`, `pages/user-profile/user-profile.ts`, `pages/not-found/not-found.ts`, `core/layout/header/header.ts`, `core/layout/footer/footer.ts`, `app.ts`, `pages/login/components/img-cat/img-cat.ts`
+OnPush добавлен только в `LaguageSwitcher` и `ThemeSwitcher`. Отсутствует в:
+`App`, `Header`, `Footer`, `Login`, `Registration`, `UserProfile`, `Main`, `NotFound`, `ImgCat`.
 
-Статус: **Не исправлено ни в одном компоненте.** `ThemeSwitcher` и `LaguageSwitcher` — правильно. Остальные 9 компонентов — нет.
+> **Angular Component Skill:** `ChangeDetectionStrategy.OnPush` — обязателен при использовании Signals. [Angular — Change detection](https://angular.dev/best-practices/skipping-subtrees)
 
-> **Angular Component Skill (ОБЯЗАТЕЛЬНО):** `ChangeDetectionStrategy.OnPush` — стандарт при использовании signals в Angular 20+.
-
-**Исправление:** Добавить во все компоненты:
-```ts
-@Component({ changeDetection: ChangeDetectionStrategy.OnPush, ... })
-```
+**Исправление:** Добавить `changeDetection: ChangeDetectionStrategy.OnPush` во все компоненты.
 
 ---
 
-### `[MINOR]` `App` компонент содержит неиспользуемый signal `title`
+### `[MINOR]` `App` компонент содержит неиспользуемый signal `title` — НЕ ИСПРАВЛЕНО
 
 **Файл:** `src/app/app.ts:15`
 
-Статус: **Не исправлено.** `protected readonly title = signal('frontend')` нигде не используется.
+```ts
+protected readonly title = signal('frontend');
+```
+
+Не используется ни в шаблоне, ни в логике.
 
 ---
 
-### `[SUGGESTION]` `standalone: true` избыточно в Angular 21
+### `[SUGGESTION]` `standalone: true` избыточно в Angular 21 — НЕ ИСПРАВЛЕНО
 
-`LaguageSwitcher` и `ThemeSwitcher` явно указывают `standalone: true` — в Angular 21 это дефолтное значение.
+**Файлы:** `language-switcher.ts:9`, `theme-switcher.ts:8`
+
+В Angular 19+ все компоненты standalone по умолчанию. Явное указание — шум.
+
+> [Angular 19 — Standalone default](https://angular.dev/reference/releases#standalone-components-are-default)
 
 ---
 
 ## 3. Управление состоянием (Signals, RxJS) (5/10)
 
-### `[MAJOR]` `LaguageSwitcher` использует мутабельные свойства вместо signals
+### `[MAJOR]` `AuthService` — `isRefreshing` и `refreshSubject` публичные — НОВОЕ
 
-**Файл:** `core/components/language-switcher/language-switcher.ts:18-20,22-30`
-
-Статус: **Не исправлено.**
+**Файл:** `src/app/core/services/auth/auth-service.ts:16-17`
 
 ```ts
-public currentLang: string | null = null;  // мутабельное свойство
-public languages: string[] = [];            // мутабельное свойство
-protected value: string | null = null;      // мутабельное свойство
+public isRefreshing = false;
+public refreshSubject = new BehaviorSubject<string | null>(null);
 ```
 
-`currentLang` и `value` частично дублируют состояние.
+Детали реализации логики token refresh вынесены в `public` поля. Любой компонент может случайно изменить `isRefreshing` или засорить `refreshSubject`, сломав очередь запросов.
 
-**Исправление (Angular Signals Skill):**
+> [Angular — Services best practices](https://angular.dev/style-guide#services)
+
+**Исправление:** Перенести `isRefreshing` и `refreshSubject` в отдельный приватный `AuthRefreshService` (или сделать их `private` с геттерами если они нужны только интерцептору через injection).
+
+---
+
+### `[MAJOR]` `LaguageSwitcher` использует мутабельные свойства вместо signals — НЕ ИСПРАВЛЕНО
+
+**Файл:** `core/components/language-switcher/language-switcher.ts:18-20`
+
+```ts
+public currentLang: string | null = null;
+public languages: string[] = [];
+protected value: string | null = null;
+```
+
+Компонент имеет `OnPush`, при этом состояние хранится в мутабельных полях. Смена языка не вызовет повторный рендер.
+
+> [Angular — Signals](https://angular.dev/guide/signals)
+
+**Исправление:**
 ```ts
 protected readonly value = signal(this.translocoService.getActiveLang());
 protected readonly languages = signal(
   this.translocoService.getAvailableLangs()
     .map(lang => typeof lang === 'string' ? lang : lang.id)
 );
-// Удалить currentLang, OnInit, ngOnInit
 ```
 
 ---
 
-### `[MINOR]` `AppTosterService` — подписки на Observable не отписываются
+### `[MINOR]` `AppTosterService` — подписки без управления жизненным циклом — НЕ ИСПРАВЛЕНО
 
-**Файл:** `core/services/app-toster-service.ts:31,40,50`
-
-Статус: **Не исправлено.**
+**Файл:** `core/services/app-toster-service.ts:30-32`
 
 ```ts
 this.alerts.open(message, { ... }).subscribe(); // нет takeUntilDestroyed
 ```
 
+> [RxJS — Subscription management](https://rxjs.dev/guide/subscription)
+
 ---
 
-### `[SUGGESTION]` `AuthService` — рекомендуется `asReadonly()` для публичных signals
+### `[SUGGESTION]` `AuthService` — рекомендуется `asReadonly()` для публичных writable signals
 
-> **Angular Signals Skill — Service State Pattern:** Приватный writable signal + публичный readonly.
-
-```ts
-// Рекомендуемый паттерн:
-private _accessToken = signal<string | null>(null);
-readonly accessToken = this._accessToken.asReadonly();
-readonly isLoggedIn = computed(() => this._accessToken() !== null);
-```
+> **Angular Signals Skill — Service State Pattern:** приватный writable signal + публичный readonly.
 
 ---
 
@@ -249,69 +245,57 @@ readonly isLoggedIn = computed(() => this._accessToken() !== null);
 
 Страница логина реализована качественно: Reactive Forms, переключение режимов email/username, динамическая смена валидаторов, `finalize` для loading state, `takeUntilDestroyed` для cleanup.
 
-### `[MAJOR]` Login проверяет HTTP 403 вместо 401 для невалидных credentials
+### `[MAJOR]` Login проверяет HTTP 403 вместо 401 для невалидных credentials — НЕ ИСПРАВЛЕНО
 
-**Файл:** `src/app/pages/login/login.ts:118-119`
-
-Статус: **Не исправлено.**
+**Файл:** `src/app/pages/login/login.ts:119`
 
 ```ts
 const key = error.status === 403 ? 'login.error.invalidCredentials' : 'login.error.serverError';
 ```
 
-Когда backend будет исправлен на 401, фронтенд сломается.
+Бэкенд возвращает 401 при неверных данных. Этот код всегда покажет пользователю "Ошибка сервера" вместо "Неверные учётные данные".
 
-**Исправление:** Изменить на `401` (синхронно с исправлением backend).
+> [MDN — HTTP 401](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401)
+
+**Исправление:** Заменить `403` на `401` (синхронно с исправлением backend).
 
 ---
 
-### `[MINOR]` `getInputError` вызывается в шаблоне на каждый цикл change detection
+### `[MINOR]` `getInputError` вызывается в шаблоне как метод — НЕ ИСПРАВЛЕНО
 
-**Файл:** `src/app/pages/login/login.ts:127-140`, `login.html:49,62,77`
+**Файл:** `src/app/pages/login/login.html:49,62,77`
 
 ```html
 <tui-error [error]="getInputError('email')"></tui-error>
 ```
 
-Метод с `translocoService.translate()` внутри вызывается при каждом change detection.
+Метод с `translocoService.translate()` вызывается при каждом цикле change detection.
 
 **Исправление:** Заменить на `computed()` signals.
 
 ---
 
-### `[SUGGESTION]` Возвращаемый тип `getRoutePath` неточен
+## 5. Безопасность (фронтенд) (4/10)
 
-**Файл:** `src/app/app.routes.ts:11`
+### `[RESOLVED]` Token refresh при загрузке — сессия восстанавливается через `provideAppInitializer`
 
-```ts
-export const getRoutePath = (route: AppRoute): `/${AppRoute}` => {
-```
+**Файл:** `src/app/app.config.ts:42-45`
 
-Тип — юнион всех enum-значений с `/` prefix, а не конкретного переданного.
+Пользователь остаётся авторизованным после F5.
 
 ---
 
-## 5. Безопасность (фронтенд) (2/10)
-
-### `[CRITICAL]` Access token хранится только in-memory — нет persistent auth
-
-**Файл:** `src/app/core/services/auth/auth-service.ts:13`
-
-Статус: **Не исправлено.** При F5 пользователь теряет аутентификацию. Auth-flow практически нерабочий в реальном использовании.
-
----
-
-### `[CRITICAL]` `ThemeService` обращается к `localStorage` при конструировании — SSR crash
+### `[CRITICAL]` `ThemeService` обращается к `localStorage` при конструировании — НЕ ИСПРАВЛЕНО
 
 **Файл:** `src/app/core/services/theme-service.ts:9`
-
-Статус: **Не исправлено.**
 
 ```ts
 private baseTheme = localStorage.getItem(STORAGE_KEYS.THEME) || ThemeNames.Light;
 ```
 
-В SSR или Web Worker: `ReferenceError: localStorage is not defined`.
+Прямой вызов `localStorage` как инициализатора поля разрушит приложение в SSR/prerendering и нарушает принцип инъекции платформо-зависимых API.
+
+> [Angular — SSR](https://angular.dev/guide/ssr)
 
 **Исправление (SSR-safe):**
 ```ts
@@ -329,11 +313,9 @@ export class ThemeService {
 
 ---
 
-### `[CRITICAL]` `provideTranslocoPersistLang` ссылается на `localStorage` при инициализации
+### `[CRITICAL]` `provideTranslocoPersistLang` с `useValue: localStorage` — НЕ ИСПРАВЛЕНО
 
-**Файл:** `src/app/app.config.ts:28-32`
-
-Статус: **Не исправлено.**
+**Файл:** `src/app/app.config.ts:38-41`
 
 ```ts
 provideTranslocoPersistLang({
@@ -341,257 +323,223 @@ provideTranslocoPersistLang({
 }),
 ```
 
+`localStorage` вычисляется в момент инициализации модуля — `ReferenceError: localStorage is not defined` в серверной среде.
+
+> [Angular Universal — Common issues](https://angular.dev/guide/ssr#common-issues)
+
 **Исправление:** `storage: { useFactory: () => localStorage }`
 
 ---
 
 ## 6. i18n и локализация (6/10)
 
-Transloco настроен правильно: 2 языка (ru/en), scoped translations, persist lang.
-
-### `[MINOR]` Hardcoded `'...'` вместо translated loading text
+### `[MINOR]` Hardcoded `'...'` вместо i18n-ключа — НЕ ИСПРАВЛЕНО
 
 **Файл:** `src/app/pages/login/login.html:87`
-
-Статус: **Не исправлено.**
 
 ```html
 {{ isLoading() ? '...' : t('login.buttons.login') }}
 ```
 
+**Исправление:** Добавить ключ `login.buttons.loading` в файлы переводов.
+
 ---
 
-### `[MINOR]` `index.html` — `lang="en"` при дефолтном языке `ru`
+### `[MINOR]` `index.html` — `lang="en"` при дефолтном языке `ru` — НЕ ИСПРАВЛЕНО
 
 **Файл:** `src/index.html:2`
 
-Статус: **Не исправлено.** Проблема accessibility (WCAG AA).
+Влияет на скринридеры и поисковую индексацию. Дефолт по CLAUDE.md — `ru`.
+
+> [WCAG 3.1.1 — Language of page](https://www.w3.org/WAI/WCAG21/Understanding/language-of-page), [MDN — lang](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang)
+
+**Исправление:** `lang="ru"`
 
 ---
 
-### `[MINOR]` `<title>Frontend</title>` вместо `MeowVault`
+### `[MINOR]` `<title>Frontend</title>` вместо `MeowVault` — НЕ ИСПРАВЛЕНО
 
 **Файл:** `src/index.html:5`
 
-Статус: **Не исправлено.**
+**Исправление:** `<title>MeowVault</title>`
 
 ---
 
-### `[SUGGESTION]` Placeholder-переводы в файлах заглушек
+### `[MINOR]` Неиспользуемые ключи перевода — НЕ ИСПРАВЛЕНО
 
-**Файлы:** `public/i18n/main/*.json`, `public/i18n/not-found/*.json`, `public/i18n/registration/*.json`, `public/i18n/user-profile/*.json`
+**Файлы:** `public/i18n/login/ru.json`, `public/i18n/login/en.json`
 
-Содержат только debug-ключи вроде `"mainWorks": "Main page works"`.
-
----
-
-### `[SUGGESTION]` Неиспользуемые translation keys
-
-**Файл:** `public/i18n/login/en.json`, `public/i18n/login/ru.json`
-
-Ключи `buttons.google` и `divider` не используются в шаблоне.
+Ключи `loginWorks`, `buttons.google`, `divider` присутствуют в переводах, но не используются в шаблоне.
 
 ---
 
 ## 7. Стили и UI/UX (5/10)
 
-### `[MAJOR]` `ThemeSwitcher` — checkbox не привязан к текущей теме
+### `[RESOLVED]` Header grid layout исправлен
 
-**Файл:** `core/components/theme-switcher/theme-switcher.html:1-9`
+**Файл:** `core/layout/header/header.scss`
 
-Статус: **Не исправлено.** После перезагрузки тема восстанавливается из localStorage, но checkbox всегда начинает в unchecked состоянии.
+Grid теперь `1fr auto auto` — логотип не занимает половину ширины.
+
+---
+
+### `[MAJOR]` `ThemeSwitcher` — checkbox не привязан к текущей теме — НЕ ИСПРАВЛЕНО
+
+**Файл:** `core/components/theme-switcher/theme-switcher.html:1`
 
 ```html
-<input tuiLike type="checkbox" (change)="onChangeTheme()" ... />
+<input tuiLike type="checkbox" (change)="onChangeTheme()" />
 ```
+
+Отсутствует `[checked]`. После перезагрузки с тёмной темой checkbox всегда в состоянии "unchecked".
 
 **Исправление:** Добавить `[checked]="themeService.theme() === ThemeNames.Dark"`.
 
 ---
 
-### `[MINOR]` Header grid layout — лого занимает 50% ширины
+### `[SUGGESTION]` `console.log` в обработчике ошибки logout в Header — НОВОЕ
 
-**Файл:** `core/layout/header/header.scss:7`
+**Файл:** `src/app/core/layout/header/header.ts:41`
 
-Статус: **Не исправлено.**
-
-```scss
-grid-template-columns: 1fr 1fr; // лого растягивается на половину header
-```
-
-**Исправление:** `grid-template-columns: auto 1fr;`
-
----
-
-## 8. Тестирование (3/10)
-
-Незначительное улучшение: `ThemeSwitcher.spec.ts` и `LaguageSwitcher.spec.ts` получили поведенческие тесты. Все остальные spec-файлы остались smoke-тестами.
-
-### `[RESOLVED]` `ThemeSwitcher.spec.ts` — добавлен тест `onChangeTheme()`
-
-**Файл:** `core/components/theme-switcher/theme-switcher.spec.ts:28-31`
-
-Добавлен тест с mock `ThemeService`, проверяющий вызов `changeTheme()`. Хороший паттерн с spy-объектом.
-
----
-
-### `[RESOLVED]` `LaguageSwitcher.spec.ts` — добавлен тест переключения языка
-
-**Файл:** `core/components/language-switcher/language-switcher.spec.ts:39-44`
-
-Добавлен тест с mock `TranslocoService`, проверяющий `setActiveLang()` и обновление `currentLang`.
-
----
-
-### `[CRITICAL]` Ключевые тесты по-прежнему отсутствуют
-
-**Файлы:** `auth-service.spec.ts`, `theme-service.spec.ts`, `login.spec.ts`, `main.spec.ts`, `registration.spec.ts`, `user-profile.spec.ts`, `not-found.spec.ts`, `header.spec.ts`, `footer.spec.ts`, `img-cat.spec.ts`
-
-Статус: **Не исправлено.** Все spec-файлы содержат только `"should be created"`. Нет тестов для `AuthService.login()`, `.logout()`, `.refresh()`, `isLoggedIn`; `ThemeService.changeTheme()` и localStorage; `Login` form validation, mode switching, submit, error handling.
-
-**Пример теста для `AuthService`:**
 ```ts
-describe('AuthService', () => {
-  it('should set isLoggedIn to true after login', fakeAsync(() => {
-    const http = TestBed.inject(HttpTestingController);
-    authService.login({ email: 'a@b.com', password: 'Pass1234' }).subscribe();
-    http.expectOne('/auth/login').flush({ accessToken: 'test-token' });
-    expect(authService.isLoggedIn()).toBe(true);
-  }));
-});
+error: (error) => {
+  console.log(error);
+},
 ```
+
+`console.log` в production-коде. Ошибка не показывается пользователю.
+
+**Исправление:** Заменить на `appTosterService.showErrorToster(...)` с переведённым сообщением.
 
 ---
 
-### `[MINOR]` `app.spec.ts` — перманентно пропущенный тест с неверным assertion
+## 8. Тестирование (4/10)
 
-**Файл:** `src/app/app.spec.ts:30-35`
+С предыдущего ревью добавлены реальные тесты для `AuthService`, `AuthGuard`, `GuestGuard`, `Header`, `AppTosterService`. Это значительное улучшение.
 
-Статус: **Не исправлено.**
+### `[RESOLVED]` Добавлены тесты для `AuthService`
+
+Тесты проверяют `login()`, `register()`, `logout()`, `refresh()`, `isLoggedIn`.
+
+---
+
+### `[RESOLVED]` Добавлены тесты для Guards
+
+`AuthGuard` и `GuestGuard` покрыты тестами с проверкой редиректа.
+
+---
+
+### `[CRITICAL]` Большинство spec-файлов по-прежнему только smoke-тесты — НЕ ИСПРАВЛЕНО (частично)
+
+**Файлы:** `auth-interceptor.spec.ts`, `theme-service.spec.ts`, `login.spec.ts`, `registration.spec.ts`, `not-found.spec.ts`, `footer.spec.ts`, `img-cat.spec.ts`
+
+Ключевая логика интерцептора (добавление Bearer токена, обработка 401, queue pending requests, retry после refresh) не покрыта ни одним тестом.
+
+---
+
+### `[MINOR]` `app.spec.ts` — perma-skipped тест с некорректным assertion — НЕ ИСПРАВЛЕНО
+
+**Файл:** `src/app/app.spec.ts:30`
 
 ```ts
 it.skip('should render title', async () => {
   expect(compiled.querySelector('p')?.textContent).toContain('main works!');
 ```
 
+**Исправление:** Удалить или обновить тест.
+
 ---
 
-### `[MINOR]` `ThemeSwitcher.spec.ts` — опечатка в `describe` блоке
+### `[MINOR]` `ThemeSwitcher.spec.ts` — опечатка в `describe` — НЕ ИСПРАВЛЕНО
 
 **Файл:** `core/components/theme-switcher/theme-switcher.spec.ts:6`
 
-Статус: **Новое.**
-
 ```ts
-describe('ThemeSwither', () => { // ← пропущена буква 'c'
+describe('ThemeSwither', () => { // ← пропущена 'c'
 ```
-
-**Исправление:** `'ThemeSwitcher'`
 
 ---
 
 ## 9. Конфигурация и сборка (5/10)
 
-### `[MAJOR]` `validate-branch-name` — production dependency вместо dev
+### `[MAJOR]` `validate-branch-name` — production dependency вместо dev — НЕ ИСПРАВЛЕНО
 
 **Файл:** `package.json:51`
 
-Статус: **Не исправлено.** Git hooks инструмент в `dependencies` — попадёт в production bundle.
+Git hooks инструмент попадает в production `node_modules`.
 
 **Исправление:** Перенести в `devDependencies`.
 
 ---
 
-### `[MAJOR]` `dotenv` — неиспользуемый production dependency
+### `[MAJOR]` `dotenv` — не используемый production dependency — НЕ ИСПРАВЛЕНО
 
 **Файл:** `package.json:48`
 
-Статус: **Не исправлено.** `dotenv` не импортируется нигде в frontend коде. Angular CLI обрабатывает env-переменные самостоятельно.
+`dotenv` — серверный инструмент для Node.js. Angular CLI + `@ngx-env/builder` обрабатывают env самостоятельно.
 
 **Исправление:** Удалить или перенести в `devDependencies`.
 
 ---
 
-### `[MINOR]` ESLint ignores `**/*.js` — конфиг ESLint не линтит себя
+### `[SUGGESTION]` `@angular/cdk` — проверить дублирование в deps — частично RESOLVED
 
-**Файл:** `eslint.config.cjs:10`
-
-Статус: **Не исправлено.** `**/*.js` исключает сам конфиг ESLint.
-
----
-
-### `[SUGGESTION]` `@angular/cdk` указан и в `dependencies`, и в `devDependencies`
-
-**Файл:** `package.json:34,59`
-
-Статус: **Не исправлено.**
-
-```json
-"dependencies":    { "@angular/cdk": "~21.1.5" },
-"devDependencies": { "@angular/cdk": "^21.1.5" }
-```
-
-**Исправление:** Оставить только в `dependencies`.
+Дубликата в `devDependencies` не обнаружено. Рекомендуется периодически проверять при обновлениях.
 
 ---
 
 ## 10. Рекомендации к следующему ревью
 
 ### Приоритет 1 (обязательно)
-
-- [ ] Создать `AuthGuard` (functional `CanActivateFn`) и защитить роут `/user-profile`
-- [ ] Создать `AuthInterceptor` (`HttpInterceptorFn`) для отправки access token
-- [ ] Реализовать auto-refresh token при загрузке через `APP_INITIALIZER`
 - [ ] Исправить `ThemeService` — SSR-safe через `inject(DOCUMENT)`
 - [ ] Исправить `provideTranslocoPersistLang` — `useFactory` вместо `useValue`
-- [ ] Написать реальные тесты для `AuthService`, `ThemeService`, `Login`
+- [ ] Скрыть `user_bar` в Header для неавторизованных пользователей + добавить кнопку входа
+- [ ] Перенести `isRefreshing`/`refreshSubject` из `AuthService` в приватный refresh-сервис или сделать их `private`
 
 ### Приоритет 2 (важно)
-
 - [ ] Исправить опечатку `LaguageSwitcher` → `LanguageSwitcher`
 - [ ] Исправить опечатку `AppTosterService` → `AppToasterService`
-- [ ] Добавить `ChangeDetectionStrategy.OnPush` ко **всем** компонентам
+- [ ] Добавить `ChangeDetectionStrategy.OnPush` во **все** компоненты
 - [ ] Реализовать страницу Registration (форма регистрации)
-- [ ] Привязать `checked` checkbox к текущей теме в `ThemeSwitcher`
-- [ ] Изменить проверку `error.status === 403` → `401` в login (синхронно с backend)
+- [ ] Привязать `[checked]` checkbox к текущей теме в `ThemeSwitcher`
+- [ ] Изменить `error.status === 403` → `401` в login
 - [ ] Перенести `validate-branch-name` и `dotenv` из `dependencies`
 - [ ] Перевести `LaguageSwitcher` на signals
-- [ ] Использовать `asReadonly()` для публичных signals в сервисах
 
 ### Приоритет 3 (желательно)
-
+- [ ] Удалить `console.log` в `header.ts:41` → заменить на `AppTosterService`
 - [ ] Удалить мёртвый `title` signal в `App`
-- [ ] Удалить избыточный `standalone: true` (Angular 21 default)
 - [ ] Исправить `<html lang="en">` → `lang="ru"` в `index.html`
 - [ ] Исправить `<title>Frontend</title>` → `MeowVault`
-- [ ] Исправить `grid-template-columns: 1fr 1fr` в `header.scss`
 - [ ] Заменить `getInputError` method binding на `computed()` signals
-- [ ] Реализовать страницу NotFound с полноценным дизайном
+- [ ] Добавить реальные тесты для интерцептора (Bearer токен, retry на 401)
 - [ ] Удалить или обновить skipped тест в `app.spec.ts`
 - [ ] Исправить опечатку `'ThemeSwither'` в `theme-switcher.spec.ts`
-- [ ] Убрать дубликат `@angular/cdk` из `devDependencies`
+- [ ] Удалить избыточный `standalone: true`
 
 ---
 
 ## Ссылки на документацию
 
 | Тема | Ссылка |
-| -------------------------------- | ---------------------------------------------------------------------- |
-| Angular v20 Route Guards | https://v20.angular.dev/guide/routing/route-guards |
-| Angular HttpInterceptorFn | https://v20.angular.dev/api/common/http/HttpInterceptorFn |
-| Angular withInterceptors | https://v20.angular.dev/api/common/http/withInterceptors |
-| Angular Signals Tutorial | https://v20.angular.dev/tutorials/signals |
-| Angular OnPush + Signals | https://v20.angular.dev/tutorials/signals/1-creating-your-first-signal |
-| Angular Component Best Practices | https://v20.angular.dev/style-guide |
-| Angular SSR / DOCUMENT | https://v20.angular.dev/guide/ssr |
+|------|--------|
+| Angular v20 Route Guards | https://angular.dev/guide/routing/route-guards |
+| Angular HttpInterceptorFn | https://angular.dev/api/common/http/HttpInterceptorFn |
+| Angular APP_INITIALIZER | https://angular.dev/api/core/APP_INITIALIZER |
+| Angular Signals | https://angular.dev/guide/signals |
+| Angular OnPush + Signals | https://angular.dev/best-practices/skipping-subtrees |
+| Angular SSR / DOCUMENT | https://angular.dev/guide/ssr |
+| Angular Style Guide | https://angular.dev/style-guide |
 | Taiga UI Components | https://taiga-ui.dev |
 | Transloco | https://jsverse.github.io/transloco |
+| WCAG 3.1.1 Language of page | https://www.w3.org/WAI/WCAG21/Understanding/language-of-page |
 
 ---
 
 ## История ревью
 
 | Дата | Общая оценка | Критических | Мажорных | Минорных |
-| ---------- | ------------ | ----------- | -------- | -------- |
+|------|-------------|-------------|----------|----------|
 | 2026-03-09 | 4.5/10 | 6 | 8 | 9 |
 | 2026-03-09 | 4.5/10 | 6 | 8 | 8 |
+| 2026-03-16 | 5.5/10 | 2 | 7 | 7 |

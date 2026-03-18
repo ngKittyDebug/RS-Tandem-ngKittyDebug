@@ -1,0 +1,43 @@
+.activity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  &__icon {
+    &_accent-1 {
+      background-color: var(--accent-1);
+    }
+
+    &_accent-2 {
+      background-color: var(--accent-2);
+    }
+  }
+
+  &__content {
+    min-width: 0;
+    flex: 1;
+  }
+
+  &__title {
+    margin-top: 0;
+    font-weight: 600;
+  }
+
+  &__subtitle,
+  &__time {
+    margin-top: 0;
+    font-size: 0.875rem;
+  }
+
+  &__time {
+    flex-shrink: 0;
+  }
+}

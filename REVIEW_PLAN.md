@@ -30,15 +30,16 @@
 **Frontend-агент:**
 1. Начать с `frontend/package.json`, `frontend/angular.json`, `frontend/tsconfig.json` — конфигурация
 2. Прочитать `frontend/src/app/app.config.ts` и `frontend/src/app/app.routes.ts` — провайдеры и маршрутизация
-3. Найти все `*.ts` в `frontend/src/app/core/` через Glob — сервисы, guards, interceptors, компоненты
+3. Найти все `*.ts` в `frontend/src/*` через Glob — сервисы, guards, interceptors, компоненты и т.д.
 4. Найти все `*.ts` и `*.html` в `frontend/src/app/pages/` — страницы и шаблоны
-5. Найти все `*.spec.ts` — тесты
-6. Прочитать `frontend/src/index.html` и `frontend/src/styles.scss` — глобальные настройки
-7. Проверить `frontend/public/i18n/` — файлы переводов
+5. Найти все `*.ts` и `*.html` в `frontend/src/app/shared/*` — переиспользуемое
+6. Найти все `*.spec.ts` — тесты
+7. Прочитать `frontend/src/index.html` и `frontend/src/styles.scss` — глобальные настройки
+8. Проверить `frontend/public/i18n/` — файлы переводов
 
 ### Шаг 2 — Верификация (Read ключевых файлов)
 
-После получения результатов от агентов — прочитать 5-10 ключевых файлов через `Read` tool для проверки номеров строк и контекста замечаний.
+После получения результатов от агентов — прочитать 10-15 ключевых файлов через `Read` tool для проверки номеров строк и контекста замечаний.
 
 ### Шаг 3 — Использовать Skills и Context7
 
@@ -57,6 +58,7 @@
 - `angular-tooling` — Angular CLI v20+, project setup, generation, build optimization
 - `nestjs-best-practices` — security-auth-jwt, error-handling, arch-feature-modules
 - `nestjs-testing-expert` — unit, integration, and e2e testing patterns with Jest
+- `frontend-design` — frontend-design
 
 **Context7 (актуальная документация):**
 - `/nestjs/docs.nestjs.com` — NestJS official docs
@@ -65,6 +67,8 @@
 - `/websites/transloco.ng` — Transloco i18n for Angular
 
 ### Шаг 4 — Обновить CODE_REVIEW.md
+
+**No duplicates**: Check results for the already existing in context and skip any feedbacks already flagged by same or other agents.
 
 Записать результаты в `CodeQualityStatus/code-review-backend.md` и `CodeQualityStatus/code-review-frontend.md`.
 
@@ -179,10 +183,10 @@ Severity замечаний:
 
 ## Чеклист качества ревью
 
-- [ ] Все упомянутые файлы и строки существуют
+- [ ] Все упомянутые и новые файлы и строки существуют
 - [ ] Каждое замечание содержит severity, файл:строку, описание, пример исправления
 - [ ] Использованы ссылки на актуальную документацию (NestJS, Angular, Prisma)
-- [ ] Применены правила из skills (nestjs-best-practices, angular-component, angular-signals)
+- [ ] Применены правила и практики из skills (nestjs-best-practices, angular-component, angular-signals)
 - [ ] Предыдущие замечания сверены — resolved/updated
 - [ ] Таблица "История ревью" обновлена
 - [ ] Markdown корректно рендерится

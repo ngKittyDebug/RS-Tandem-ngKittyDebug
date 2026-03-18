@@ -1,0 +1,48 @@
+:host {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.profile-sidebar {
+  [tuiHeader] {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__title {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+
+    &:not(:first-child) {
+      margin-top: 1.5rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--tui-border-normal);
+    }
+  }
+
+  &__subtitle {
+    margin-top: 0;
+    margin-bottom: 0;
+
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+
+  &__content-genres {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+.avatar {
+  position: relative;
+  margin-bottom: 1rem;
+
+  &__button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border-radius: 50%;
+  }
+}

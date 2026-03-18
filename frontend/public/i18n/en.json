@@ -1,5 +1,27 @@
 {
   "log-out": "Log out",
   "footer-start": "© 2026 MeowVault. All rights reserved. Made with ",
-  "footer-end": " by cats, for gamers."
+  "footer-end": " by cats, for gamers.",
+
+  "serverResponse": {
+    "getUser": {
+      "success": "User data retrieved successfully",
+      "unauthorized": "User is not authenticated",
+      "notFound": "User not found"
+    },
+    "updateAccount": {
+      "success": "Account information updated successfully",
+      "invalidData": "Invalid data provided",
+      "invalidPassword": "Current password is incorrect",
+      "notFound": "User not found",
+      "isCredentialsTaken": "Username or email is already taken"
+    },
+    "updatePassword": {
+      "success": "Password updated successfully",
+      "invalidData": "Invalid data provided",
+      "invalidPassword": "Old password is incorrect",
+      "notFound": "User not found"
+    },
+    "defaultError": "An error occurred. Please try again later."
+  }
 }

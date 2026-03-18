@@ -1,3 +1,8 @@
 {
-  "404Works": "404 page works"
+  "404Works": "404 page works",
+  "title": "Oops... Something went wrong!",
+  "description": "Sorry, the page you requested was not found...",
+  "buttons": {
+    "goHome": "GO BACK HOME"
+  }
 }
