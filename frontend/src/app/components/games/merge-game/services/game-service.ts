@@ -1,7 +1,10 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { GameMode, PersonalityMode, QuestionMode, StatusGame } from '../models/settings.type';
-import data from '../mock-data/mock-data.json';
 import { QuizService } from './quiz-service';
+import { Observable, catchError, throwError } from 'rxjs';
+import { API_BASE_URL } from '../../../../core/constants/api.constants';
+import { ResponseData } from '../models/data.interface';
+import { HttpClient } from '@angular/common/http';
 
 export interface QuizState {
   groupId: number;
@@ -20,7 +23,8 @@ export interface GameResult {
   providedIn: 'root',
 })
 export class GameService {
-  private readonly mockGroups = data.mockData;
+  private http = inject(HttpClient);
+
   private readonly quizService = inject(QuizService);
 
   public readonly gameMode = signal<GameMode>('withoutAI');
@@ -69,5 +73,13 @@ export class GameService {
     localStorage.setItem('merge-game-history', JSON.stringify(history));
 
     this.setStatus('finished');
+  }
+
+  public getAllCards(): Observable<ResponseData> {
+    return this.http.get<ResponseData>(`${API_BASE_URL}/data`).pipe(
+      catchError((err) => {
+        return throwError(() => err);
+      }),
+    );
   }
 }

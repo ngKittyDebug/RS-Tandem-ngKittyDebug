@@ -1,3 +1,13 @@
+export interface ResponseData {
+  data: Data[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 export interface Data {
   id: number;
   category: string;
@@ -5,11 +15,15 @@ export interface Data {
 }
 
 export interface Word {
+  id?: number;
+  dataId?: number;
   word: string;
   questions: Question[];
 }
 
 export interface Question {
+  id?: number;
+  wordId?: number;
   question: string;
   answer: string;
   keywords: string[];

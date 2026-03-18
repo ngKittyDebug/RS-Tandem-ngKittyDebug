@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject, signal, OnInit, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TuiTextfield } from '@taiga-ui/core';
 import { TuiTree, TuiDataListWrapper } from '@taiga-ui/kit';
-import data from '../../mock-data/mock-data.json';
-import { Data, Word } from '../../models/data.interface';
+import { ResponseData, Word } from '../../models/data.interface';
 import { TuiSelect } from '@taiga-ui/kit';
+import { tap } from 'rxjs';
+import { GameService } from '../../services/game-service';
 
 @Component({
   selector: 'app-theory',
@@ -12,12 +13,41 @@ import { TuiSelect } from '@taiga-ui/kit';
   templateUrl: './theory.html',
   styleUrl: './theory.scss',
 })
-export class Theory {
-  private readonly data: Data[] = data.mockData;
-  protected readonly categories = this.data.map((g) => g.category);
-  protected selectedCategory = this.categories[0];
+export class Theory implements OnInit {
+  private readonly gameService = inject(GameService);
 
-  protected get filteredWords(): Word[] {
-    return this.data.find((g) => g.category === this.selectedCategory)?.words ?? [];
+  private dataResponse = signal<ResponseData>({
+    data: [],
+    pagination: {
+      page: 0,
+      limit: 0,
+      total: 0,
+      totalPages: 0,
+    },
+  });
+
+  protected categories = computed(() => this.dataResponse().data.map((g) => g.category));
+  protected selectedCategory = signal<string>('');
+
+  protected filteredWords = computed<Word[]>(
+    () => this.dataResponse().data.find((g) => g.category === this.selectedCategory())?.words ?? [],
+  );
+
+  public ngOnInit(): void {
+    this.getAllCards();
+  }
+
+  public getAllCards(): void {
+    this.gameService
+      .getAllCards()
+      .pipe(
+        tap((res: ResponseData) => {
+          this.dataResponse.set(res);
+          if (res.data.length > 0) {
+            this.selectedCategory.set(res.data[0].category);
+          }
+        }),
+      )
+      .subscribe();
   }
 }
