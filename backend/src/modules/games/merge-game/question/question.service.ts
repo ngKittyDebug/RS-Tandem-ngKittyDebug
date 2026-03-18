@@ -1,28 +1,65 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from 'prisma/prisma.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 
 @Injectable()
 export class QuestionService {
-  create(createQuestionDto: CreateQuestionDto) {
-    console.log(createQuestionDto);
-    return 'This action adds a new question';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async findAll() {
+    return await this.prisma.question.findMany({
+      orderBy: {
+        id: 'desc',
+      },
+    });
+  }
+  async create(createQuestionDto: CreateQuestionDto, wordId: number) {
+    return await this.prisma.question.create({
+      data: {
+        ...createQuestionDto,
+        wordId,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all question`;
+  async findByWordId(wordId: number) {
+    return await this.prisma.question.findMany({
+      where: { wordId },
+      orderBy: {
+        id: 'asc',
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} question`;
+  async findOne(id: number) {
+    const question = await this.prisma.question.findUnique({
+      where: { id },
+    });
+
+    if (!question) {
+      throw new NotFoundException(`Question с id ${id} не найден`);
+    }
+
+    return question;
   }
 
-  update(id: number, updateQuestionDto: UpdateQuestionDto) {
-    console.log(updateQuestionDto);
-    return `This action updates a #${id} question`;
+  async update(id: number, updateQuestionDto: UpdateQuestionDto) {
+    await this.findOne(id);
+
+    return await this.prisma.question.update({
+      where: { id },
+      data: updateQuestionDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} question`;
+  async remove(id: number) {
+    await this.findOne(id);
+
+    await this.prisma.question.delete({
+      where: { id },
+    });
+
+    return { message: `Question с id ${id} успешно удален` };
   }
 }

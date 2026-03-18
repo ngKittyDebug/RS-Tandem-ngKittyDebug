@@ -47,6 +47,7 @@ model MergeGameData {
   category String
   words    Word[]
 
+  @@index([category])
   @@map("merge_game_data")
 }
 
@@ -57,6 +58,7 @@ model Word {
   data      MergeGameData   @relation(fields: [dataId], references: [id], onDelete: Cascade)
   questions Question[]
 
+  @@index([dataId])
   @@map("merge_game_word")
 }
 
@@ -68,5 +70,6 @@ model Question {
   wordId   Int
   word     Word     @relation(fields: [wordId], references: [id], onDelete: Cascade)
 
+  @@index([wordId])
   @@map("merge_game_question")
 }

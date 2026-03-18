@@ -1,16 +1,6 @@
-import { CreateDataDto } from './data/dto/create-data.dto';
-import { CreateQuestionDto } from './question/dto/create-question.dto';
-import { CreateWordDto } from './word/dto/create-word.dto';
-
-import { UpdateDataDto } from './data/dto/update-data.dto';
-import { UpdateQuestionDto } from './question/dto/update-question.dto';
-import { UpdateWordDto } from './word/dto/update-word.dto';
-
-export {
-  CreateDataDto,
-  CreateQuestionDto,
-  CreateWordDto,
-  UpdateDataDto,
-  UpdateQuestionDto,
-  UpdateWordDto,
-};
+export { CreateDataDto } from './data/dto/create-data.dto';
+export { UpdateDataDto } from './data/dto/update-data.dto';
+export { CreateWordDto } from './word/dto/create-word.dto';
+export { UpdateWordDto } from './word/dto/update-word.dto';
+export { CreateQuestionDto } from './question/dto/create-question.dto';
+export { UpdateQuestionDto } from './question/dto/update-question.dto';
