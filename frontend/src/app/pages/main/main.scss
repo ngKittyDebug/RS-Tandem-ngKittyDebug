@@ -1,0 +1,208 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+:host {
+  display: flex;
+  gap: 1rem;
+}
+
+.red {
+  color: var(--tui-text-negative);
+}
+
+.hover {
+  transition: color 0.2s ease;
+  color: var(--tui-background-accent-1);
+}
+
+.hover:hover {
+  color: var(--tui-background-accent-1-hover);
+}
+
+.text {
+  color: var(--tui-text-secondary);
+}
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0 auto;
+  font-size: 1rem;
+  gap: 1rem;
+  padding-top: 1rem;
+}
+header,
+.description,
+.container,
+.card-container {
+  width: min(90ch, 100%);
+}
+.header-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  max-width: 80%;
+}
+hgroup {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+hgroup h1 {
+  margin-bottom: 0.5rem;
+  font-size: 3rem;
+}
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+header .image {
+  width: 8rem;
+}
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-self: center;
+  border: 2px solid rgba(236, 72, 153, 0.1);
+  border-radius: 1.5rem;
+  :host-context(tui-root._mobile) & {
+    flex-direction: column;
+  }
+}
+.container > * {
+  min-width: 0;
+}
+.description {
+  padding: 1rem;
+  border-radius: 1.5rem;
+  border: 1px solid #e2e8f0;
+  background-color: var(--tui-background-base-alt);
+  background: linear-gradient(
+    to right,
+    rgba(139, 92, 246, 0.1),
+    rgba(20, 184, 166, 0.1),
+    rgba(236, 72, 153, 0.1)
+  );
+  box-shadow: var(--tui-shadow-small);
+}
+.description p {
+  font-size: var(--tui-font-text-l);
+}
+.image {
+  inline-size: 10rem;
+  block-size: 10rem;
+}
+
+.card {
+  background-color: var(--tui-background-base-alt);
+  block-size: auto;
+  box-shadow: var(--tui-shadow-small);
+}
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.card-container div {
+  border: 2px solid rgba(236, 72, 153, 0.1);
+}
+section {
+  display: flex;
+  block-size: 3.125rem;
+  border-radius: 0.75rem;
+  justify-content: center;
+  align-items: center;
+  color: var(--tui-text-secondary);
+  border: 1px dashed;
+}
+
+.label {
+  font: var(--tui-font-text-l);
+}
+
+.reg-button {
+  transition: all 0.2s ease;
+  background: linear-gradient(to right, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
+  color: #8b5cf6;
+}
+.reg-button:hover {
+  background: linear-gradient(to right, rgba(236, 72, 153, 0.2) rgba(139, 92, 246, 0.2));
+  color: #8b5cf6;
+}
+@media (max-width: 1150px) {
+  .main-container {
+    width: 100%;
+  }
+  .header-container {
+    max-width: 100%;
+  }
+  hgroup h1 {
+    margin-bottom: 0.5rem;
+    font-size: 2.5rem;
+    padding: 0;
+  }
+  .card-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 750px) {
+  header {
+    flex-direction: column;
+    text-align: center;
+  }
+  hgroup h1 {
+    margin-bottom: 0.5rem;
+    padding: 0;
+    font-size: 2rem;
+  }
+  header .image {
+    width: 8rem;
+  }
+}
+@media (max-width: 400px) {
+  .main-container {
+    padding: 0.5rem;
+    gap: 0.75rem;
+  }
+
+  header {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  hgroup h1 {
+    font-size: 1.5rem;
+  }
+
+  header .image {
+    width: 5rem;
+  }
+
+  .image {
+    inline-size: 6rem;
+    block-size: 6rem;
+  }
+
+  .description p {
+    font-size: 0.95rem;
+  }
+
+  .card-container {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
