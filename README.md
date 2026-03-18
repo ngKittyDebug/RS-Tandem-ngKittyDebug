@@ -11,5 +11,6 @@
 - Оксана: [Oksi2510](https://github.com/Oksi2510)
 - Павел: [pavelkuvsh1noff](https://github.com/pavelkuvsh1noff)
 
-## 🚀 Deployment 
+## 🚀 Deployment
 Ссылка на deploy: [link](https://meowvault.netlify.app/)
+
