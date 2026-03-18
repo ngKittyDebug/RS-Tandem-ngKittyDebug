@@ -1,6 +1,5 @@
 import {
   ConflictException,
-  ForbiddenException,
   Injectable,
   Logger,
   NotFoundException,
@@ -120,14 +119,14 @@ export class AuthService {
 
     if (!user) {
       this.logger.error('Пользователь не существует или неверный пароль');
-      throw new ForbiddenException(
+      throw new UnauthorizedException(
         `Пользователь не существует или неверный пароль`,
       );
     }
 
     if (user.provider !== Provider.local) {
       this.logger.error('Пользователь был зарегистрирован с помощью OAuth');
-      throw new ForbiddenException(
+      throw new UnauthorizedException(
         'Пользователь был зарегистрирован с помощью OAuth',
       );
     }
@@ -136,7 +135,7 @@ export class AuthService {
 
     if (!validPass) {
       this.logger.error('Пользователь не существует или неверный пароль');
-      throw new ForbiddenException(
+      throw new UnauthorizedException(
         `Пользователь не существует или неверный пароль`,
       );
     }

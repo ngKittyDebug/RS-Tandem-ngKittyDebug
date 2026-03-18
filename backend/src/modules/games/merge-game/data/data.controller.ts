@@ -11,16 +11,18 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import {
-  ApiTags,
-  ApiOperation,
-  ApiResponse,
-  ApiQuery,
-  ApiParam,
-} from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { DataService } from './data.service';
 import { CreateDataDto, UpdateDataDto } from '../merge-game.interfaces';
 import { Public } from 'src/decorators/public.decorator';
+import { ApiSwagger } from 'src/decorators/swagger.decorator';
+import {
+  createDataConfig,
+  findAllDataConfig,
+  findOneDataConfig,
+  updateDataConfig,
+  deleteDataConfig,
+} from 'src/swagger-api-configs/merge-game-data';
 
 @ApiTags('Merge Game Data')
 @Public()
@@ -28,36 +30,15 @@ import { Public } from 'src/decorators/public.decorator';
 export class DataController {
   constructor(private readonly dataService: DataService) {}
 
+  @ApiSwagger(createDataConfig)
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Создать новую категорию данных игры' })
-  @ApiResponse({ status: 201, description: 'Данные успешно созданы' })
-  @ApiResponse({ status: 400, description: 'Некорректные данные' })
   create(@Body() createDataDto: CreateDataDto) {
     return this.dataService.create(createDataDto);
   }
 
+  @ApiSwagger(findAllDataConfig)
   @Get()
-  @ApiOperation({ summary: 'Получить все данные игры с пагинацией' })
-  @ApiQuery({
-    name: 'page',
-    required: false,
-    type: Number,
-    description: 'Номер страницы',
-  })
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    type: Number,
-    description: 'Количество элементов на странице',
-  })
-  @ApiQuery({
-    name: 'category',
-    required: false,
-    type: String,
-    description: 'Фильтр по категории',
-  })
-  @ApiResponse({ status: 200, description: 'Список данных успешно получен' })
   findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -68,20 +49,14 @@ export class DataController {
     return this.dataService.findAll(pageNum, limitNum, category);
   }
 
+  @ApiSwagger(findOneDataConfig)
   @Get(':id')
-  @ApiOperation({ summary: 'Получить данные игры по ID' })
-  @ApiParam({ name: 'id', type: Number, description: 'ID данных' })
-  @ApiResponse({ status: 200, description: 'Данные успешно получены' })
-  @ApiResponse({ status: 404, description: 'Данные не найдены' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.dataService.findOne(id);
   }
 
+  @ApiSwagger(updateDataConfig)
   @Patch(':id')
-  @ApiOperation({ summary: 'Обновить данные игры' })
-  @ApiParam({ name: 'id', type: Number, description: 'ID данных' })
-  @ApiResponse({ status: 200, description: 'Данные успешно обновлены' })
-  @ApiResponse({ status: 404, description: 'Данные не найдены' })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDataDto: UpdateDataDto,
@@ -89,12 +64,9 @@ export class DataController {
     return this.dataService.update(id, updateDataDto);
   }
 
+  @ApiSwagger(deleteDataConfig)
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Удалить данные игры' })
-  @ApiParam({ name: 'id', type: Number, description: 'ID данных' })
-  @ApiResponse({ status: 200, description: 'Данные успешно удалены' })
-  @ApiResponse({ status: 404, description: 'Данные не найдены' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.dataService.remove(id);
   }

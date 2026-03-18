@@ -9,17 +9,9 @@ import {
   UseGuards,
   Get,
 } from '@nestjs/common';
+import { ApiTags, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import {
-  ApiOperation,
-  ApiTags,
-  ApiResponse,
-  ApiBody,
-  ApiExcludeEndpoint,
-  ApiOkResponse,
-  ApiCreatedResponse,
-} from '@nestjs/swagger';
 import { LoginAuthDto } from './dto/login-auth.dto';
 import { Request, Response } from 'express';
 import { Public } from 'src/decorators/public.decorator';
@@ -27,6 +19,13 @@ import { AuthResponse, LogoutResponse } from '../interface/auth-module-types';
 import { AuthGuard } from '@nestjs/passport';
 import { Github } from 'src/decorators/github.decorator';
 import { Profile } from 'passport-github2';
+import { ApiSwagger } from 'src/decorators/swagger.decorator';
+import {
+  registerConfig,
+  loginConfig,
+  refreshConfig,
+  logoutConfig,
+} from 'src/swagger-api-configs/auth';
 
 @ApiTags('Auth')
 @Public()
@@ -34,29 +33,7 @@ import { Profile } from 'passport-github2';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiOperation({
-    summary: 'Регистрация нового пользователя',
-    description:
-      'Создаёт новый аккаунт с выдачей JWT токена. Требуются уникальные email и username.',
-  })
-  @ApiBody({ type: CreateAuthDto })
-  @ApiCreatedResponse({
-    description: 'Пользователь успешно зарегистрирован',
-    schema: {
-      example: {
-        accessToken:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
-      },
-    },
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Некорректные данные (невалидный email, username или пароль)',
-  })
-  @ApiResponse({
-    status: 409,
-    description: 'Пользователь с таким email или username уже существует',
-  })
+  @ApiSwagger(registerConfig)
   @Post('register')
   create(
     @Body() createAuthDto: CreateAuthDto,
@@ -65,29 +42,7 @@ export class AuthController {
     return this.authService.registration(res, createAuthDto);
   }
 
-  @ApiOperation({
-    summary: 'Вход в систему',
-    description:
-      'Аутентификация пользователя по email/username и паролю. Возвращает JWT токен.',
-  })
-  @ApiBody({ type: LoginAuthDto })
-  @ApiOkResponse({
-    description: 'Успешный вход',
-    schema: {
-      example: {
-        accessToken:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
-      },
-    },
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Некорректные данные',
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Неверные учётные данные (email/username или пароль)',
-  })
+  @ApiSwagger(loginConfig)
   @Post('login')
   @HttpCode(HttpStatus.OK)
   login(
@@ -97,29 +52,7 @@ export class AuthController {
     return this.authService.login(res, loginAuthDto);
   }
 
-  @ApiOperation({
-    summary: 'Обновление токенов',
-    description:
-      'Обновляет JWT токен с использованием refresh токена из cookies.\n\n' +
-      '**Требует:** Cookie с именем `refreshToken`',
-  })
-  @ApiOkResponse({
-    description: 'Токены успешно обновлены',
-    schema: {
-      example: {
-        accessToken:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
-      },
-    },
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Refresh токен недействителен или истёк',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Пользователь не найден',
-  })
+  @ApiSwagger(refreshConfig)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   refresh(
@@ -129,18 +62,7 @@ export class AuthController {
     return this.authService.refresh(req, res);
   }
 
-  @ApiOperation({
-    summary: 'Выход из системы',
-    description: 'Очищает refresh токен из cookies и завершает сессию.',
-  })
-  @ApiOkResponse({
-    description: 'Успешный выход',
-    schema: {
-      example: {
-        logout: true,
-      },
-    },
-  })
+  @ApiSwagger(logoutConfig)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   logout(@Res({ passthrough: true }) res: Response): LogoutResponse {
