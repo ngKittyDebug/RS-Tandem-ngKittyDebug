@@ -12,6 +12,7 @@ const sortRandom = (): number => Math.random() - 0.5;
 export class BoardService {
   private readonly quizService = inject(QuizService);
   private readonly gameService = inject(GameService);
+  public readonly allRowsCompleted = signal(false);
   private dataResponse = signal<ResponseData>({
     data: [],
     pagination: {
@@ -27,7 +28,12 @@ export class BoardService {
 
   private startQuiz(groupId: number, words: string[]): void {
     const group = this.selectGroups().find((g) => g.id === groupId)!;
-    this.quizService.activeQuiz.set({ groupId, theme: group.category, words });
+    this.quizService.activeQuiz.set({
+      groupId,
+      theme: group.category,
+      words,
+      questions: group.words.flatMap((w) => w.questions),
+    });
   }
 
   public checkRow(rows: Row[], rowIndex: number): Row[] {
@@ -45,6 +51,9 @@ export class BoardService {
       const newRows = [...rows];
       newRows[rowIndex] = { ...row, completed: true, theme: group.category };
       this.startQuiz(firstGroupId, words);
+      if (newRows.every((r) => r.completed)) {
+        this.allRowsCompleted.set(true);
+      }
       return newRows;
     }
 
@@ -52,6 +61,7 @@ export class BoardService {
   }
 
   public initBoard(): void {
+    this.allRowsCompleted.set(false);
     this.gameService
       .getAllCards()
       .pipe(

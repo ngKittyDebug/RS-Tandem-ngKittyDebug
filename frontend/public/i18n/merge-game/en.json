@@ -51,5 +51,12 @@
     "NextQuestion": "Next question",
     "right": "✓ Right!",
     "wrong": "✗ Not quite..."
+  },
+
+  "gameResult": {
+    "title": "Game finished!",
+    "mode": "Mode:",
+    "correct": "Correct:",
+    "wrong": "Wrong:"
   }
 }

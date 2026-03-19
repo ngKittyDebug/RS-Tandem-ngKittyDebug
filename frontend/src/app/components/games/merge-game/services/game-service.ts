@@ -3,21 +3,8 @@ import { GameMode, PersonalityMode, QuestionMode, StatusGame } from '../models/s
 import { QuizService } from './quiz-service';
 import { Observable, catchError, throwError } from 'rxjs';
 import { API_BASE_URL } from '../../../../core/constants/api.constants';
-import { ResponseData } from '../models/data.interface';
+import { GameResult, QuizState, ResponseData } from '../models/data.interface';
 import { HttpClient } from '@angular/common/http';
-
-export interface QuizState {
-  groupId: number;
-  theme: string;
-  words: string[];
-}
-
-export interface GameResult {
-  date: string;
-  mode: string;
-  correctAnswers: number;
-  wrongAnswers: number;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -35,6 +22,7 @@ export class GameService {
   public readonly activeQuiz = signal<QuizState | null>(null);
   public readonly correctAnswers = signal<number>(0);
   public readonly wrongAnswers = signal<number>(0);
+  public readonly lastResult = signal<GameResult | null>(null);
 
   public setGameMode(mode: GameMode): void {
     this.gameMode.set(mode);
@@ -68,10 +56,7 @@ export class GameService {
       wrongAnswers: this.quizService.wrongAnswers(),
     };
 
-    const history = JSON.parse(localStorage.getItem('merge-game-history') || '[]');
-    history.push(result);
-    localStorage.setItem('merge-game-history', JSON.stringify(history));
-
+    this.lastResult.set(result);
     this.setStatus('finished');
   }
 

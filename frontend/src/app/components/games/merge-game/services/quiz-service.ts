@@ -1,13 +1,10 @@
 import { Injectable, signal } from '@angular/core';
-import { QuizState } from './game-service';
-import data from '../mock-data/mock-data.json';
-import { Question } from '../models/data.interface';
+import { Question, QuizState } from '../models/data.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QuizService {
-  private readonly mockGroups = data.mockData;
   public readonly activeQuiz = signal<QuizState | null>(null);
   public readonly correctAnswers = signal<number>(0);
   public readonly wrongAnswers = signal<number>(0);
@@ -18,13 +15,12 @@ export class QuizService {
     this.wrongAnswers.set(0);
   }
 
-  public getRandomQuestion(groupId: number, word: string): Question | null {
-    const group = this.mockGroups.find((g) => g.id === groupId);
-    const item = group?.words.find((i) => i.word === word);
-    if (!item) return null;
-
-    const randomIndex = Math.floor(Math.random() * item.questions.length);
-    return item.questions[randomIndex] as Question;
+  public getRandomQuestion(word: string): Question | null {
+    const quiz = this.activeQuiz();
+    if (!quiz) return null;
+    const questions = quiz.questions.filter(() => quiz.words.includes(word));
+    if (!questions.length) return null;
+    return questions[Math.floor(Math.random() * questions.length)];
   }
 
   public checkAnswer(userAnswer: string, keywords: string[]): boolean {

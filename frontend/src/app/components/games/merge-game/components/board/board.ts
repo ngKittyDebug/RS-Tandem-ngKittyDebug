@@ -5,6 +5,8 @@ import { GameService } from '../../services/game-service';
 import { CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList } from '@angular/cdk/drag-drop';
 import { Router } from '@angular/router';
 import { QuizService } from '../../services/quiz-service';
+import { AppTosterService } from '../../../../../core/services/app-toster-service';
+import { TranslocoService } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-board',
@@ -15,14 +17,28 @@ import { QuizService } from '../../services/quiz-service';
 export class Board {
   private readonly router = inject(Router);
   private readonly boardService = inject(BoardService);
+  private readonly tosterService = inject(AppTosterService);
   protected gameService = inject(GameService);
   protected quizService = inject(QuizService);
   protected readonly rows = this.boardService.rows;
+  private translocoService = inject(TranslocoService);
 
   constructor() {
     effect(() => {
       if (this.quizService.activeQuiz()) {
         this.router.navigate(['/merge-game/quiz']);
+      }
+
+      if (this.gameService.statusGame() === 'finished') {
+        const result = this.gameService.lastResult();
+        if (!result) return;
+        const { mode, correctAnswers, wrongAnswers } = result;
+        const total = correctAnswers + wrongAnswers;
+        const message = `🎮 ${this.translocoService.translate('mergeGame.gameResult.mode')}: ${mode} <br> ✅ ${this.translocoService.translate('mergeGame.gameResult.correct')}: ${correctAnswers} / ${total} <br> ❌ ${this.translocoService.translate('mergeGame.gameResult.wrong')}: ${wrongAnswers} / ${total}`;
+        this.tosterService.showPositiveToster(
+          message,
+          this.translocoService.translate('mergeGame.gameResult.title'),
+        );
       }
     });
   }

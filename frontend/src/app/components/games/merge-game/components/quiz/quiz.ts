@@ -9,6 +9,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { AiService } from '../../services/ai-service';
 import { ResponseCheckAnswerAi } from '../../models/ai-metods.interface';
 import { tap } from 'rxjs';
+import { BoardService } from '../../services/board-service';
 
 @Component({
   selector: 'app-quiz',
@@ -19,6 +20,7 @@ import { tap } from 'rxjs';
 export class Quiz {
   private readonly quizService = inject(QuizService);
   public readonly gameService = inject(GameService);
+  private readonly boardService = inject(BoardService);
   private readonly aiService = inject(AiService);
   private readonly router = inject(Router);
   protected aiFeedback = signal<string | null>(null);
@@ -41,7 +43,7 @@ export class Quiz {
     const quiz = this.activeQuiz();
     const word = this.currentWord();
     if (!quiz || !word) return null;
-    return this.quizService.getRandomQuestion(quiz.groupId, word);
+    return this.quizService.getRandomQuestion(word);
   });
 
   protected userAnswer = signal('');
@@ -62,6 +64,7 @@ export class Quiz {
         })
         .pipe(
           tap((res: ResponseCheckAnswerAi) => {
+            this.quizService.submitAnswer(res.isCorrect);
             this.result.set(res.isCorrect ? 'correct' : 'wrong');
             this.aiFeedback.set(res.feedback);
             this.showAnswer.set(true);
@@ -70,6 +73,7 @@ export class Quiz {
         .subscribe();
     } else {
       const isCorrect = this.quizService.checkAnswer(this.userAnswer(), question.keywords);
+      this.quizService.submitAnswer(isCorrect);
       this.result.set(isCorrect ? 'correct' : 'wrong');
       this.showAnswer.set(true);
     }
@@ -79,7 +83,11 @@ export class Quiz {
     const isLast = this.currentIndex() === this.wordsToAsk().length - 1;
 
     if (isLast) {
+      this.currentIndex.set(0);
       this.quizService.activeQuiz.set(null);
+      if (this.boardService.allRowsCompleted()) {
+        this.gameService.finishGame();
+      }
       this.router.navigate(['/merge-game/board']);
     } else {
       this.currentIndex.update((i) => i + 1);

@@ -39,3 +39,17 @@ export interface Row {
   completed: boolean;
   theme?: string;
 }
+
+export interface QuizState {
+  groupId: number;
+  theme: string;
+  words: string[];
+  questions: Question[];
+}
+
+export interface GameResult {
+  date: string;
+  mode: string;
+  correctAnswers: number;
+  wrongAnswers: number;
+}

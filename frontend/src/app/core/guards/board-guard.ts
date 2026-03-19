@@ -6,7 +6,7 @@ export const boardGuard: CanActivateFn = () => {
   const gameService = inject(GameService);
   const router = inject(Router);
 
-  if (gameService.statusGame() !== 'playing') {
+  if (gameService.statusGame() !== 'playing' && gameService.statusGame() !== 'finished') {
     return router.createUrlTree(['/merge-game/settings']);
   }
 
