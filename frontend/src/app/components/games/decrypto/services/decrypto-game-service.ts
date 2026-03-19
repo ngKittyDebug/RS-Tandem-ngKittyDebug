@@ -1,14 +1,17 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
 import { DECRYPTO_CODES, StartGameCards } from '../models/decrypto-cards.constants';
 import { Card } from '../models/decrypto-card.interface';
 import { generateNumber } from '../helpers/generate-number.helper';
 import { shuffleArray } from '../helpers/shuffle-array.helper';
 import { CONFIG } from './models/decrypto.constants';
+import { DecryptoGameAchievementsService } from './decrypto-game-achievements-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DecryptoGameService {
+  protected readonly gameAchievements = inject(DecryptoGameAchievementsService);
+
   public gameCards: Card[] = StartGameCards;
   public gameCardsForGame: Card[] = StartGameCards;
   public gameCardsFromServer: Card[] = [];
@@ -82,11 +85,12 @@ export class DecryptoGameService {
     this.gameHints = [];
   }
 
-  public checkResult(resultArr: (number | null)[]): void {
+  public checkResult(resultArr: (number | null)[], gameTime: number | undefined): void {
     const gamePeriodResult = JSON.stringify(resultArr) === JSON.stringify(this.gameWrightCode);
     console.log(gamePeriodResult);
     if (gamePeriodResult && this.gamePeriod() === 3) {
       this.gameResult.set(true);
+      if (gameTime) this.gameAchievements.checkAchievements(gameTime, this.gameAttempts());
       console.log('you win game');
     } else if (gamePeriodResult) {
       this.roundResult.set(true);

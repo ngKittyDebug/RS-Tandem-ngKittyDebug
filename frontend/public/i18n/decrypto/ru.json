@@ -16,5 +16,7 @@
   "decryptoWinRoundMsg": "Вы выиграли раунд. Не останавливайтесь на достигнутом.",
   "decryptoWinRoundMsgLabel": "Раунд выигран",
   "decryptoWinGameMsg": "Поздравляем. Вы выиграли игру.",
-  "decryptoWinGameMsgLabel": "Победа"
+  "decryptoWinGameMsgLabel": "Победа",
+  "decryptoAchievementMessage1": "Вы прошли игру менее чем за ",
+  "decryptoAchievementMessage2": " секунд. Поздравляем."
 }

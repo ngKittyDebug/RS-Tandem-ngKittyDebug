@@ -16,5 +16,7 @@
   "decryptoWinRoundMsg": "You've won the round. Don't stop there.",
   "decryptoWinRoundMsgLabel": "Win round",
   "decryptoWinGameMsg": "Congratulation. You have won the game.",
-  "decryptoWinGameMsgLabel": "Win game"
+  "decryptoWinGameMsgLabel": "Win game",
+  "decryptoAchievementMessage1": "You completed the game in less than ",
+  "decryptoAchievementMessage2": " seconds. Congratulation."
 }

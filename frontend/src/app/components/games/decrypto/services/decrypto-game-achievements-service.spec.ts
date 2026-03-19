@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
-import { DecryptoGameService } from './decrypto-game-service';
+import { DecryptoGameAchievementsService } from './decrypto-game-achievements-service';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
-describe('DecryptoGameService', () => {
-  let service: DecryptoGameService;
+describe('DecryptoGameAchievementsService', () => {
+  let service: DecryptoGameAchievementsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -15,7 +15,7 @@ describe('DecryptoGameService', () => {
         }),
       ],
     });
-    service = TestBed.inject(DecryptoGameService);
+    service = TestBed.inject(DecryptoGameAchievementsService);
   });
 
   it('should be created', () => {

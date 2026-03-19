@@ -10,13 +10,23 @@ import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { DecryptoRules } from './components/decrypto-rules/decrypto-rules';
 import { AppTosterService } from '../../../core/services/app-toster-service';
 import { PopupService } from '../../../core/services/popup/popup-service';
-import { CardDescription } from './models/decrypto-card.interface';
+import { Card, CardDescription } from './models/decrypto-card.interface';
 import { Timer } from '../../timer/timer';
 import { DecryptoCardsLoadService } from './services/decrypto-cards-load-service';
 import { POPUP_SIZES } from '../../../core/services/popup/models/popup.enum';
 import { TIMER_MODE } from '../../timer/models/timer-mode.enum';
 import { CONFIG } from './services/models/decrypto.constants';
 import { KeyStorageService } from '../../../core/services/key-storage/key-storage-service';
+import { GameCards } from './models/decrypto-cards.constants';
+
+export interface DecryptoGameData {
+  gameCards: Card[];
+}
+
+const dataToServer = {
+  key: 'decrypto-data-1',
+  storage: { gameCards: GameCards },
+};
 
 @Component({
   selector: 'app-decrypto',
@@ -35,7 +45,7 @@ import { KeyStorageService } from '../../../core/services/key-storage/key-storag
 export class Decrypto implements OnInit {
   protected readonly gameService = inject(DecryptoGameService);
   private readonly gameLoadCardsService = inject(DecryptoCardsLoadService);
-  private readonly loadDataServerService = inject(KeyStorageService);
+  private readonly loadDataServerService = inject(KeyStorageService<DecryptoGameData>);
 
   private readonly transloco = inject(TranslocoService);
   private tosterService = inject(AppTosterService);
@@ -49,6 +59,10 @@ export class Decrypto implements OnInit {
 
   public ngOnInit(): void {
     this.newGame();
+    this.loadDataServerService.getData(dataToServer).subscribe((data) => {
+      this.gameService.gameCardsFromServer = data.storage.gameCards;
+      console.log(this.gameService.gameCardsFromServer);
+    });
   }
 
   public readonly decryptoForm = this.fb.nonNullable.group<DecryptoForm>({
@@ -104,16 +118,7 @@ export class Decrypto implements OnInit {
     this.gameService.gameAttempts.set(CONFIG.attempts);
     this.disableGameCodeInputs();
     this.timer()?.reset();
-    // this.loadDataServerService.sentData().subscribe();
-    this.loadDataServerService.getData().subscribe((data) => {
-      this.gameService.gameCardsFromServer = data.storage.gameCards;
-    });
-    // this.loadDataServerService.getAllData().subscribe((data) => {
-    //   console.log(data);
-    // });
-    // this.loadDataServerService.removeData().subscribe();
-    // this.gameLoadCardsService.getGameData();
-    // this.gameLoadCardsService.getGameDataAll();
+    this.loadDataServerService.sentData(dataToServer).subscribe();
   }
 
   protected newRound(): void {
@@ -164,7 +169,7 @@ export class Decrypto implements OnInit {
   protected submitDecryptoForm(): void {
     const { code1, code2, code3 } = this.decryptoForm.getRawValue();
     const resultArr = [code1, code2, code3];
-    this.gameService.checkResult(resultArr);
+    this.gameService.checkResult(resultArr, this.timer()?.timerSeconds());
     console.log('this.gameService');
     this.disableGameCodeInputs();
     if (this.gameService.roundResult() === true) {
@@ -194,6 +199,7 @@ export class Decrypto implements OnInit {
         this.transloco.translate('decrypto.decryptoWinGameMsg'),
         this.transloco.translate('decrypto.decryptoWinGameMsgLabel'),
       );
+      this.timer()?.stop();
     }
   }
 
