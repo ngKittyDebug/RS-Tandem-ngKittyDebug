@@ -5,7 +5,7 @@ import { ThemeSwitcher } from './theme-switcher';
 import { ThemeService } from '../../services/theme-service';
 import { ThemeNames } from '../../../shared/enums/theme-names.enum';
 
-describe('ThemeSwither', () => {
+describe('ThemeSwitcher', () => {
   let component: ThemeSwitcher;
   let fixture: ComponentFixture<ThemeSwitcher>;
   const themeServiceMock = {
