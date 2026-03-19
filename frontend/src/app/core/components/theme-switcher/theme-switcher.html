@@ -2,6 +2,7 @@
   size="s"
   tuiLike
   type="checkbox"
+  [checked]="themeService.theme() === ThemeNames.Light"
   [checkedIcon]="'@tui.moon-filled'"
   [uncheckedIcon]="'@tui.sun-filled'"
   (change)="onChangeTheme()"
