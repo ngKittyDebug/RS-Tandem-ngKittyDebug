@@ -1,55 +1,39 @@
-import { Directive, ElementRef, AfterViewInit, inject, OnDestroy } from '@angular/core';
+import { Directive, ElementRef, inject, HostListener } from '@angular/core';
 
 @Directive({
-  selector: '[appEyeCompass]',
+  selector: '[appDataPupil]',
   standalone: true,
 })
-export class EyeCompassDirective implements AfterViewInit, OnDestroy {
+export class EyeCompassDirective {
   private el = inject<ElementRef<HTMLElement>>(ElementRef);
-  private pupils?: NodeListOf<SVGElement>;
   private animationFrameId = 0;
-  private mouseX = 0;
-  private mouseY = 0;
 
-  public ngAfterViewInit(): void {
-    this.pupils = this.el.nativeElement.querySelectorAll<SVGElement>('[data-pupil]');
-    document.addEventListener('mousemove', this.mouseMoveHandler);
-  }
-  public ngOnDestroy(): void {
-    document.removeEventListener('mousemove', this.mouseMoveHandler);
-  }
-
-  private mouseMoveHandler = (e: MouseEvent): void => {
-    this.mouseX = e.clientX;
-    this.mouseY = e.clientY;
-
+  @HostListener('document:mousemove', ['$event'])
+  public mouseMoveHandler = (e: MouseEvent): void => {
     if (!this.animationFrameId) {
       this.animationFrameId = requestAnimationFrame(() => {
-        this.updateEyes();
+        this.updateEye(e.clientX, e.clientY);
         this.animationFrameId = 0;
       });
     }
   };
 
-  private updateEyes(): void {
-    if (!this.pupils) return;
+  private updateEye(mouseX: number, mouseY: number): void {
+    const rects = this.el.nativeElement.getBoundingClientRect();
 
-    const rects = Array.from(this.pupils).map((pupil) => pupil.getBoundingClientRect());
-    this.pupils.forEach((pupil, i) => {
-      const rect = rects[i];
-      const eyeX = rect.left + rect.width / 2;
-      const eyeY = rect.top + rect.height / 2;
+    const rect = rects;
+    const eyeX = rect.left + rect.width / 2;
+    const eyeY = rect.top + rect.height / 2;
 
-      const dx = this.mouseX - eyeX;
-      const dy = this.mouseY - eyeY;
+    const dx = mouseX - eyeX;
+    const dy = mouseY - eyeY;
 
-      const angle = Math.atan2(dy, dx);
-      const distance = 7;
+    const angle = Math.atan2(dy, dx);
+    const distance = 7;
 
-      const x = Math.cos(angle) * distance;
-      const y = Math.sin(angle) * distance;
+    const x = Math.cos(angle) * distance;
+    const y = Math.sin(angle) * distance;
 
-      pupil.style.transform = `translate(${x}px, ${y}px)`;
-    });
+    this.el.nativeElement.style.transform = `translate(${x}px, ${y}px)`;
   }
 }
