@@ -1,0 +1,45 @@
+<div class="hangman-container">
+  <header class="header" *transloco="let t">
+    <div class="logo">
+      <h2 tuiTitle>{{ t('hangman.title') }}</h2>
+      <p tuiSubtitle>Test your skills!</p>
+    </div>
+    <nav class="navigation">
+      <button iconStart="@tui.clock" size="m" tuiButton type="button" (click)="trigger$.next()">
+        Play
+      </button>
+      <button
+        appearance="accent"
+        iconStart="@tui.home"
+        size="m"
+        tuiButton
+        type="button"
+        (click)="trigger$.next()"
+      >
+        Back
+      </button>
+    </nav>
+  </header>
+  <main class="content">
+    <router-outlet />
+    <div class="main-container">
+      <img src="./assets/images/hangcat.png" alt="Hangman" class="hangman-image" width="400" />
+      <div class="game-field">
+        <p class="game-instruction">
+          Guess the word and write them in the field down! Every answer is a single word. Be
+          careful: if you make 5 mistakes, the game will be over! Good luck and have fun!
+        </p>
+        <p>
+          <span class="question">A QUESTION: </span
+          ><span class="question-text"
+            >"A container for storing data values that can be changed."</span
+          >
+        </p>
+        <tui-elastic-container class="container">
+          <div contenteditable class="editable">your answer</div>
+        </tui-elastic-container>
+        <img src="./assets/images/cat1.png" alt="cat" width="150" class="cat-image" />
+      </div>
+    </div>
+  </main>
+</div>

@@ -39,6 +39,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'hangman',
+    loadComponent: () => import('./components/games/hangman/hangman').then((m) => m.Hangman),
+    providers: [provideTranslocoScope('hangman')],
+  },
+  {
     path: '**',
     loadComponent: () => import('./pages/not-found/not-found').then((m) => m.NotFound),
     providers: [provideTranslocoScope('not-found')],
