@@ -1,41 +1,32 @@
 import { inject, Injectable, signal } from '@angular/core';
 
-import data from '../mock-data/mock-data.json';
-import { Row } from '../models/data.interface';
+import { Data, ResponseData, Row } from '../models/data.interface';
 import { QuizService } from './quiz-service';
+import { GameService } from './game-service';
+import { finalize, tap } from 'rxjs';
 
+const sortRandom = (): number => Math.random() - 0.5;
 @Injectable({
   providedIn: 'root',
 })
 export class BoardService {
   private readonly quizService = inject(QuizService);
-  private readonly mockGroups = data.mockData;
+  private readonly gameService = inject(GameService);
+  private dataResponse = signal<ResponseData>({
+    data: [],
+    pagination: {
+      page: 0,
+      limit: 0,
+      total: 0,
+      totalPages: 0,
+    },
+  });
 
-  private selectGroups: (typeof this.mockGroups)[number][] = [];
+  private selectGroups = signal<Data[]>([]);
   public readonly rows = signal<Row[]>([]);
 
-  public initBoard(): void {
-    this.selectGroups = [...this.mockGroups].sort(() => Math.random() - 0.5).slice(0, 6);
-
-    const shuffledCards = this.selectGroups
-      .flatMap((group) =>
-        [...group.words]
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 4)
-          .map((item) => ({ word: item.word, groupId: group.id })),
-      )
-      .sort(() => Math.random() - 0.5);
-
-    this.rows.set(
-      Array.from({ length: 6 }, (_, rowIndex) => ({
-        slots: shuffledCards.slice(rowIndex * 4, rowIndex * 4 + 4),
-        completed: false,
-      })),
-    );
-  }
-
   private startQuiz(groupId: number, words: string[]): void {
-    const group = this.selectGroups.find((g) => g.id === groupId)!;
+    const group = this.selectGroups().find((g) => g.id === groupId)!;
     this.quizService.activeQuiz.set({ groupId, theme: group.category, words });
   }
 
@@ -49,7 +40,7 @@ export class BoardService {
     const isComplete = slots.every((slot) => slot!.groupId === firstGroupId);
 
     if (isComplete) {
-      const group = this.selectGroups.find((g) => g.id === firstGroupId)!;
+      const group = this.selectGroups().find((g) => g.id === firstGroupId)!;
       const words = slots.map((s) => s!.word);
       const newRows = [...rows];
       newRows[rowIndex] = { ...row, completed: true, theme: group.category };
@@ -58,5 +49,33 @@ export class BoardService {
     }
 
     return rows;
+  }
+
+  public initBoard(): void {
+    this.gameService
+      .getAllCards()
+      .pipe(
+        tap((res: ResponseData) => {
+          this.dataResponse.set(res);
+          this.selectGroups.set([...res.data].sort(sortRandom).slice(0, 6));
+          const shuffledCards = this.selectGroups()
+            .flatMap((group) =>
+              [...group.words]
+                .sort(sortRandom)
+                .slice(0, 4)
+                .map((item) => ({ word: item.word, groupId: group.id })),
+            )
+            .sort(sortRandom);
+
+          this.rows.set(
+            Array.from({ length: 6 }, (_, rowIndex) => ({
+              slots: shuffledCards.slice(rowIndex * 4, rowIndex * 4 + 4),
+              completed: false,
+            })),
+          );
+        }),
+        finalize(() => console.log(this.dataResponse())),
+      )
+      .subscribe();
   }
 }
