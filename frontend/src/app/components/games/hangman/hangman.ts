@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -6,22 +5,13 @@ import { AppRoute, getRoutePath } from '../../../app.routes';
 import { TuiTitle } from '@taiga-ui/core';
 import { TUI_FALSE_HANDLER } from '@taiga-ui/cdk';
 import { TuiButton } from '@taiga-ui/core';
-import { TuiButtonLoading } from '@taiga-ui/kit';
 import { map, startWith, Subject, switchMap, timer } from 'rxjs';
 import { TuiElasticContainer } from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-hangman',
   standalone: true,
-  imports: [
-    RouterOutlet,
-    TranslocoDirective,
-    TuiTitle,
-    AsyncPipe,
-    TuiButton,
-    TuiButtonLoading,
-    TuiElasticContainer,
-  ],
+  imports: [RouterOutlet, TranslocoDirective, TuiTitle, TuiButton, TuiElasticContainer],
   templateUrl: './hangman.html',
   styleUrl: './hangman.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
