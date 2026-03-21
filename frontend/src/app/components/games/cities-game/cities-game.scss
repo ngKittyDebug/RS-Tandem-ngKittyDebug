@@ -1,0 +1,157 @@
+[tuiAppearance][data-appearance='custom'] {
+  background: #14b8a571;
+}
+:host {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  min-height: 0;
+  box-sizing: border-box;
+}
+.cities {
+  width: 100%;
+  padding: 4rem;
+  background: rgba(45, 120, 167, 0.25);
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  border-radius: 30px;
+  overflow: hidden;
+
+  &__cat {
+    display: flex;
+    flex: 15%;
+    flex-direction: column;
+    align-items: center;
+
+    &-svg {
+      max-width: 243px;
+      max-height: 311px;
+      margin: 0 auto;
+    }
+    &-timer {
+      font-size: 30px;
+    }
+  }
+  &__chat {
+    display: flex;
+    flex-direction: column;
+    flex: 70%;
+    background: rgba(103, 103, 103, 0.137);
+    padding: 15px;
+    border-radius: 20px;
+
+    &-area {
+      max-height: 60vh;
+      overflow: auto;
+      padding: 10px;
+      overflow-y: auto;
+      min-width: 0;
+      position: relative;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+      }
+    }
+    &-form {
+      display: flex;
+    }
+
+    &-container {
+      display: flex;
+      inline-size: 100%;
+      margin: 10px 0;
+      text-wrap: wrap;
+    }
+    &-incoming {
+      justify-content: flex-start;
+      padding-right: 30px;
+    }
+
+    &-outgoing {
+      justify-content: flex-end;
+      padding-left: 30px;
+    }
+    &-input {
+      margin-top: auto;
+      margin: auto 10px 0 0;
+      width: 100%;
+    }
+  }
+  .multiline {
+    white-space: initial;
+  }
+  &__user {
+    flex: 15%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &-img-box {
+      width: auto;
+      max-width: 311px;
+      aspect-ratio: 1/1;
+      overflow: hidden;
+      border-radius: 50%;
+      margin-bottom: 20px;
+    }
+
+    &-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    &-name {
+      margin: 0;
+    }
+  }
+}
+@media (max-width: 950px) {
+  .cities {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 0;
+  }
+  .cities__user {
+    display: none;
+  }
+  .cities__cat {
+    align-items: end;
+    padding-right: 25px;
+    &-svg {
+      display: none;
+    }
+  }
+  .cities__chat {
+    width: 100%;
+    position: relative;
+  }
+  .cities__chat::after {
+    content: '';
+    position: absolute;
+    top: -55px;
+    left: 10px;
+
+    width: 100px;
+    height: 70px;
+
+    display: block;
+
+    background: url(/assets/images/sasarikCat2.svg) no-repeat center;
+    background-size: contain;
+    z-index: 10;
+    background-size: 100px auto;
+  }
+}
