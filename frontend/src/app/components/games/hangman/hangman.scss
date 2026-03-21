@@ -91,3 +91,15 @@ p {
   display: flex;
   gap: 0.2rem;
 }
+.user-field {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start;
+}
+.user-form {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
+}
