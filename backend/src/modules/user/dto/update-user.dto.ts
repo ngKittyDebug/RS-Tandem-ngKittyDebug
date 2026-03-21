@@ -37,6 +37,7 @@ export class UserDto {
   @ApiProperty({
     description: 'Текущий пароль для подтверждения',
     example: 'StrongPass123!',
+    required: true,
   })
   @IsString()
   @IsNotEmpty()

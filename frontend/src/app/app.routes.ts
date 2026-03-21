@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { provideTranslocoScope } from '@jsverse/transloco';
+import { guestGuard } from './core/guards/guest-guard';
+import { authGuard } from './core/guards/auth-guard';
 
 export enum AppRoute {
   REGISTRATION = 'registration',
@@ -12,7 +14,7 @@ export enum GameRoute {
   DECRYPTO = 'decrypto',
 }
 
-export const getRoutePath = (route: AppRoute): `/${AppRoute}` => {
+export const getRoutePath = <T extends AppRoute>(route: T): `/${T}` => {
   return `/${route}`;
 };
 
@@ -26,16 +28,19 @@ export const routes: Routes = [
     path: AppRoute.LOGIN,
     loadComponent: () => import('./pages/login/login').then((m) => m.Login),
     providers: [provideTranslocoScope('login')],
+    canActivate: [guestGuard],
   },
   {
     path: AppRoute.REGISTRATION,
     loadComponent: () => import('./pages/registration/registration').then((m) => m.Registration),
     providers: [provideTranslocoScope('registration')],
+    canActivate: [guestGuard],
   },
   {
     path: AppRoute.USER_PROFILE,
     loadComponent: () => import('./pages/user-profile/user-profile').then((m) => m.UserProfile),
     providers: [provideTranslocoScope('user-profile')],
+    canActivate: [authGuard],
   },
   {
     path: GameRoute.DECRYPTO,

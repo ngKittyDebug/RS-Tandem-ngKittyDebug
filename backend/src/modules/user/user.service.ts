@@ -12,7 +12,8 @@ import { compare, genSalt, hash } from 'bcrypt-ts';
 import { ConfigService } from '@nestjs/config';
 import { UpdateUserPassword } from './dto/update-user-pass.dto';
 import { ConfirmPasswordDto } from './dto/delete-user-account.dto';
-import { Prisma } from 'src/generated/prisma/client';
+import { Provider, Prisma } from 'src/generated/prisma/client';
+import { AvatarUpdateDto } from './dto/update-avater.dto';
 
 @Injectable()
 export class UserService {
@@ -26,7 +27,7 @@ export class UserService {
 
   private readonly logger = new Logger(UserService.name);
 
-  public async findOne(id: string) {
+  public async gtUserProfile(id: string) {
     return await this.prisma.user.findUnique({
       where: {
         id: id,
@@ -48,11 +49,18 @@ export class UserService {
       select: {
         password: true,
         id: true,
+        provider: true,
       },
     });
 
     if (!user) {
       throw new NotFoundException('Пользователь не найден');
+    }
+
+    if (user.provider === Provider.Github) {
+      throw new ForbiddenException(
+        `Функционал пока не доступен, звоните позже`,
+      );
     }
 
     const validPass = await compare(dto.password, user.password);
@@ -146,5 +154,25 @@ export class UserService {
     });
 
     return { success: true };
+  }
+
+  async updateUserAvatar(id: string, dto: AvatarUpdateDto) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+
+    return await this.prisma.user.update({
+      where: { id: user.id },
+      data: { avatar: dto.avatar },
+      select: {
+        avatar: true,
+      },
+    });
   }
 }

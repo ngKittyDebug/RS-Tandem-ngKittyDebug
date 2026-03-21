@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { User } from 'src/generated/prisma/browser';
+import { Provider, User } from 'src/generated/prisma/browser';
 import { hash, genSalt, compare } from 'bcrypt-ts';
 import { ConfigService } from '@nestjs/config';
 import { LoginAuthDto } from './dto/login-auth.dto';
@@ -18,25 +18,19 @@ import { Response, Request } from 'express';
 import ms from 'ms';
 import { isDev } from 'src/utils/is-dev-util';
 import { SignOptions } from 'jsonwebtoken';
-
-interface AuthTokens {
-  accessToken: string;
-  refreshToken: string;
-}
-
-interface AuthResponse {
-  accessToken: string;
-}
-
-interface LogoutResponse {
-  logout: boolean;
-}
+import {
+  AuthResponse,
+  AuthTokens,
+  LogoutResponse,
+} from '../interface/auth-module-types';
+import { Profile } from 'passport';
 
 @Injectable()
 export class AuthService {
   private readonly SALT: number;
   private readonly JWT_ACCESS_TOKEN_EXPIRE_TIME: string;
   private readonly JWT_REFRESH_TOKEN_EXPIRE_TIME: string;
+  private readonly REDIRECT_FRONTEND: string;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -51,11 +45,13 @@ export class AuthService {
     this.JWT_REFRESH_TOKEN_EXPIRE_TIME = configService.getOrThrow<string>(
       'JWT_REFRESH_TOKEN_EXPIRE_TIME',
     );
+    this.REDIRECT_FRONTEND =
+      configService.getOrThrow<string>('REDIRECT_FRONTEND');
   }
 
   private readonly logger = new Logger(AuthService.name);
 
-  async signIn(res: Response, dto: CreateAuthDto): Promise<AuthResponse> {
+  async registration(res: Response, dto: CreateAuthDto): Promise<AuthResponse> {
     const existingUser = await this.findOne(dto);
 
     if (existingUser) {
@@ -80,9 +76,41 @@ export class AuthService {
       id: user.id,
       username: user.username,
       email: user.email,
+      provider: Provider.local,
     };
 
     this.logger.log(`Пользователь с ${user.id} создан`);
+
+    return this.auth(res, payload);
+  }
+
+  async githubOauth(res: Response, profile: Profile): Promise<AuthResponse> {
+    const { id, username, emails, photos } = profile;
+
+    const fallbackUsername = `${Provider.Github}_${id}`;
+    const fallbackEmail = `github_${id}@users.noreply.github.com`;
+
+    const user = await this.prisma.user.upsert({
+      where: { providerId: id },
+      update: {
+        username: username ?? fallbackUsername,
+        email: emails?.[0]?.value ?? fallbackEmail,
+      },
+      create: {
+        providerId: id,
+        username: username ?? fallbackUsername,
+        email: emails?.[0]?.value ?? fallbackEmail,
+        provider: Provider.Github,
+        avatar: photos?.[0]?.value ?? null,
+      },
+    });
+
+    const payload: JwtPayload = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      provider: Provider.Github,
+    };
 
     return this.auth(res, payload);
   }
@@ -96,6 +124,14 @@ export class AuthService {
         `Пользователь не существует или неверный пароль`,
       );
     }
+
+    if (user.provider !== Provider.local) {
+      this.logger.error('Пользователь был зарегистрирован с помощью OAuth');
+      throw new ForbiddenException(
+        'Пользователь был зарегистрирован с помощью OAuth',
+      );
+    }
+
     const validPass = await compare(dto.password, user.password);
 
     if (!validPass) {
@@ -109,6 +145,7 @@ export class AuthService {
       id: user.id,
       username: user.username,
       email: user.email,
+      provider: user.provider,
     };
 
     return this.auth(res, payload);
@@ -204,5 +241,9 @@ export class AuthService {
     this.sendCookie(res, 'refreshToken', new Date(0));
 
     return { logout: true };
+  }
+
+  redirect(res: Response) {
+    res.redirect(this.REDIRECT_FRONTEND);
   }
 }

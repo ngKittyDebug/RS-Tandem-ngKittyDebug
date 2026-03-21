@@ -30,15 +30,16 @@
 **Frontend-агент:**
 1. Начать с `frontend/package.json`, `frontend/angular.json`, `frontend/tsconfig.json` — конфигурация
 2. Прочитать `frontend/src/app/app.config.ts` и `frontend/src/app/app.routes.ts` — провайдеры и маршрутизация
-3. Найти все `*.ts` в `frontend/src/app/core/` через Glob — сервисы, guards, interceptors, компоненты
+3. Найти все `*.ts` в `frontend/src/*` через Glob — сервисы, guards, interceptors, компоненты и т.д.
 4. Найти все `*.ts` и `*.html` в `frontend/src/app/pages/` — страницы и шаблоны
-5. Найти все `*.spec.ts` — тесты
-6. Прочитать `frontend/src/index.html` и `frontend/src/styles.scss` — глобальные настройки
-7. Проверить `frontend/public/i18n/` — файлы переводов
+5. Найти все `*.ts` и `*.html` в `frontend/src/app/shared/*` — переиспользуемое
+6. Найти все `*.spec.ts` — тесты
+7. Прочитать `frontend/src/index.html` и `frontend/src/styles.scss` — глобальные настройки
+8. Проверить `frontend/public/i18n/` — файлы переводов
 
 ### Шаг 2 — Верификация (Read ключевых файлов)
 
-После получения результатов от агентов — прочитать 5-10 ключевых файлов через `Read` tool для проверки номеров строк и контекста замечаний.
+После получения результатов от агентов — прочитать 10-15 ключевых файлов через `Read` tool для проверки номеров строк и контекста замечаний.
 
 ### Шаг 3 — Использовать Skills и Context7
 
@@ -57,6 +58,7 @@
 - `angular-tooling` — Angular CLI v20+, project setup, generation, build optimization
 - `nestjs-best-practices` — security-auth-jwt, error-handling, arch-feature-modules
 - `nestjs-testing-expert` — unit, integration, and e2e testing patterns with Jest
+- `frontend-design` — frontend-design
 
 **Context7 (актуальная документация):**
 - `/nestjs/docs.nestjs.com` — NestJS official docs
@@ -65,6 +67,8 @@
 - `/websites/transloco.ng` — Transloco i18n for Angular
 
 ### Шаг 4 — Обновить CODE_REVIEW.md
+
+**No duplicates**: Check results for the already existing in context and skip any feedbacks already flagged by same or other agents.
 
 Записать результаты в `CodeQualityStatus/code-review-backend.md` и `CodeQualityStatus/code-review-frontend.md`.
 
@@ -75,6 +79,65 @@
 4. Добавить новые замечания
 5. Обновить оценки
 6. Добавить строку в таблицу "История ревью"
+
+### Шаг 4.1 — Обновить CodeQualityStatus/status.md
+
+После обновления review-файлов — обновить `CodeQualityStatus/status.md`:
+
+1. Изменить дату `Последнее ревью` на текущую
+2. В каждом `xychart-beta` с `title "... тренд оценки"` — добавить новую точку:
+   - В `x-axis` добавить новую дату (формат `"DD Mon"`)
+   - В `line [...]` добавить новое значение общей оценки
+3. В каждом `xychart-beta` с `title "... категории"` — заменить массив `bar [...]` новыми оценками по категориям
+4. В таблицах `| Severity | ... |` — добавить колонку с новой датой и значениями Critical / Major / Minor, обновить Δ
+
+**Пример обновления тренда:**
+```
+// было:
+x-axis ["09 Mar", "16 Mar"]
+line [4.5, 5.5]
+
+// стало (после ревью 23 Mar с оценкой 6.5):
+x-axis ["09 Mar", "16 Mar", "23 Mar"]
+line [4.5, 5.5, 6.5]
+```
+
+### Шаг 4.2 — Запустить агента для обновления аналитического резюме
+
+Запустить **отдельный `general-purpose` агент** для обновления секции `## 📝 Аналитическое резюме` в `CodeQualityStatus/status.md`. Агент работает независимо и не засоряет основной контекст ревью.
+
+**Промпт для агента:**
+
+```
+Обнови секцию "## 📝 Аналитическое резюме" в файле CodeQualityStatus/status.md.
+
+Для анализа:
+1. Прочитай CodeQualityStatus/code-review-frontend.md и CodeQualityStatus/code-review-backend.md
+2. Выполни: git log --all --format="%ae %an" | sort | uniq -c | sort -rn
+3. Для каждого участника: gh pr list --state all --author <login> --limit 20 --json number,title,state
+   Участники: WhaleisaJoy, Alena1409, AlexGorSer, kozochkina82, Oksi2510, pavelkuvsh1noff
+
+Что обновить:
+1. "Текущее состояние" — оценки из актуального ревью
+2. "Недавний прогресс" — что изменилось с предыдущего ревью
+3. "Общий прогресс" — динамика за весь период
+4. "Впечатление" — системные паттерны команды
+5. Секцию по каждому участнику:
+   - Что делал(а) в последнем цикле (по PR-истории)
+   - Паттерны ошибок (связать с замечаниями из ревью)
+   - Конкретный совет
+
+Пиши по-русски, конкретно, без воды. Не трогай диаграммы и таблицы ниже резюме.
+Используй Write tool для записи результата в файл.
+```
+
+**Участники проекта:**
+- Мария — [WhaleisaJoy](https://github.com/WhaleisaJoy)
+- Алена — [Alena1409](https://github.com/Alena1409)
+- Алексей — [AlexGorSer](https://github.com/AlexGorSer)
+- Надежда — [kozochkina82](https://github.com/kozochkina82)
+- Оксана — [Oksi2510](https://github.com/Oksi2510)
+- Павел — [pavelkuvsh1noff](https://github.com/pavelkuvsh1noff)
 
 ## Структура CODE_REVIEW.md
 
@@ -179,10 +242,10 @@ Severity замечаний:
 
 ## Чеклист качества ревью
 
-- [ ] Все упомянутые файлы и строки существуют
+- [ ] Все упомянутые и новые файлы и строки существуют
 - [ ] Каждое замечание содержит severity, файл:строку, описание, пример исправления
 - [ ] Использованы ссылки на актуальную документацию (NestJS, Angular, Prisma)
-- [ ] Применены правила из skills (nestjs-best-practices, angular-component, angular-signals)
+- [ ] Применены правила и практики из skills (nestjs-best-practices, angular-component, angular-signals)
 - [ ] Предыдущие замечания сверены — resolved/updated
 - [ ] Таблица "История ревью" обновлена
 - [ ] Markdown корректно рендерится

@@ -65,11 +65,11 @@ describe('AuthController', () => {
   describe('create (register)', () => {
     it('should call authService.signIn and return result', async () => {
       const mockResult: AuthResponse = { accessToken: 'access-token' };
-      authServiceMock.signIn.mockResolvedValue(mockResult);
+      authServiceMock.registration.mockResolvedValue(mockResult);
 
       const result = await controller.create(mockCreateAuthDto, responseMock);
 
-      expect(authServiceMock.signIn).toHaveBeenCalledWith(
+      expect(authServiceMock.registration).toHaveBeenCalledWith(
         responseMock,
         mockCreateAuthDto,
       );
