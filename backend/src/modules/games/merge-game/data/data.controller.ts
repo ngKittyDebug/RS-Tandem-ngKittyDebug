@@ -14,8 +14,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { DataService } from './data.service';
 import { CreateDataDto, UpdateDataDto } from '../merge-game.interfaces';
-import { Public } from 'src/decorators/public.decorator';
-import { ApiSwagger } from 'src/decorators/swagger.decorator';
+import { ApiAuth, ApiSwagger } from 'src/decorators/swagger.decorator';
 import {
   createDataConfig,
   findAllDataConfig,
@@ -24,8 +23,8 @@ import {
   deleteDataConfig,
 } from 'src/swagger-api-configs/merge-game-data';
 
+@ApiAuth()
 @ApiTags('Merge Game Data')
-@Public()
 @Controller('data')
 export class DataController {
   constructor(private readonly dataService: DataService) {}

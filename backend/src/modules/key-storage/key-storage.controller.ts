@@ -13,7 +13,7 @@ import { KeyStorageService } from './key-storage.service';
 import { CreateKeyStorageDto } from './dto/create-key-storage.dto';
 import { Public } from 'src/decorators/public.decorator';
 import { SearchKeyStorageDto } from './dto/search-key-storage.dto';
-import { ApiSwagger } from 'src/decorators/swagger.decorator';
+import { ApiAuth, ApiSwagger } from 'src/decorators/swagger.decorator';
 import {
   createKeyStorageConfig,
   findAllKeyStorageConfig,
@@ -21,7 +21,7 @@ import {
   deleteKeyStorageConfig,
 } from 'src/swagger-api-configs/key-storage';
 
-@Public()
+@ApiAuth()
 @ApiTags('Key Storage')
 @Controller('key-storage')
 export class KeyStorageController {
@@ -34,12 +34,14 @@ export class KeyStorageController {
     return this.keyStorageService.create(createKeyStorageDto);
   }
 
+  @Public()
   @ApiSwagger(findAllKeyStorageConfig)
   @Get('all')
   findAll() {
     return this.keyStorageService.findAll();
   }
 
+  @Public()
   @ApiSwagger(findOneKeyStorageConfig)
   @Get('params')
   findOne(@Query() searchKeyStorageDto: SearchKeyStorageDto) {

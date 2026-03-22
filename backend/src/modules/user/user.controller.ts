@@ -7,15 +7,14 @@ import {
   HttpStatus,
   HttpCode,
 } from '@nestjs/common';
-import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
-import { ApiSwagger } from 'src/decorators/swagger.decorator';
-import { applyDecorators } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { ApiAuth, ApiSwagger } from 'src/decorators/swagger.decorator';
 import { UserService } from './user.service';
 import { UserDto } from './dto/update-user.dto';
 import { UpdateUserPassword } from './dto/update-user-pass.dto';
 import { ConfirmPasswordDto } from './dto/delete-user-account.dto';
 import { User } from 'src/decorators/user.decorator';
-import { AvatarUpdateDto } from './dto/update-avater.dto';
+import { AvatarUpdateDto } from './dto/update-avatar.dto';
 import {
   findUserConfig,
   updateUserConfig,
@@ -23,8 +22,6 @@ import {
   updatePasswordConfig,
   deleteUserConfig,
 } from 'src/swagger-api-configs/user';
-
-export const ApiAuth = () => applyDecorators(ApiBearerAuth());
 
 @ApiTags('User')
 @ApiAuth()

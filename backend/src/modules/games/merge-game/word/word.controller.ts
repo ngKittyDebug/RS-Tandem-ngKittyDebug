@@ -15,8 +15,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { WordService } from './word.service';
 import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
-import { Public } from 'src/decorators/public.decorator';
-import { ApiSwagger } from 'src/decorators/swagger.decorator';
+import { ApiAuth, ApiSwagger } from 'src/decorators/swagger.decorator';
 import {
   createWordConfig,
   findAllWordConfig,
@@ -25,8 +24,8 @@ import {
   deleteWordConfig,
 } from 'src/swagger-api-configs/merge-game-word';
 
+@ApiAuth()
 @ApiTags('Merge Game Words')
-@Public()
 @Controller('word')
 export class WordController {
   constructor(private readonly wordService: WordService) {}

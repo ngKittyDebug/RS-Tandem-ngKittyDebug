@@ -15,8 +15,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
-import { Public } from 'src/decorators/public.decorator';
-import { ApiSwagger } from 'src/decorators/swagger.decorator';
+import { ApiAuth, ApiSwagger } from 'src/decorators/swagger.decorator';
 import {
   createQuestionConfig,
   findAllQuestionConfig,
@@ -25,8 +24,8 @@ import {
   deleteQuestionConfig,
 } from 'src/swagger-api-configs/merge-game-question';
 
+@ApiAuth()
 @ApiTags('Merge Game Questions')
-@Public()
 @Controller('question')
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}

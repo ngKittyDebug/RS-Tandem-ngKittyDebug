@@ -1,6 +1,6 @@
 import { HttpStatus } from '@nestjs/common';
 import type { ApiSwaggerConfig } from '../../decorators/swagger.decorator';
-import { AvatarUpdateDto } from '../../modules/user/dto/update-avater.dto';
+import { AvatarUpdateDto } from '../../modules/user/dto/update-avatar.dto';
 
 export const updateUserAvatarConfig: ApiSwaggerConfig = {
   operation: {

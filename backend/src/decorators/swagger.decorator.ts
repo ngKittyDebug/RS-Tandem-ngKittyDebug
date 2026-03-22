@@ -38,7 +38,7 @@ export interface ApiSwaggerConfig {
   extraModels?: Type<unknown>[];
 }
 
-export function ApiSwagger(config: ApiSwaggerConfig) {
+function ApiSwagger(config: ApiSwaggerConfig) {
   const decorators: Array<PropertyDecorator | MethodDecorator> = [];
   const {
     operation,
@@ -99,3 +99,7 @@ export function ApiSwagger(config: ApiSwaggerConfig) {
 
   return applyDecorators(...decorators);
 }
+
+const ApiAuth = () => applyDecorators(ApiBearerAuth());
+
+export { ApiSwagger, ApiAuth };
