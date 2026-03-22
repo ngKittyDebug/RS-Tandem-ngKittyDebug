@@ -20,7 +20,7 @@ export const findOneKeyStorageConfig: ApiSwaggerConfig = {
     schema: {
       type: 'object',
       properties: {
-        id: { type: 'integer', example: 1 },
+        id: { type: 'string', example: '123e4567-e89b-12d3-a456-42665544000' },
         key: { type: 'string', example: 'user_settings' },
         storage: { type: 'object', example: { theme: 'dark', language: 'ru' } },
       },
