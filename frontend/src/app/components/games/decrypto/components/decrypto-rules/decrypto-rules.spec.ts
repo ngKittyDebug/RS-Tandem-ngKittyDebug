@@ -1,26 +1,34 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { injectContext } from '@taiga-ui/polymorpheus';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { POLYMORPHEUS_CONTEXT } from '@taiga-ui/polymorpheus';
+import { TranslocoTestingModule } from '@jsverse/transloco';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { DecryptoRules } from './decrypto-rules';
-
-vi.mock('@taiga-ui/polymorpheus', () => ({
-  injectContext: vi.fn(),
-}));
 
 describe('DecryptoRules', () => {
   let component: DecryptoRules;
   let fixture: ComponentFixture<DecryptoRules>;
 
+  // Создаем мок для контекста диалога
   const mockContext = {
     completeWith: vi.fn(),
-    $implicit: {},
   };
 
   beforeEach(async () => {
-    vi.mocked(injectContext).mockReturnValue(mockContext);
-
     await TestBed.configureTestingModule({
-      imports: [DecryptoRules],
+      // Так как компонент standalone, добавляем его в imports
+      imports: [
+        DecryptoRules,
+        TranslocoTestingModule.forRoot({
+          langs: { en: {}, ru: {} },
+          translocoConfig: { availableLangs: ['ru', 'en'], defaultLang: 'ru' },
+        }),
+      ],
+      providers: [
+        {
+          provide: POLYMORPHEUS_CONTEXT,
+          useValue: mockContext,
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DecryptoRules);
@@ -28,12 +36,19 @@ describe('DecryptoRules', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('должен быть создан', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have access to context', () => {
+  it('должен содержать внедренный контекст', () => {
     expect(component.context).toBeDefined();
-    expect(component.context).toEqual(mockContext);
+    // Проверяем, что это именно наш мок
+    expect(component.context).toBe(mockContext);
+  });
+
+  it('должен отрендерить шаблон', () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    // Проверь наличие конкретного тега или класса из твоего шаблона
+    expect(compiled.querySelector('p')).toBeTruthy();
   });
 });

@@ -46,13 +46,11 @@ export class Decrypto implements OnInit {
   protected readonly gameService = inject(DecryptoGameService);
   private readonly gameLoadCardsService = inject(DecryptoCardsLoadService);
   private readonly loadDataServerService = inject(KeyStorageService<DecryptoGameData>);
-
   private readonly transloco = inject(TranslocoService);
   private tosterService = inject(AppTosterService);
   private fb = inject(FormBuilder);
   protected gameStarted = signal<boolean>(false);
   private popupService = inject(PopupService);
-
   private timer = viewChild(Timer);
   public timerMode = TIMER_MODE.DOWN;
   public initialTime = CONFIG.gameTime;
@@ -74,24 +72,55 @@ export class Decrypto implements OnInit {
     hint3: this.fb.nonNullable.control('', [Validators.required]),
   });
 
+  // private readonly codeKeys = ['code1', 'code2', 'code3'] as const;
+  // private readonly hintKeys = ['hint1', 'hint2', 'hint3'] as const;
+
+  // protected updateGameHintsInputs(): void {
+  //   this.decryptoForm.patchValue({
+  //     hint1: `${this.gameService.gameHints[0][this.gameService.gamePeriod() - 1]}`,
+  //     hint2: `${this.gameService.gameHints[1][this.gameService.gamePeriod() - 1]}`,
+  //     hint3: `${this.gameService.gameHints[2][this.gameService.gamePeriod() - 1]}`,
+  //   });
+  // }
+
+  // protected enableGameCodeInputs(): void {
+  //   this.decryptoForm.controls.code1.enable();
+  //   this.decryptoForm.controls.code2.enable();
+  //   this.decryptoForm.controls.code3.enable();
+  // }
+
+  // protected disableGameCodeInputs(): void {
+  //   this.decryptoForm.controls.code1.disable();
+  //   this.decryptoForm.controls.code2.disable();
+  //   this.decryptoForm.controls.code3.disable();
+  // }
+
+  private readonly codeKeys = ['code1', 'code2', 'code3'] as const;
+  private readonly hintKeys = ['hint1', 'hint2', 'hint3'] as const;
+
   protected updateGameHintsInputs(): void {
-    this.decryptoForm.patchValue({
-      hint1: `${this.gameService.gameHints[0][this.gameService.gamePeriod() - 1]}`,
-      hint2: `${this.gameService.gameHints[1][this.gameService.gamePeriod() - 1]}`,
-      hint3: `${this.gameService.gameHints[2][this.gameService.gamePeriod() - 1]}`,
+    const period = this.gameService.gamePeriod() - 1;
+    const hints: Record<string, string> = {};
+
+    this.hintKeys.forEach((key, i) => {
+      hints[key] = `${this.gameService.gameHints[i][period]}`;
     });
+
+    this.decryptoForm.patchValue(hints);
+  }
+
+  protected toggleCodeInputs(enable: boolean): void {
+    this.codeKeys.forEach((key) =>
+      this.decryptoForm.controls[key][enable ? 'enable' : 'disable'](),
+    );
   }
 
   protected enableGameCodeInputs(): void {
-    this.decryptoForm.controls.code1.enable();
-    this.decryptoForm.controls.code2.enable();
-    this.decryptoForm.controls.code3.enable();
+    this.toggleCodeInputs(true);
   }
 
   protected disableGameCodeInputs(): void {
-    this.decryptoForm.controls.code1.disable();
-    this.decryptoForm.controls.code2.disable();
-    this.decryptoForm.controls.code3.disable();
+    this.toggleCodeInputs(false);
   }
 
   protected startGame(): void {
@@ -182,12 +211,11 @@ export class Decrypto implements OnInit {
       this.tosterService.showWarningToster(
         this.transloco.translate('decrypto.decryptoWarningMsg'),
         this.transloco.translate('decrypto.decryptoWarningMsgLabel'),
-      ); // вставить перевод
+      );
       this.gameService.roundResult.set(null);
       this.enableGameCodeInputs();
       this.newPeriod();
     }
-
     if (this.gameService.gameResult() === false) {
       this.tosterService.showErrorToster(
         this.transloco.translate('decrypto.decryptoErrorMsg'),
