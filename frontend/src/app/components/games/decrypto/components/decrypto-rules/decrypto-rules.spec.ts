@@ -8,14 +8,12 @@ describe('DecryptoRules', () => {
   let component: DecryptoRules;
   let fixture: ComponentFixture<DecryptoRules>;
 
-  // Создаем мок для контекста диалога
   const mockContext = {
     completeWith: vi.fn(),
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      // Так как компонент standalone, добавляем его в imports
       imports: [
         DecryptoRules,
         TranslocoTestingModule.forRoot({
@@ -36,19 +34,17 @@ describe('DecryptoRules', () => {
     fixture.detectChanges();
   });
 
-  it('должен быть создан', () => {
+  it('should be created', () => {
     expect(component).toBeTruthy();
   });
 
-  it('должен содержать внедренный контекст', () => {
+  it('should contain an embedded context', () => {
     expect(component.context).toBeDefined();
-    // Проверяем, что это именно наш мок
     expect(component.context).toBe(mockContext);
   });
 
-  it('должен отрендерить шаблон', () => {
+  it('should render the template', () => {
     const compiled = fixture.nativeElement as HTMLElement;
-    // Проверь наличие конкретного тега или класса из твоего шаблона
     expect(compiled.querySelector('p')).toBeTruthy();
   });
 });

@@ -42,33 +42,22 @@ describe('Decrypto Component - newGame', () => {
     component = fixture.componentInstance;
     gameService = TestBed.inject(DecryptoGameService);
 
-    // Инициализируем компонент (вызывает ngOnInit)
     fixture.detectChanges();
   });
 
-  // Используем обычный async вместо fakeAsync
-  it('должен сбросить состояние игры и загрузить новые данные с сервера', async () => {
+  it('I need to reset the game state and load new data from the server', async () => {
     const resetCardsSpy = vi.spyOn(gameService, 'resetGameCards');
     const resetHintsSpy = vi.spyOn(gameService, 'resetGameHints');
-
-    // Вызываем метод
     component['newGame']();
-
-    // Ждем завершения всех микрозадач (Promise/Observable)
     await fixture.whenStable();
     fixture.detectChanges();
 
-    // ПРОВЕРКИ
     expect(resetCardsSpy).toHaveBeenCalled();
     expect(resetHintsSpy).toHaveBeenCalled();
-
-    // Проверка вызова сервиса (самое важное)
     expect(keyStorageMock.getData).toHaveBeenCalled();
-
     expect(component['gameStarted']()).toBe(false);
     expect(gameService.gamePeriod()).toBe(CONFIG.startRound);
     expect(gameService.gameCardsFromServer).toEqual(mockServerData.storage.gameCards);
-
     expect(component.decryptoForm.pristine).toBe(true);
   });
 });

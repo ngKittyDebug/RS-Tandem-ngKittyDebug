@@ -12,7 +12,6 @@ import { AppTosterService } from '../../../core/services/app-toster-service';
 import { PopupService } from '../../../core/services/popup/popup-service';
 import { Card, CardDescription } from './models/decrypto-card.interface';
 import { Timer } from '../../timer/timer';
-import { DecryptoCardsLoadService } from './services/decrypto-cards-load-service';
 import { POPUP_SIZES } from '../../../core/services/popup/models/popup.enum';
 import { TIMER_MODE } from '../../timer/models/timer-mode.enum';
 import { CONFIG } from './services/models/decrypto.constants';
@@ -44,7 +43,6 @@ const dataToServer = {
 })
 export class Decrypto implements OnInit {
   protected readonly gameService = inject(DecryptoGameService);
-  private readonly gameLoadCardsService = inject(DecryptoCardsLoadService);
   private readonly loadDataServerService = inject(KeyStorageService<DecryptoGameData>);
   private readonly transloco = inject(TranslocoService);
   private tosterService = inject(AppTosterService);
@@ -71,29 +69,6 @@ export class Decrypto implements OnInit {
     hint2: this.fb.nonNullable.control('', [Validators.required]),
     hint3: this.fb.nonNullable.control('', [Validators.required]),
   });
-
-  // private readonly codeKeys = ['code1', 'code2', 'code3'] as const;
-  // private readonly hintKeys = ['hint1', 'hint2', 'hint3'] as const;
-
-  // protected updateGameHintsInputs(): void {
-  //   this.decryptoForm.patchValue({
-  //     hint1: `${this.gameService.gameHints[0][this.gameService.gamePeriod() - 1]}`,
-  //     hint2: `${this.gameService.gameHints[1][this.gameService.gamePeriod() - 1]}`,
-  //     hint3: `${this.gameService.gameHints[2][this.gameService.gamePeriod() - 1]}`,
-  //   });
-  // }
-
-  // protected enableGameCodeInputs(): void {
-  //   this.decryptoForm.controls.code1.enable();
-  //   this.decryptoForm.controls.code2.enable();
-  //   this.decryptoForm.controls.code3.enable();
-  // }
-
-  // protected disableGameCodeInputs(): void {
-  //   this.decryptoForm.controls.code1.disable();
-  //   this.decryptoForm.controls.code2.disable();
-  //   this.decryptoForm.controls.code3.disable();
-  // }
 
   private readonly codeKeys = ['code1', 'code2', 'code3'] as const;
   private readonly hintKeys = ['hint1', 'hint2', 'hint3'] as const;
