@@ -27,10 +27,10 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it.skip('should render title', async () => {
+  it('should render main layout element', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('p')?.textContent).toContain('main works!');
+    expect(compiled.querySelector('main.main')).toBeTruthy();
   });
 });
