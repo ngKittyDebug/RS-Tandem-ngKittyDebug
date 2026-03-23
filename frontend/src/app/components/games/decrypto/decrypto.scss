@@ -1,21 +1,43 @@
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.decrypto {
+  max-width: 580px;
+  width: 100%;
+}
+
 .decrypto__wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  max-width: 580px;
+  width: 100%;
   gap: 10px;
   padding: 15px;
   border-radius: 8px;
   background-color: var(--tui-background-base-alt);
 }
 
+.decrypto__controls {
+  width: 100%;
+}
+
 .decrypto__nav {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   align-items: end;
   justify-content: center;
   width: 100%;
   gap: 10px;
+  @media (max-width: 600px) {
+    max-width: 580px;
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .decrypto__nav_button {
@@ -23,12 +45,15 @@
 }
 
 .decrypto__cards {
-  display: flex;
+  display: grid;
   grid-template-columns: repeat(4, 1fr);
   align-items: center;
   justify-content: center;
   gap: 10px;
   width: 100%;
+  // @media (max-width: 600px) {
+  //   grid-template-columns: repeat(2, 1fr);
+  // }
 }
 
 .decrypto__inf {
@@ -36,11 +61,12 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 }
 
 .decrypto__card {
   display: flex;
-  min-width: 100px;
+  min-width: 60px;
   width: 100%;
   height: 125px;
   padding: 20px 5px 5px;
@@ -53,6 +79,10 @@
   color: var(--tui-text-primary);
   border-radius: 5px;
   border: 1px solid var(--tui-border-normal);
+  @media (max-width: 600px) {
+    height: 105px;
+    gap: 2px;
+  }
 }
 
 .decrypto__card_button {
@@ -92,6 +122,9 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   width: 100%;
+  @media (max-width: 400px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
 }
 
 .decrypto__form_codes_input {

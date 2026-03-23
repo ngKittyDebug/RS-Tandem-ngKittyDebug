@@ -16,7 +16,6 @@ import { POPUP_SIZES } from '../../../core/services/popup/models/popup.enum';
 import { TIMER_MODE } from '../../timer/models/timer-mode.enum';
 import { CONFIG } from './services/models/decrypto.constants';
 import { KeyStorageService } from '../../../core/services/key-storage/key-storage-service';
-import { GameCards } from './models/decrypto-cards.constants';
 
 export interface DecryptoGameData {
   gameCards: Card[];
@@ -24,7 +23,7 @@ export interface DecryptoGameData {
 
 const dataToServer = {
   key: 'decrypto-data-1',
-  storage: { gameCards: GameCards },
+  storage: { gameCards: [] },
 };
 
 @Component({
@@ -124,7 +123,6 @@ export class Decrypto implements OnInit {
     this.gameService.gameAttempts.set(CONFIG.attempts);
     this.disableGameCodeInputs();
     this.timer()?.reset();
-    this.loadDataServerService.sentData(dataToServer).subscribe();
   }
 
   protected newRound(): void {
@@ -174,7 +172,6 @@ export class Decrypto implements OnInit {
     this.gameService.checkResult(resultArr, this.timer()?.timerSeconds());
     this.disableGameCodeInputs();
     if (this.gameService.roundResult() === true) {
-      console.log('win round');
       this.tosterService.showPositiveToster(
         this.transloco.translate('decrypto.decryptoWinRoundMsg'),
         this.transloco.translate('decrypto.decryptoWinRoundMsgLabel'),
