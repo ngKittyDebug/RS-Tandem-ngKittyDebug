@@ -7,11 +7,11 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { KeyStorageService } from './key-storage.service';
 import { CreateKeyStorageDto } from './dto/create-key-storage.dto';
-import { Public } from 'src/decorators/public.decorator';
 import { SearchKeyStorageDto } from './dto/search-key-storage.dto';
 import { ApiAuth, ApiSwagger } from 'src/decorators/swagger.decorator';
 import {
@@ -20,6 +20,8 @@ import {
   findOneKeyStorageConfig,
   deleteKeyStorageConfig,
 } from 'src/swagger-api-configs/key-storage';
+import { Roles } from 'src/decorators/role.decorator';
+import { RolesGuard } from 'src/guards/role.guard';
 
 @ApiAuth()
 @ApiTags('Key Storage')
@@ -29,19 +31,19 @@ export class KeyStorageController {
 
   @ApiSwagger(createKeyStorageConfig)
   @Post()
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createKeyStorageDto: CreateKeyStorageDto) {
     return this.keyStorageService.create(createKeyStorageDto);
   }
 
-  @Public()
   @ApiSwagger(findAllKeyStorageConfig)
   @Get('all')
   findAll() {
     return this.keyStorageService.findAll();
   }
 
-  @Public()
   @ApiSwagger(findOneKeyStorageConfig)
   @Get('params')
   findOne(@Query() searchKeyStorageDto: SearchKeyStorageDto) {
@@ -50,6 +52,8 @@ export class KeyStorageController {
 
   @ApiSwagger(deleteKeyStorageConfig)
   @Delete()
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   remove(@Query() searchKeyStorageDto: SearchKeyStorageDto) {
     return this.keyStorageService.remove(searchKeyStorageDto);
   }

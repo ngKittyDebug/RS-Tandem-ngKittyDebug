@@ -76,6 +76,7 @@ export class AuthService {
       username: user.username,
       email: user.email,
       provider: Provider.local,
+      role: user.role,
     };
 
     this.logger.log(`Пользователь с ${user.id} создан`);
@@ -109,6 +110,7 @@ export class AuthService {
       username: user.username,
       email: user.email,
       provider: Provider.Github,
+      role: user.role,
     };
 
     return this.auth(res, payload);
@@ -145,6 +147,7 @@ export class AuthService {
       username: user.username,
       email: user.email,
       provider: user.provider,
+      role: user.role,
     };
 
     return this.auth(res, payload);
@@ -214,6 +217,8 @@ export class AuthService {
           id: true,
           email: true,
           username: true,
+          role: true,
+          provider: true,
         },
       });
 

@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { QuestionService } from './question.service';
@@ -23,6 +24,8 @@ import {
   updateQuestionConfig,
   deleteQuestionConfig,
 } from 'src/swagger-api-configs/merge-game-question';
+import { Roles } from 'src/decorators/role.decorator';
+import { RolesGuard } from 'src/guards/role.guard';
 
 @ApiAuth()
 @ApiTags('Merge Game Questions')
@@ -42,6 +45,8 @@ export class QuestionController {
   @ApiSwagger(createQuestionConfig)
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   create(
     @Body() createQuestionDto: CreateQuestionDto,
     @Query('wordId', ParseIntPipe) wordId: number,
@@ -57,6 +62,8 @@ export class QuestionController {
 
   @ApiSwagger(updateQuestionConfig)
   @Patch(':id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateQuestionDto: UpdateQuestionDto,
@@ -66,6 +73,8 @@ export class QuestionController {
 
   @ApiSwagger(deleteQuestionConfig)
   @Delete(':id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @HttpCode(HttpStatus.OK)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.questionService.remove(id);

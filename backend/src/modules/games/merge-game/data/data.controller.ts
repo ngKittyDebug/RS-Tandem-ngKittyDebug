@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { DataService } from './data.service';
@@ -22,6 +23,8 @@ import {
   updateDataConfig,
   deleteDataConfig,
 } from 'src/swagger-api-configs/merge-game-data';
+import { Roles } from 'src/decorators/role.decorator';
+import { RolesGuard } from 'src/guards/role.guard';
 
 @ApiAuth()
 @ApiTags('Merge Game Data')
@@ -31,6 +34,8 @@ export class DataController {
 
   @ApiSwagger(createDataConfig)
   @Post()
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createDataDto: CreateDataDto) {
     return this.dataService.create(createDataDto);
@@ -56,6 +61,8 @@ export class DataController {
 
   @ApiSwagger(updateDataConfig)
   @Patch(':id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateDataDto: UpdateDataDto,
@@ -65,6 +72,8 @@ export class DataController {
 
   @ApiSwagger(deleteDataConfig)
   @Delete(':id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @HttpCode(HttpStatus.OK)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.dataService.remove(id);

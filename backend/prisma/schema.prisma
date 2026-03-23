@@ -27,7 +27,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   avatar    String?   
-  provider  Provider? @default(local)
+  provider  Provider @default(local)
   providerId String?  @unique 
 
   @@map("users")

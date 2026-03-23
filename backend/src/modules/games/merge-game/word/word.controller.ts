@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { WordService } from './word.service';
@@ -23,6 +24,8 @@ import {
   updateWordConfig,
   deleteWordConfig,
 } from 'src/swagger-api-configs/merge-game-word';
+import { Roles } from 'src/decorators/role.decorator';
+import { RolesGuard } from 'src/guards/role.guard';
 
 @ApiAuth()
 @ApiTags('Merge Game Words')
@@ -41,6 +44,8 @@ export class WordController {
 
   @ApiSwagger(createWordConfig)
   @Post()
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @HttpCode(HttpStatus.CREATED)
   create(
     @Body() createWordDto: CreateWordDto,
@@ -57,6 +62,8 @@ export class WordController {
 
   @ApiSwagger(updateWordConfig)
   @Patch(':id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateWordDto: UpdateWordDto,
@@ -66,6 +73,8 @@ export class WordController {
 
   @ApiSwagger(deleteWordConfig)
   @Delete(':id')
+  @UseGuards(RolesGuard)
+  @Roles('admin')
   @HttpCode(HttpStatus.OK)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.wordService.remove(id);
