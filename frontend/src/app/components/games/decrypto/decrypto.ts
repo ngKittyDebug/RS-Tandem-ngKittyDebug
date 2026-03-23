@@ -57,7 +57,6 @@ export class Decrypto implements OnInit {
     this.newGame();
     this.loadDataServerService.getData(dataToServer).subscribe((data) => {
       this.gameService.gameCardsFromServer = data.storage.gameCards;
-      console.log(this.gameService.gameCardsFromServer);
     });
   }
 
@@ -99,7 +98,6 @@ export class Decrypto implements OnInit {
   }
 
   protected startGame(): void {
-    console.log('start game');
     this.gameService.generateCardsForGame();
     this.gameService.generateCards();
     this.gameService.generateGameHints();
@@ -110,7 +108,11 @@ export class Decrypto implements OnInit {
   }
 
   protected newGame(): void {
-    console.log('new game');
+    if (this.gameService.gameCardsFromServer.length === 0) {
+      this.loadDataServerService.getData(dataToServer).subscribe((data) => {
+        this.gameService.gameCardsFromServer = data.storage.gameCards;
+      });
+    }
     this.gameService.generateWrightCodesForGame();
     this.gameService.generateWrightCode();
     this.gameService.resetGameCards();
@@ -126,7 +128,6 @@ export class Decrypto implements OnInit {
   }
 
   protected newRound(): void {
-    console.log('new round');
     this.gameService.roundResult.set(false);
     this.gameService.gamePeriod.update((current) => current + 1);
     this.gameService.resetGameCards();
@@ -140,7 +141,6 @@ export class Decrypto implements OnInit {
   }
 
   protected newPeriod(): void {
-    console.log('new period');
     this.decryptoForm.reset();
     this.updateGameHintsInputs();
   }
@@ -157,8 +157,6 @@ export class Decrypto implements OnInit {
     cardDescription: CardDescription | undefined,
     cardName: string,
   ): void {
-    console.log(cardDescription);
-    console.log(cardName);
     const lang = this.transloco.getActiveLang();
     if (cardDescription && cardName) {
       this.popupService.openPopup(
@@ -174,7 +172,6 @@ export class Decrypto implements OnInit {
     const { code1, code2, code3 } = this.decryptoForm.getRawValue();
     const resultArr = [code1, code2, code3];
     this.gameService.checkResult(resultArr, this.timer()?.timerSeconds());
-    console.log('this.gameService');
     this.disableGameCodeInputs();
     if (this.gameService.roundResult() === true) {
       console.log('win round');
