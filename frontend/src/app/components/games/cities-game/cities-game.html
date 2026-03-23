@@ -1,4 +1,4 @@
-<div appEyeCompass class="cities" *transloco="let t">
+<div class="cities" *transloco="let t">
   <div class="cities__cat">
     <svg
       class="cities__cat-svg"
@@ -220,14 +220,14 @@
         stroke-width="3"
       />
       <path
-        data-pupil
+        appDataPupil
         d="M99.0476 101.33C98.8492 99.1731 99.1667 94.8594 102.024 94.8594C104.405 94.8594 105 98.7417 105 100.683C105 102.408 104.405 105.859 102.024 105.859C99.6428 105.859 99.0476 102.84 99.0476 101.33Z"
         fill="black"
         stroke="black"
         stroke-linecap="round"
       />
       <path
-        data-pupil
+        appDataPupil
         d="M165.048 101.742C164.849 99.7809 165.167 95.8594 168.024 95.8594C170.405 95.8594 171 99.3888 171 101.153C171 102.722 170.405 105.859 168.024 105.859C165.643 105.859 165.048 103.114 165.048 101.742Z"
         fill="black"
         stroke="black"
@@ -237,70 +237,27 @@
     <div class="cities__cat-timer">00:00</div>
     <button
       class="cities__restart-btn"
+      (click)="restart()"
       tuiButton
       appearance="gradient"
       type="button"
       size="s"
       iconStart="@tui.rotate-ccw"
-    >{{ t('citiesGame.restart') }}</button>
+    >
+      {{ t('citiesGame.restart') }}
+    </button>
   </div>
   <div class="cities__chat">
     <div class="cities__chat-area">
-      <span class="cities__chat-container cities__chat-incoming">
-        <span tuiMessage>
-          <span class="multiline">Мяу</span>
+      @for (message of visibleMessages; track message) {
+        <span class="cities__chat-container cities__chat-incoming">
+          <span tuiMessage>
+            <span class="multiline">
+              {{ t(message) }}
+            </span>
+          </span>
         </span>
-      </span>
-      <span class="cities__chat-container cities__chat-incoming">
-        <span tuiMessage>
-          <span class="multiline">Я — твой senior-кот. И да, я уже вижу, где ты ошибёшься.</span>
-        </span>
-      </span>
-      <span class="cities__chat-container cities__chat-incoming">
-        <span tuiMessage>
-          <span class="multiline"
-            >Правила даже объяснять неловко, но ладно: играем как в «Города», только словами из
-            фронтенда.</span
-          >
-        </span>
-      </span>
-      <span class="cities__chat-container cities__chat-incoming">
-        <span tuiMessage>
-          <span class="multiline"
-            >Я говорю div → ты отвечаешь на последнюю букву, например variable. Не справился — ну…
-            бывает. У джунов.</span
-          >
-        </span>
-      </span>
-      <span class="cities__chat-container cities__chat-incoming">
-        <span tuiMessage>
-          <span class="multiline"
-            >Темы: JS, TS, CSS, HTML... (Если не знаешь половину — я не удивлён.)</span
-          >
-        </span>
-      </span>
-      <span class="cities__chat-container cities__chat-incoming">
-        <span tuiMessage>
-          <span class="multiline"
-            >Незнакомое слово? Наведи курсор и посмотри подсказку. Да, я подумал за тебя.</span
-          >
-        </span>
-      </span>
-      <span class="cities__chat-container cities__chat-incoming">
-        <span tuiMessage>
-          <span class="multiline">Начнём. Постарайся продержаться дольше трёх ходов.</span>
-        </span>
-      </span>
-      <span class="cities__chat-container cities__chat-outgoing">
-        <span appearance="custom" tuiMessage>
-          <span class="multiline">variable</span>
-        </span>
-      </span>
-      <span class="cities__chat-container cities__chat-incoming">
-        <span tuiMessage>
-          <span class="multiline">enum</span>
-        </span>
-      </span>
+      }
     </div>
     <form class="cities__chat-form">
       <tui-textfield class="cities__chat-input" tuiTextfieldSize="m">

@@ -1,5 +1,12 @@
 {
   "input": "Enter a word",
-  "plaseholder": "developer",
-  "restart": "Restart game"
+  "placeholder": "developer",
+  "restart": "Restart game",
+  "messageFromCat1": "Meow",
+  "messageFromCat2": "I’m your senior cat. And yes, I can already see where you’ll mess up.",
+  "messageFromCat3": "I won’t even explain the rules properly, but fine: we play like ‘Cities’, but with frontend words.",
+  "messageFromCat4": "I say div → you respond with a word starting with the last letter, for example variable. Failed? Well… happens. Junior things.",
+  "messageFromCat5": "Topics: JS, TS, CSS, HTML... (If you don’t know half of it — I’m not surprised 🙄)",
+  "messageFromCat6": "Unknown word? Hover it to see a hint. Yes, I did your thinking for you.",
+  "messageFromCat7": "You start. Try to survive more than three moves 😉"
 }
