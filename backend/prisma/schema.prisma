@@ -27,7 +27,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   avatar    String?   
-  provider  Provider? @default(local)
+  provider  Provider @default(local)
   providerId String?  @unique 
 
   @@map("users")
@@ -40,4 +40,36 @@ model Storage {
   storage Json
 
   @@map("storages")
+}
+
+model MergeGameData {
+  id       Int      @id @default(autoincrement())
+  category String
+  words    Word[]
+
+  @@index([category])
+  @@map("merge_game_data")
+}
+
+model Word {
+  id        Int             @id @default(autoincrement())
+  word      String
+  dataId    Int
+  data      MergeGameData   @relation(fields: [dataId], references: [id], onDelete: Cascade)
+  questions Question[]
+
+  @@index([dataId])
+  @@map("merge_game_word")
+}
+
+model Question {
+  id       Int      @id @default(autoincrement())
+  question String
+  answer   String
+  keywords String[]
+  wordId   Int
+  word     Word     @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@index([wordId])
+  @@map("merge_game_question")
 }
