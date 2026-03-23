@@ -242,7 +242,13 @@ describe('AuthService', () => {
       expect(jwtService.verifyAsync).toHaveBeenCalledWith(mockRefreshToken);
       expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
         where: { id: mockPayload.id },
-        select: { id: true, email: true, username: true },
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          provider: true,
+          role: true,
+        },
       });
     });
   });
