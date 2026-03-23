@@ -1,6 +1,5 @@
 import {
   ConflictException,
-  ForbiddenException,
   Injectable,
   Logger,
   NotFoundException,
@@ -77,6 +76,7 @@ export class AuthService {
       username: user.username,
       email: user.email,
       provider: Provider.local,
+      role: user.role,
     };
 
     this.logger.log(`Пользователь с ${user.id} создан`);
@@ -110,6 +110,7 @@ export class AuthService {
       username: user.username,
       email: user.email,
       provider: Provider.Github,
+      role: user.role,
     };
 
     return this.auth(res, payload);
@@ -120,14 +121,14 @@ export class AuthService {
 
     if (!user) {
       this.logger.error('Пользователь не существует или неверный пароль');
-      throw new ForbiddenException(
+      throw new UnauthorizedException(
         `Пользователь не существует или неверный пароль`,
       );
     }
 
     if (user.provider !== Provider.local) {
       this.logger.error('Пользователь был зарегистрирован с помощью OAuth');
-      throw new ForbiddenException(
+      throw new UnauthorizedException(
         'Пользователь был зарегистрирован с помощью OAuth',
       );
     }
@@ -136,7 +137,7 @@ export class AuthService {
 
     if (!validPass) {
       this.logger.error('Пользователь не существует или неверный пароль');
-      throw new ForbiddenException(
+      throw new UnauthorizedException(
         `Пользователь не существует или неверный пароль`,
       );
     }
@@ -146,6 +147,7 @@ export class AuthService {
       username: user.username,
       email: user.email,
       provider: user.provider,
+      role: user.role,
     };
 
     return this.auth(res, payload);
@@ -215,6 +217,8 @@ export class AuthService {
           id: true,
           email: true,
           username: true,
+          role: true,
+          provider: true,
         },
       });
 
