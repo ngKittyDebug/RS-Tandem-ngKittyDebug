@@ -1,0 +1,34 @@
+:host {
+  --app-loader-size: 15rem;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--app-loader-size);
+  height: var(--app-loader-size);
+
+  transform-origin: center;
+  animation: 3s linear infinite spinning;
+}
+
+@keyframes spinning {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader {
+    animation-duration: 6s;
+  }
+}

@@ -4,10 +4,11 @@ import { RouterOutlet } from '@angular/router';
 import { Header } from './core/layout/header/header';
 import { ThemeService } from './core/services/theme-service';
 import { Footer } from './core/layout/footer/footer';
+import { RouteLoader } from './core/components/route-loader/route-loader';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, TuiRoot, Header, Footer],
+  imports: [RouterOutlet, TuiRoot, Header, Footer, RouteLoader],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
