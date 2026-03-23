@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  NgZone,
+} from '@angular/core';
 import { AppRoute, getRoutePath } from '../../../app.routes';
 import { RouterModule } from '@angular/router';
 import { TranslocoService, TranslocoModule } from '@jsverse/transloco';
@@ -27,6 +33,8 @@ import { CommonModule } from '@angular/common';
 export class CitiesGame {
   protected citiesRouterPath = getRoutePath(AppRoute.CITIES_GAME);
   private translocoService = inject(TranslocoService);
+  private zone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
   public t(key: string): string {
     return this.translocoService.translate(key);
   }
@@ -41,18 +49,29 @@ export class CitiesGame {
   ];
   public visibleMessages: string[] = [];
   private index = 0;
+  private isRunning = false;
+  private timeoutId?: ReturnType<typeof setTimeout>;
+
   private runMessages(): void {
     if (this.index >= this.messages.length) return;
-
-    setTimeout(() => {
-      this.visibleMessages.push(this.messages[this.index]);
-      this.index++;
-      this.runMessages();
-    }, 2500);
+    if (!this.isRunning) return;
+    this.timeoutId = setTimeout(() => {
+      this.zone.run(() => {
+        this.visibleMessages.push(this.messages[this.index]);
+        this.index++;
+        this.cdr.markForCheck();
+        this.runMessages();
+      });
+    }, 1500);
   }
+
   public restart(): void {
     this.visibleMessages = [];
     this.index = 0;
+    this.isRunning = true;
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
     this.runMessages();
   }
 }
