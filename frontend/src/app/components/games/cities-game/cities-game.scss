@@ -123,6 +123,10 @@
     padding: 1rem;
     flex-direction: column;
     gap: 0;
+    &__restart-btn {
+      margin: auto 0;
+      margin-right: 10px;
+    }
   }
   .cities__user {
     display: none;
@@ -130,6 +134,7 @@
   .cities__cat {
     align-items: end;
     padding-right: 25px;
+    flex-direction: row-reverse;
     &-svg {
       display: none;
     }

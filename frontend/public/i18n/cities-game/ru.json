@@ -1,4 +1,5 @@
 {
-  "input": "Enter a word",
-  "plaseholder": "developer"
+  "input": "Введите слово",
+  "plaseholder": "developer",
+  "restart": "Начать заново"
 }

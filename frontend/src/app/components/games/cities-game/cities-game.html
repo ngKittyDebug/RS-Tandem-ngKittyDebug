@@ -235,6 +235,14 @@
       />
     </svg>
     <div class="cities__cat-timer">00:00</div>
+    <button
+      class="cities__restart-btn"
+      tuiButton
+      appearance="gradient"
+      type="button"
+      size="s"
+      iconStart="@tui.rotate-ccw"
+    >{{ t('citiesGame.restart') }}</button>
   </div>
   <div class="cities__chat">
     <div class="cities__chat-area">
@@ -296,10 +304,12 @@
     </div>
     <form class="cities__chat-form">
       <tui-textfield class="cities__chat-input" tuiTextfieldSize="m">
-        <label tuiLabel for="chatInput">
-          {{ t('citiesGame.input') }}
-          <input tuiTextarea placeholder="{{ t('citiesGame.plaseholder') }}" id="chatInput" />
-        </label>
+        <label tuiLabel for="chatInput">{{ t('citiesGame.input') }}</label>
+        <textarea
+          tuiTextarea
+          placeholder="{{ t('citiesGame.plaseholder') }}"
+          id="chatInput"
+        ></textarea>
       </tui-textfield>
 
       <button class="cities__chat-btn" tuiButton appearance="gradient" type="submit" size="m">

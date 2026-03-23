@@ -1,4 +1,5 @@
 {
   "input": "Enter a word",
-  "plaseholder": "developer"
+  "plaseholder": "developer",
+  "restart": "Restart game"
 }
