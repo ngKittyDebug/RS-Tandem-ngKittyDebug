@@ -16,6 +16,7 @@ import { AppRoute, getRoutePath } from '../../app.routes';
 import { RouterModule, Router } from '@angular/router';
 import { AppTosterService } from '../../core/services/app-toster-service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { EyeCompassDirective } from '../../core/directive/eye-compass.directive';
 
 @Component({
   selector: 'app-registration',
@@ -35,6 +36,7 @@ import { HttpErrorResponse } from '@angular/common/http';
     TuiPassword,
     TuiLink,
     RouterModule,
+    EyeCompassDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
