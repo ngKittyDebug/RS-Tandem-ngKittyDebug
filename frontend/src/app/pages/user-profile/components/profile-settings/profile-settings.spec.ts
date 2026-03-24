@@ -1,18 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { ProfileSettings } from './profile-settings';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
-import { UserProfile } from './user-profile';
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-
-describe('UserProfile', () => {
-  let component: UserProfile;
-  let fixture: ComponentFixture<UserProfile>;
+describe('ProfileSettings', () => {
+  let component: ProfileSettings;
+  let fixture: ComponentFixture<ProfileSettings>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        UserProfile,
+        ProfileSettings,
         TranslocoTestingModule.forRoot({
           langs: { en: {}, ru: {} },
           translocoConfig: {
@@ -21,10 +19,9 @@ describe('UserProfile', () => {
           },
         }),
       ],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(UserProfile);
+    fixture = TestBed.createComponent(ProfileSettings);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
