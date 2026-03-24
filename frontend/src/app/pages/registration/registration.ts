@@ -70,7 +70,7 @@ export class Registration {
     try {
       await firstValueFrom(this.registrationService.register(User));
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       if (error instanceof HttpErrorResponse) {
         let key = 'registration.error.unknown';
         if (error.status === 400) key = 'registration.error.invalidData';

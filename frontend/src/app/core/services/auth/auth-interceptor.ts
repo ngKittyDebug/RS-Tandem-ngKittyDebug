@@ -11,6 +11,12 @@ import { catchError, filter, Observable, of, switchMap, take, throwError } from 
 import { AUTH_PATHS } from './models/auth-path.enum';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const isCloudinaryRequest = req.url.includes('api.cloudinary.com');
+
+  if (isCloudinaryRequest) {
+    return next(req);
+  }
+
   const authService = inject(AuthService);
   const token = authService.getAccessToken();
 
