@@ -7,7 +7,7 @@
 ---
 
 ## Источник данных
-Папка: `development-notes/`
+Папка: [`development-notes/`](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes) (ветка `main`)
 Структура: `development-notes/{github_username}/*.md`
 
 Участники:
@@ -22,7 +22,7 @@
 
 ## Метрики анализа
 
-По каждому участнику оцениваются 5 параметров (шкала 1–5):
+По каждому участнику оцениваются 9 параметров (шкала 1–5):
 
 | Метрика | Описание |
 |---|---|
@@ -31,14 +31,27 @@
 | **Общее настроение** | Эмоциональный тон записей: позитив / нейтраль / тревога / усталость |
 | **Удовлетворённость** | Доволен ли человек своим прогрессом и результатами |
 | **Вовлечённость** | Активность участия, инициативность, глубина погружения |
+| **Уровень стресса / тревожности** | Признаки тревоги перед дедлайнами или интервью, отдельно от общего настроения |
+| **Ощущение прогресса** | Субъективное «я расту» vs «топчусь на месте», независимо от удовлетворённости |
+| **Командное взаимодействие** | Упоминает ли других участников, просит ли помощи, помогает ли сам |
+| **Баланс нагрузки** | Жалобы на перегруз, нехватку времени, совмещение с другими задачами |
 
 ---
 
 ## Процедура проведения исследования
 
 ### Шаг 1 — Сбор данных
-Прочитать все `.md` файлы из папки `development-notes/` ветки main для каждого участника. 
-По каждому из участников запустить параллельно агента для чтения его файлов и анализа из шага 2.
+Получить все `.md` файлы из папки [`development-notes/`](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes) ветки `main` через **GitHub CLI**:
+
+```bash
+# Список файлов участника
+gh api repos/ngKittyDebug/RS-Tandem-ngKittyDebug/contents/development-notes/{github_username} --jq '.[].path'
+
+# Содержимое файла
+gh api repos/ngKittyDebug/RS-Tandem-ngKittyDebug/contents/{path} --jq '.content' | base64 -d
+```
+
+Для экономии контекста запустить по одному агенту на участника параллельно — каждый агент читает дневники своего участника через GitHub CLI и выполняет анализ из шага 2.
 
 ### Шаг 2 — Анализ по участнику
 Для каждого участника:
@@ -55,7 +68,40 @@
 - Общий командный климат
 
 ### Шаг 5 — Сохранение результатов
-Результаты сохранить в файл `CodeQualityStatus/Mental-Health-Result.md`
+Сохранить результаты в два файла:
+- `CodeQualityStatus/Mental-Health-Result-YYYY-MM-DD.md` — архивная копия с датой в названии
+- `CodeQualityStatus/Mental-Health-Result.md` — всегда содержит последний результат
+
+---
+
+## Prompt — Как запустить исследование
+
+Скопируй и отправь следующий промпт в чат с агентом:
+
+```
+Проведи Mental Health Research по плану из файла `CodeQualityStatus/mental-health-plan.md`.
+
+Участники и их папки с дневниками в ветке main:
+- alena1409 → https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes/alena1409
+- AlexGorSer → https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes/AlexGorSer
+- kozochkina82 → https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes/kozochkina82
+- Oksi2510 → https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes/Oksi2510
+- pavelkuvsh1noff → https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes/pavelkuvsh1noff
+- whaleisajoy → https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes/whaleisajoy
+
+Для экономии контекста запусти по одному агенту на каждого участника параллельно.
+Каждый агент: читает все .md файлы своего участника → анализирует по 9 метрикам (шкала 1–5) → фиксирует динамику по хронологии.
+
+Метрики: Сильные стороны, Слабые стороны, Общее настроение, Удовлетворённость, Вовлечённость,
+Уровень стресса/тревожности, Ощущение прогресса, Командное взаимодействие, Баланс нагрузки.
+
+По завершении всех агентов:
+1. Составь сводную таблицу по всем участникам и всем метрикам
+2. Сделай выводы: кто нуждается в поддержке, кто точка опоры, общий климат
+3. Сохрани результат в двух файлах:
+   - `CodeQualityStatus/Mental-Health-Result-YYYY-MM-DD.md` (архивная копия с датой в названии)
+   - `CodeQualityStatus/Mental-Health-Result.md` (перезапиши — всегда содержит последний результат)
+```
 
 ---
 
@@ -68,12 +114,14 @@
 Для повторного исследования:
 1. Прочитать новые/обновлённые файлы дневников
 2. Провести анализ по той же процедуре
-3. Сравнить оценки с предыдущей итерацией
-4. Зафиксировать дату исследования в заголовке результата
+3. Сравнить оценки с предыдущим файлом `Mental-Health-Result-YYYY-MM-DD.md`
+4. Сохранить в `Mental-Health-Result-YYYY-MM-DD.md` и перезаписать `Mental-Health-Result.md`
+5. Добавить запись в таблицу Истории исследований
 
 ---
 
 ## История исследований
 | Дата | Файл результата | Примечание |
 |---|---|---|
-| 2026-03-02 | Mental-Health-Result.md | Первое исследование |
+| 2026-03-02 | Mental-Health-Result-2026-03-02.md | Первое исследование |
+| 2026-03-23 | Mental-Health-Result-2026-03-23.md | Второе исследование, 57 записей, 9 метрик |
