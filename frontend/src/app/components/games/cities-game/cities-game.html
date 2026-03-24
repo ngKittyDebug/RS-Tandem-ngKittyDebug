@@ -242,34 +242,57 @@
       appearance="gradient"
       type="button"
       size="s"
-      iconStart="@tui.rotate-ccw"
+      iconEnd="@tui.rotate-ccw"
     >
       {{ t('citiesGame.restart') }}
     </button>
   </div>
   <div class="cities__chat">
     <div class="cities__chat-area">
-      @for (message of visibleMessages; track message) {
-        <span class="cities__chat-container cities__chat-incoming">
-          <span tuiMessage>
-            <span class="multiline">
-              {{ t(message) }}
+      @for (message of visibleMessages; track $index) {
+        <span
+          class="cities__chat-container"
+          [ngClass]="{
+            'cities__chat-incoming': message.type === 'incoming',
+            'cities__chat-outgoing': message.type === 'outgoing',
+          }"
+        >
+          @if (message.type === 'incoming') {
+            <span tuiMessage>
+              <span class="multiline">
+                {{ t(message.text) }}
+              </span>
             </span>
-          </span>
+          } @else {
+            <span appearance="custom" tuiMessage>
+              <span class="multiline">
+                {{ message.text }}
+              </span>
+            </span>
+          }
         </span>
       }
     </div>
-    <form class="cities__chat-form">
+    <form class="cities__chat-form" [formGroup]="messageForm">
       <tui-textfield class="cities__chat-input" tuiTextfieldSize="m">
         <label tuiLabel for="chatInput">{{ t('citiesGame.input') }}</label>
         <textarea
           tuiTextarea
           placeholder="{{ t('citiesGame.plaseholder') }}"
           id="chatInput"
+          formControlName="message"
         ></textarea>
       </tui-textfield>
 
-      <button class="cities__chat-btn" tuiButton appearance="gradient" type="submit" size="m">
+      <button
+        class="cities__chat-btn"
+        tuiButton
+        appearance="gradient"
+        type="button"
+        size="m"
+        (click)="sendMessege()"
+        [disabled]="isRunning"
+      >
         send
       </button>
     </form>
