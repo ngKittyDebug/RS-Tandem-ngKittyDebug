@@ -1,7 +1,7 @@
 {
   "heading": "Registration",
   "subtitle": "Registration to MeowVault community",
-  "link": "Alredy have an account?",
+  "link": "Already have an account?",
   "form": {
     "username": "Name",
     "email": "Email",
@@ -13,7 +13,7 @@
     "required": "This field is required",
     "emailPattern": "Invalid email format",
     "passwordPattern": "Minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number",
-    "usernamePattern": "Any 3–20 characters, no spaces required",
+    "usernamePattern": "Any 3–20 characters, no spaces allowed",
     "passwordMismatch": "Passwords do not match",
     "userExists": "A user with this email or username already exists",
     "invalidData": "Invalid data. Check your email, username, and password",
