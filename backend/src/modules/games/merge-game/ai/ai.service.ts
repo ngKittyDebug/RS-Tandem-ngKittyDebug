@@ -1,9 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CheckAnswerDto } from './dto/check-answer.dto';
 import { ConfigService } from '@nestjs/config';
-import { PERSONALITIES } from './dto/personality.dto';
+import { PERSONALITIES } from './constants/personality.constants';
 import { PERSONALITY_DESCRIPTION } from './constants/personality-description';
-import { GrokChatCompletionResponse, Message } from './interfaces/response-ai';
+import {
+  GroqChatCompletionResponse,
+  Message,
+} from './models/response-ai.interface';
 
 @Injectable()
 export class AiService {
@@ -40,21 +43,16 @@ export class AiService {
         }),
       });
 
-      const data = (await response.json()) as GrokChatCompletionResponse;
-      console.log(data);
-
       if (!response.ok) {
         throw new BadRequestException('Groq API error');
       }
 
+      const data = (await response.json()) as GroqChatCompletionResponse;
       const parsed = data.choices[0].message.content;
-      console.log(parsed);
+      if (!parsed) throw new BadRequestException('Empty AI content');
+      const message = JSON.parse(parsed) as Message;
 
-      const message = JSON.parse(parsed ?? '') as Message;
-
-      return {
-        ...message,
-      };
+      return message;
     } catch {
       throw new BadRequestException('Groq API error');
     }

@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { PersonalityType } from '../models/personality.enum';
 
 export class CheckAnswerDto {
   @ApiProperty({
@@ -34,5 +35,6 @@ export class CheckAnswerDto {
   })
   @IsString()
   @IsNotEmpty()
+  @IsEnum(PersonalityType)
   personality: string;
 }

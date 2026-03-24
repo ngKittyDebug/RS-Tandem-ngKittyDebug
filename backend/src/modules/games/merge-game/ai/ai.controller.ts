@@ -1,10 +1,9 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { AiService } from './ai.service';
 import { CheckAnswerDto } from './dto/check-answer.dto';
-import { Public } from 'src/decorators/public.decorator';
 import { ApiBody, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { Message } from './models/response-ai.interface';
 
-@Public()
 @Controller('ai')
 export class AiController {
   constructor(private readonly aiService: AiService) {}
@@ -20,12 +19,12 @@ export class AiController {
     schema: {
       example: {
         isCorrect: true,
-        feedback: 'Твой ответ соответвует эталонному',
+        feedback: 'Твой ответ соответствует эталонному',
       },
     },
   })
   @Post('check-answer')
-  checkAnswer(@Body() checkAnswerDto: CheckAnswerDto) {
+  checkAnswer(@Body() checkAnswerDto: CheckAnswerDto): Promise<Message> {
     return this.aiService.checkAnswer(checkAnswerDto);
   }
 }

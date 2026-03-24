@@ -1,27 +1,27 @@
-export interface GrokChatCompletionResponse {
+export interface GroqChatCompletionResponse {
   id: string;
   object: 'chat.completion';
   created: number;
   model: string;
-  choices: GrokChoice[];
-  usage: GrokUsage;
+  choices: GroqChoice[];
+  usage: GroqUsage;
   system_fingerprint?: string;
 }
 
-export interface GrokChoice {
+export interface GroqChoice {
   index: number;
-  message: GrokMessage;
+  message: GroqMessage;
   logprobs: null;
   finish_reason: 'stop' | 'length' | 'content_filter' | 'tool_calls' | null;
 }
 
-export interface GrokMessage {
+export interface GroqMessage {
   role: 'system' | 'user' | 'assistant' | 'tool';
   content: string | null;
-  tool_calls?: GrokToolCall[];
+  tool_calls?: GroqToolCall[];
 }
 
-export interface GrokToolCall {
+export interface GroqToolCall {
   id: string;
   type: 'function';
   function: {
@@ -30,7 +30,7 @@ export interface GrokToolCall {
   };
 }
 
-export interface GrokUsage {
+export interface GroqUsage {
   prompt_tokens: number;
   completion_tokens: number;
   total_tokens: number;
