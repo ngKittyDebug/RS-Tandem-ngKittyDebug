@@ -48,7 +48,11 @@ export class AiService {
       }
 
       const data = (await response.json()) as GroqChatCompletionResponse;
-      const parsed = data.choices[0].message.content;
+
+      const choice = data.choices?.[0];
+      if (!choice) throw new BadRequestException('Empty AI response');
+
+      const parsed = choice.message.content;
       if (!parsed) throw new BadRequestException('Empty AI content');
       const message = JSON.parse(parsed) as Message;
 
