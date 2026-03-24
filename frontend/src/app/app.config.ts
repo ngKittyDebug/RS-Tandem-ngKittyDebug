@@ -35,14 +35,18 @@ export const appConfig: ApplicationConfig = {
       config: {
         availableLangs: ['ru', 'en'],
         defaultLang: 'ru',
+        fallbackLang: 'ru',
         reRenderOnLangChange: true,
         prodMode: !isDevMode(),
+        missingHandler: {
+          useFallbackTranslation: true,
+        },
       },
       loader: TranslocoHttpLoader,
     }),
     provideTranslocoPersistLang({
       storage: {
-        useValue: localStorage,
+        useFactory: () => localStorage,
       },
     }),
     provideAppInitializer(() => {
