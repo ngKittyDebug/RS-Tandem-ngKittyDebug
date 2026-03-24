@@ -53,7 +53,7 @@ export class Registration {
       username: ['', [Validators.required, Validators.pattern(USER_PATTERN)]],
       email: ['', [Validators.required, Validators.pattern(EMAIL_PATTERN)]],
       password: ['', [Validators.required, Validators.pattern(PASSWORD_PATTERN)]],
-      passwordRepeat: ['', [Validators.required]],
+      passwordRepeat: ['', [Validators.required, Validators.pattern(PASSWORD_PATTERN)]],
     },
     {
       validators: passwordsValidator,
@@ -91,7 +91,9 @@ export class Registration {
       return this.translocoService.translate('registration.error.required');
     }
     if (control.hasError('pattern')) {
-      if (typeInput === 'passwordRepeat') return null;
+      if (typeInput === 'passwordRepeat' || typeInput === 'password') {
+        return this.translocoService.translate('registration.error.passwordPattern');
+      }
       return this.translocoService.translate(`registration.error.${typeInput}Pattern`);
     }
     if (typeInput === 'passwordRepeat' && this.registrationForm.hasError('passwords')) {
