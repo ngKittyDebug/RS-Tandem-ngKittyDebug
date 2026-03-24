@@ -5,7 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './modules/user/user.module';
 import { JwtStrategy } from './guards/jwt.strategy';
 import { KeyStorageModule } from './modules/key-storage/key-storage.module';
-import { AiModule } from './modules/merge-game/ai/ai.module';
+import { MergeGameModule } from './modules/games/merge-game/merge-game.module';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { AiModule } from './modules/merge-game/ai/ai.module';
     AuthModule,
     UserModule,
     KeyStorageModule,
-    AiModule,
+    MergeGameModule,
   ],
   providers: [JwtStrategy],
 })
