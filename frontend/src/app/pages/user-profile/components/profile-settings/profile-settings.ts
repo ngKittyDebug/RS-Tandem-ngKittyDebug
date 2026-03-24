@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { TuiAppearance, TuiTitle } from '@taiga-ui/core';
 import { TuiCardLarge, TuiHeader } from '@taiga-ui/layout';
@@ -12,7 +11,6 @@ import { AccountForm } from './account-form/account-form';
     TranslocoDirective,
     TuiCardLarge,
     TuiAppearance,
-    ReactiveFormsModule,
     TuiHeader,
     TuiTitle,
     PasswordForm,
@@ -20,5 +18,6 @@ import { AccountForm } from './account-form/account-form';
   ],
   templateUrl: './profile-settings.html',
   styleUrl: './profile-settings.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileSettings {}

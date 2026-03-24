@@ -1,4 +1,4 @@
-import { Component, inject, signal, WritableSignal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import {
@@ -34,6 +34,7 @@ import { passwordsRulesValidator } from './validators/validators';
   ],
   templateUrl: './password-form.html',
   styleUrl: './password-form.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PasswordForm {
   private translocoService = inject(TranslocoService);
@@ -93,13 +94,21 @@ export class PasswordForm {
       return this.translocoService.translate(`userProfile.accountSettings.error.passwordPattern`);
     }
 
-    if (typeInput === 'newPassword' && this.passwordForm.hasError('sameAsCurrentPassword')) {
+    if (
+      typeInput === 'newPassword' &&
+      this.passwordForm.get('newPassword')?.touched &&
+      this.passwordForm.hasError('sameAsCurrentPassword')
+    ) {
       return this.translocoService.translate(
         'userProfile.accountSettings.error.sameAsCurrentPassword',
       );
     }
 
-    if (typeInput === 'confirmPassword' && this.passwordForm.hasError('passwordMismatch')) {
+    if (
+      typeInput === 'confirmPassword' &&
+      this.passwordForm.get('confirmPassword')?.touched &&
+      this.passwordForm.hasError('passwordMismatch')
+    ) {
       return this.translocoService.translate('userProfile.accountSettings.error.mismathPassword');
     }
 

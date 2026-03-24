@@ -30,7 +30,6 @@ import {
 import { USER_PATTERN } from '../../../../../core/patterns/user-pattern';
 import { EMAIL_PATTERN } from '../../../../../core/patterns/email-pattern';
 import { PASSWORD_PATTERN } from '../../../../../core/patterns/password-pattern';
-import { normalize } from '../../../utils/utils';
 
 @Component({
   selector: 'app-account-form',
@@ -49,7 +48,6 @@ import { normalize } from '../../../utils/utils';
     TuiTitle,
     TuiDialog,
     TuiAutoFocus,
-    TuiAppearance,
   ],
   templateUrl: './account-form.html',
   styleUrl: './account-form.scss',
@@ -127,8 +125,8 @@ export class AccountForm {
     const { password } = this.passwordConfirmForm.getRawValue();
 
     const payload = {
-      username: normalize(username),
-      email: normalize(email),
+      username: username,
+      email: email,
       password,
     };
 
