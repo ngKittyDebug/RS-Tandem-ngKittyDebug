@@ -13,7 +13,7 @@ import { ConfigService } from '@nestjs/config';
 import { UpdateUserPassword } from './dto/update-user-pass.dto';
 import { ConfirmPasswordDto } from './dto/delete-user-account.dto';
 import { Provider, Prisma } from 'src/generated/prisma/client';
-import { AvatarUpdateDto } from './dto/update-avater.dto';
+import { AvatarUpdateDto } from './dto/update-avatar.dto';
 
 @Injectable()
 export class UserService {
