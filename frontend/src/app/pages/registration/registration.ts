@@ -5,7 +5,7 @@ import { TuiCardLarge, TuiForm } from '@taiga-ui/layout';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { TranslocoService, TranslocoModule } from '@jsverse/transloco';
 import { passwordsValidator } from './validators';
-import { RegistrationService } from '../../core/services/register-service';
+import { AuthService } from '../../core/services/auth/auth-service';
 import { PASSWORD_PATTERN } from '../../core/patterns/password-pattern';
 import { EMAIL_PATTERN } from '../../core/patterns/email-pattern';
 import { USER_PATTERN } from '../../core/patterns/user-pattern';
@@ -43,7 +43,7 @@ import { EyeCompassDirective } from '../../core/directive/eye-compass.directive'
 export class Registration {
   private translocoService = inject(TranslocoService);
   private fb = inject(FormBuilder);
-  private registrationService = inject(RegistrationService);
+  private AuthService = inject(AuthService);
   private toster = inject(AppTosterService);
   protected loginRouterPath = getRoutePath(AppRoute.LOGIN);
   private router = inject(Router);
@@ -72,7 +72,7 @@ export class Registration {
       password: password,
     };
     try {
-      await firstValueFrom(this.registrationService.register(User));
+      await firstValueFrom(this.AuthService.register(User));
       this.router.navigate([getRoutePath(AppRoute.MAIN)]);
     } catch (error) {
       if (error instanceof HttpErrorResponse) {
