@@ -1,11 +1,12 @@
 .profile-stats {
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
 
   &__card {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex: 1 1 auto;
     padding: 0.1rem;
   }
 

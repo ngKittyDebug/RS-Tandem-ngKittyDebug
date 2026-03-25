@@ -22,6 +22,9 @@
       "invalidPassword": "Old password is incorrect",
       "notFound": "User not found"
     },
+    "keyStorage": {
+      "notFound": "The record with the specified key was not found"
+    },
     "defaultError": "An error occurred. Please try again later."
   }
 }
