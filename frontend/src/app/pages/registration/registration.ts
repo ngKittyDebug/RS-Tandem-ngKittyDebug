@@ -8,11 +8,12 @@ import { passwordsValidator } from './validators';
 import { RegistrationService } from '../../core/services/register-service';
 import { PASSWORD_PATTERN } from '../../core/patterns/password-pattern';
 import { EMAIL_PATTERN } from '../../core/patterns/email-pattern';
+import { USER_PATTERN } from '../../core/patterns/user-pattern';
 import { RegisterDto } from './models/register.interfaces';
 import { RegisterField } from './models/register-field.type';
 import { firstValueFrom } from 'rxjs';
 import { AppRoute, getRoutePath } from '../../app.routes';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AppTosterService } from '../../core/services/app-toster-service';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -43,15 +44,16 @@ export class Registration {
   private registrationService = inject(RegistrationService);
   private toster = inject(AppTosterService);
   protected loginRouterPath = getRoutePath(AppRoute.LOGIN);
+  private router = inject(Router);
   public t(key: string): string {
     return this.translocoService.translate(key);
   }
   public registrationForm = this.fb.group(
     {
-      username: ['', [Validators.required]],
+      username: ['', [Validators.required, Validators.pattern(USER_PATTERN)]],
       email: ['', [Validators.required, Validators.pattern(EMAIL_PATTERN)]],
       password: ['', [Validators.required, Validators.pattern(PASSWORD_PATTERN)]],
-      passwordRepeat: ['', [Validators.required]],
+      passwordRepeat: ['', [Validators.required, Validators.pattern(PASSWORD_PATTERN)]],
     },
     {
       validators: passwordsValidator,
@@ -69,8 +71,8 @@ export class Registration {
     };
     try {
       await firstValueFrom(this.registrationService.register(User));
+      this.router.navigate([getRoutePath(AppRoute.MAIN)]);
     } catch (error) {
-      console.error(error);
       if (error instanceof HttpErrorResponse) {
         let key = 'registration.error.unknown';
         if (error.status === 400) key = 'registration.error.invalidData';
@@ -89,7 +91,9 @@ export class Registration {
       return this.translocoService.translate('registration.error.required');
     }
     if (control.hasError('pattern')) {
-      if (typeInput === 'passwordRepeat') return null;
+      if (typeInput === 'passwordRepeat' || typeInput === 'password') {
+        return this.translocoService.translate('registration.error.passwordPattern');
+      }
       return this.translocoService.translate(`registration.error.${typeInput}Pattern`);
     }
     if (typeInput === 'passwordRepeat' && this.registrationForm.hasError('passwords')) {

@@ -11,6 +11,10 @@ export enum AppRoute {
   CITIES_GAME = 'cities-game',
 }
 
+export enum GameRoute {
+  DECRYPTO = 'decrypto',
+}
+
 export const getRoutePath = <T extends AppRoute>(route: T): `/${T}` => {
   return `/${route}`;
 };
@@ -40,10 +44,10 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: AppRoute.CITIES_GAME,
-    loadComponent: () =>
-      import('./components/games/cities-game/cities-game').then((m) => m.CitiesGame),
-    providers: [provideTranslocoScope('cities-game')],
+    path: GameRoute.DECRYPTO,
+    loadComponent: () => import('./components/games/decrypto/decrypto').then((m) => m.Decrypto),
+    providers: [provideTranslocoScope('decrypto')],
+    canActivate: [authGuard],
   },
   {
     path: '**',

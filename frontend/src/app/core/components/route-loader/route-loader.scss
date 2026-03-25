@@ -1,0 +1,18 @@
+:host {
+  pointer-events: none;
+}
+
+.route-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgb(var(--tui-background-base-alt) / 0.72);
+  backdrop-filter: blur(2px);
+
+  pointer-events: auto;
+}
