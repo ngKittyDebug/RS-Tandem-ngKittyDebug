@@ -17,6 +17,9 @@ import { RouterModule, Router } from '@angular/router';
 import { AppTosterService } from '../../core/services/app-toster-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { EyeCompassDirective } from '../../core/directive/eye-compass.directive';
+// import { RouteLoader } from '../../core/components/route-loader/route-loader';
+import { Loader } from '../../core/components/loader/loader';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-registration',
@@ -37,6 +40,8 @@ import { EyeCompassDirective } from '../../core/directive/eye-compass.directive'
     TuiLink,
     RouterModule,
     EyeCompassDirective,
+    Loader,
+    CommonModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -62,15 +67,18 @@ export class Registration {
     },
   );
 
+  public isLoading = false;
+
   public async submit(): Promise<void> {
+    if (this.registrationForm.invalid) return;
     const { username, email, password } = this.registrationForm.getRawValue();
-    if (!username || !email || !password)
-      throw new Error(this.translocoService.translate('registration.error.invalidData'));
+    if (!username || !email || !password) return;
     const User: RegisterDto = {
       username: username,
       email: email,
       password: password,
     };
+    this.isLoading = true;
     try {
       await firstValueFrom(this.AuthService.register(User));
       this.router.navigate([getRoutePath(AppRoute.MAIN)]);
@@ -84,6 +92,8 @@ export class Registration {
       } else {
         this.toster.showErrorToster(this.translocoService.translate('registration.error.unknown'));
       }
+    } finally {
+      this.isLoading = false;
     }
   }
   protected getInputError(typeInput: RegisterField): string | null {

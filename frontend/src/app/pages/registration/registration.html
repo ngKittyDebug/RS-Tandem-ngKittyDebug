@@ -60,7 +60,11 @@
         size="m"
         [disabled]="!registrationForm.valid"
       >
-        {{ t('registration.form.button') }}
+        @if (isLoading) {
+          <app-loader mode="inline"></app-loader>
+        } @else {
+          {{ t('registration.form.button') }}
+        }
       </button>
       <svg
         class="registration__img"
