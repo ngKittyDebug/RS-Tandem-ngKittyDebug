@@ -46,7 +46,7 @@ export const routes: Routes = [
     path: GameRoute.DECRYPTO,
     loadComponent: () => import('./components/games/decrypto/decrypto').then((m) => m.Decrypto),
     providers: [provideTranslocoScope('decrypto')],
-    // canActivate: [authGuard],
+    canActivate: [authGuard],
   },
   {
     path: '**',
