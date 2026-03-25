@@ -9,6 +9,7 @@ import { TIMER_MODE } from './models/timer-mode.enum';
 export class Timer implements OnInit, OnDestroy {
   public timerMode = input<TIMER_MODE>(TIMER_MODE.UP);
   public startValue = input<number>(0);
+  public maxValue = input<number>(14400);
   public finishedTimer = output<void>();
 
   public timerSeconds = signal(0);
@@ -32,16 +33,28 @@ export class Timer implements OnInit, OnDestroy {
 
   public start(): void {
     if (this.timerIsActive()) return;
+    if (this.timerMode() === TIMER_MODE.UP && this.timerSeconds() >= this.maxValue()) return;
+
     this.timerIsActive.set(true);
     this.timerId = setInterval(() => {
       this.timerSeconds.update((value) => {
-        const nextValue = this.timerMode() === TIMER_MODE.UP ? value + 1 : value - 1;
-        if (nextValue <= 0) {
-          this.stop();
-          this.finishedTimer.emit();
-          return 0;
+        if (this.timerMode() === TIMER_MODE.UP) {
+          const nextValue = value + 1;
+          if (nextValue >= this.maxValue()) {
+            this.stop();
+            this.finishedTimer.emit();
+            return this.maxValue();
+          }
+          return nextValue;
+        } else {
+          const nextValue = value - 1;
+          if (nextValue <= 0) {
+            this.stop();
+            this.finishedTimer.emit();
+            return 0;
+          }
+          return nextValue;
         }
-        return nextValue;
       });
     }, 1000);
   }
