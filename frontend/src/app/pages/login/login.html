@@ -84,7 +84,11 @@
         type="submit"
         [disabled]="loginForm.invalid || isLoading()"
       >
-        {{ isLoading() ? '...' : t('login.buttons.login') }}
+        @if (isLoading()) {
+          <app-loader mode="inline"></app-loader>
+        } @else {
+          {{ t('login.buttons.login') }}
+        }
       </button>
       <app-img-cat class="login__cat"></app-img-cat>
     </div>
