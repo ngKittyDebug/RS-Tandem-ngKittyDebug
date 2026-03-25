@@ -10,7 +10,7 @@ import { AiService } from '../../services/ai-service';
 import { ResponseCheckAnswerAi } from '../../models/ai-metods.interface';
 import { tap } from 'rxjs';
 import { BoardService } from '../../services/board-service';
-import { Cat } from "../cat/cat";
+import { Cat } from '../cat/cat';
 
 @Component({
   selector: 'app-quiz',

@@ -30,7 +30,7 @@
     width: 100%;
 
     &:not(:disabled):hover ~ .login__cat {
-      transform: scaleX(-1) translateY(-2px);
+      transform: translateY(-2px);
     }
   }
 
@@ -53,13 +53,9 @@
 
   &__cat {
     position: absolute;
-    width: 120px;
-    height: auto;
-    transform: scaleX(-1);
-    top: -26px;
+    top: -24px;
     right: 15px;
     z-index: 2;
-
     transition: all 0.2s ease;
   }
 }
