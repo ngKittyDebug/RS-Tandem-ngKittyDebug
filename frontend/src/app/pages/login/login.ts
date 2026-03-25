@@ -115,7 +115,7 @@ export class Login {
       )
       .subscribe({
         next: () => {
-          void this.router.navigate([getRoutePath(AppRoute.MAIN)]);
+          this.router.navigate([getRoutePath(AppRoute.MAIN)]);
         },
         error: (error) => {
           const key =

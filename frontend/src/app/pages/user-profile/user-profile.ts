@@ -24,9 +24,8 @@ export class UserProfile implements OnInit {
   private readonly userStore = inject(UserStore);
 
   public ngOnInit(): void {
-    // if (!this.userStore.user()) {
-    //   void this.userStore.loadUser();
-    // }
-    console.log(this.userStore);
+    if (!this.userStore.user()) {
+      void this.userStore.loadUser();
+    }
   }
 }

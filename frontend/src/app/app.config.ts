@@ -15,7 +15,6 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { TranslocoHttpLoader } from './transloco-loader';
 import { provideTransloco } from '@jsverse/transloco';
 import { AuthService } from './core/services/auth/auth-service';
-// import { catchError, of } from 'rxjs';
 import { catchError, of, switchMap } from 'rxjs';
 import { authInterceptor } from './core/services/auth/auth-interceptor';
 import { registerLocaleData } from '@angular/common';
@@ -53,7 +52,6 @@ export const appConfig: ApplicationConfig = {
     }),
     provideAppInitializer(() => {
       const authService = inject(AuthService);
-      // return authService.refresh().pipe(catchError(() => of(void 0)));
 
       const userStore = inject(UserStore);
       return authService.refresh().pipe(

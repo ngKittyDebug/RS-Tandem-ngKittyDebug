@@ -125,7 +125,6 @@ export class UserStore {
     } catch (error) {
       const message = this.getMessageByStatus(error, {
         400: 'serverResponse.updateAvatar.invalidData',
-        401: 'serverResponse.updateAvatar.unauthorized',
         404: 'serverResponse.updateAvatar.notFound',
       });
 

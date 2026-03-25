@@ -4,7 +4,13 @@
 
   "userInfo": {
     "createdTitle": "Member since",
-    "genresTitle": "Favorite genres"
+    "genresTitle": "Favorite genres",
+    "changeAvatar": {
+      "allowedTypes": "Only PNG, JPG, JPEG and WEBP are allowed",
+      "maxSize": "Maximum file size is",
+      "maxSizeType": "KB",
+      "uploadFailed": "Cloudinary upload failed"
+    }
   },
 
   "statistic": {

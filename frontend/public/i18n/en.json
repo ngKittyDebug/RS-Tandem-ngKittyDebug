@@ -22,6 +22,11 @@
       "invalidPassword": "Old password is incorrect",
       "notFound": "User not found"
     },
+    "updateAvatar": {
+      "success": "Avatar updated successfully",
+      "invalidData": "Invalid data provided",
+      "notFound": "User not found"
+    },
     "defaultError": "An error occurred. Please try again later."
   }
 }
