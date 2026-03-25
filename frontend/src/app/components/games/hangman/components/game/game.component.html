@@ -1,0 +1,74 @@
+<div class="content">
+  <nav class="navigation">
+    <button iconStart="@tui.home" size="m" tuiButton type="button" (click)="back.emit()">
+      Back
+    </button>
+    <button
+      appearance="accent"
+      iconStart="@tui.trophy"
+      size="m"
+      tuiButton
+      type="button"
+      (click)="results.emit()"
+    >
+      Results
+    </button>
+  </nav>
+  <div class="main-container">
+    <img src="./assets/images/hangcat.png" alt="Hangman" class="hangman-image" width="400" />
+    <div class="game-field">
+      <p class="game-instruction">
+        Guess the word and write them in the field down! Every answer is a single word. Be careful:
+        if you make 5 mistakes, the game will be over! Good luck and have fun!
+      </p>
+      <p>
+        <span class="question">A QUESTION: </span
+        ><span class="question-text"
+          >"A container for storing data values that can be changed."</span
+        >
+      </p>
+      <div class="user-field">
+        <div class="user-form">
+          <div class="container">
+            <div class="editable">your answer</div>
+          </div>
+          <div class="keyboard">
+            <div class="row">
+              <button size="s" tuiButton type="button">Q</button>
+              <button size="s" tuiButton type="button">W</button>
+              <button size="s" tuiButton type="button">E</button>
+              <button size="s" tuiButton type="button">R</button>
+              <button size="s" tuiButton type="button">T</button>
+              <button size="s" tuiButton type="button">Y</button>
+              <button size="s" tuiButton type="button">U</button>
+              <button size="s" tuiButton type="button">I</button>
+              <button size="s" tuiButton type="button">O</button>
+              <button size="s" tuiButton type="button">P</button>
+            </div>
+            <div class="row">
+              <button size="s" tuiButton type="button">A</button>
+              <button size="s" tuiButton type="button">S</button>
+              <button size="s" tuiButton type="button">D</button>
+              <button size="s" tuiButton type="button">F</button>
+              <button size="s" tuiButton type="button">G</button>
+              <button size="s" tuiButton type="button">H</button>
+              <button size="s" tuiButton type="button">J</button>
+              <button size="s" tuiButton type="button">K</button>
+              <button size="s" tuiButton type="button">L</button>
+            </div>
+            <div class="row">
+              <button size="s" tuiButton type="button">Z</button>
+              <button size="s" tuiButton type="button">X</button>
+              <button size="s" tuiButton type="button">C</button>
+              <button size="s" tuiButton type="button">V</button>
+              <button size="s" tuiButton type="button">B</button>
+              <button size="s" tuiButton type="button">N</button>
+              <button size="s" tuiButton type="button">M</button>
+            </div>
+          </div>
+        </div>
+        <img src="./assets/images/cat1.png" alt="cat" width="150" class="cat-image" />
+      </div>
+    </div>
+  </div>
+</div>

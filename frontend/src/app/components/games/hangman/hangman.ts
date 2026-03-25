@@ -1,26 +1,27 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
-import { TranslocoDirective } from '@jsverse/transloco';
-import { AppRoute, getRoutePath } from '../../../app.routes';
-import { TuiTitle } from '@taiga-ui/core';
-import { TUI_FALSE_HANDLER } from '@taiga-ui/cdk';
-import { TuiButton } from '@taiga-ui/core';
-import { map, startWith, Subject, switchMap, timer } from 'rxjs';
-import { TuiElasticContainer } from '@taiga-ui/kit';
-
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Menu } from './components/menu/menu.component';
+import { GameComponent } from './components/game/game.component';
+import { ResultsComponent } from './components/results/results.component';
+type Screen = 'menu' | 'game' | 'results';
 @Component({
   selector: 'app-hangman',
   standalone: true,
-  imports: [RouterOutlet, TranslocoDirective, TuiTitle, TuiButton, TuiElasticContainer],
+  imports: [Menu, GameComponent, ResultsComponent],
   templateUrl: './hangman.html',
-  styleUrl: './hangman.scss',
+  styleUrls: ['./hangman.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Hangman {
-  private router = inject(Router);
-  protected mainRouterPath = getRoutePath(AppRoute.MAIN);
-  protected readonly trigger$ = new Subject<void>();
-  protected readonly loading$ = this.trigger$.pipe(
-    switchMap(() => timer(2000).pipe(map(TUI_FALSE_HANDLER), startWith('Loading'))),
-  );
+  public currentScreen: Screen = 'menu';
+  protected goToMenu(): void {
+    this.currentScreen = 'menu';
+  }
+
+  protected startGame(): void {
+    this.currentScreen = 'game';
+  }
+
+  protected goToResults(): void {
+    this.currentScreen = 'results';
+  }
 }
