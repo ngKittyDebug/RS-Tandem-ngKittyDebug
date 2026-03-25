@@ -5,7 +5,6 @@ import { TIMER_MODE } from './models/timer-mode.enum';
   selector: 'app-timer',
   imports: [],
   templateUrl: './timer.html',
-  styleUrl: './timer.scss',
 })
 export class Timer implements OnInit, OnDestroy {
   public timerMode = input<TIMER_MODE>(TIMER_MODE.UP);

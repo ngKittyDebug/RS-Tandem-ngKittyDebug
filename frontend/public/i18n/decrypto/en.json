@@ -1,5 +1,6 @@
 {
   "newGameBtn": "new game",
+  "stopGameBtn": "stop",
   "startBtn": "start",
   "rulesBtn": "rules",
   "nextRoundBtn": "next round",
@@ -15,15 +16,16 @@
   "decryptoErrorMsgLabel": "Lose",
   "decryptoWinRoundMsg": "You've won the round. Don't stop there.",
   "decryptoWinRoundMsgLabel": "Win round",
-  "decryptoWinGameMsg": "Congratulation. You have won the game.",
+  "decryptoWinGameMsg": "Congratulations. You have won the game.",
   "decryptoWinGameMsgLabel": "Win game",
   "decryptoAchievementMessage1": "You completed the game in less than ",
-  "decryptoAchievementMessage2": " seconds. Congratulation.",
+  "decryptoAchievementMessage2": " seconds. Congratulations.",
   "decryptoRules1": "Decrypto Solo (in Russian localization — \"Solo Decoder\") is an association game for one person, where you have to solve the transmitted secret messages.",
   "decryptoRules2": "The game consists of three rounds. Throughout the entire game, you have three attempts to verify the code. You have 90 seconds to complete the game.",
   "decryptoRules3": "For each round, you are given 4 cards with words. Additionally, for each round, a code is provided that you need to decipher.",
   "decryptoRules4": "After starting the game, three clues are given in each round. Once you receive the clues, you must match them to your words and record the resulting sequence of numbers in the input form.",
   "decryptoRules5": "If the code is correctly deciphered, you move on to the next round.",
-  "decryptoRules6": "The faster you complete the game without any mistakes, the cooler the achievement you will earn. Try to collect all the achievements.s",
-  "decryptoRules7": "Good luck in the game!"
+  "decryptoRules6": "The faster you complete the game without any mistakes, the cooler the achievement you will earn. Try to collect all the achievements.",
+  "decryptoRules7": "Good luck in the game!",
+  "decryptoCardDataError": "Meow. The game data has not been loaded. Wait a little and try to start a new game or reload the page."
 }

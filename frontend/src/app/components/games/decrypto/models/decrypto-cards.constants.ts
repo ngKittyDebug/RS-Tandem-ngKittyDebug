@@ -63,5 +63,5 @@ export const DECRYPTO_CODES: DecryptoCodes = {
   21: [4, 2, 1],
   22: [4, 2, 3],
   23: [4, 3, 1],
-  24: [4, 3, 1],
+  24: [4, 3, 2],
 };

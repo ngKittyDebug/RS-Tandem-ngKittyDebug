@@ -16,13 +16,14 @@ import { POPUP_SIZES } from '../../../core/services/popup/models/popup.enum';
 import { TIMER_MODE } from '../../timer/models/timer-mode.enum';
 import { CONFIG } from './services/models/decrypto.constants';
 import { KeyStorageService } from '../../../core/services/key-storage/key-storage-service';
+import { keysDataOnServer } from './models/decrypto.constants';
 
 export interface DecryptoGameData {
   gameCards: Card[];
 }
 
 const dataToServer = {
-  key: 'decrypto-data-1',
+  key: keysDataOnServer.keyDataOnServer1,
   storage: { gameCards: [] },
 };
 
@@ -42,12 +43,12 @@ const dataToServer = {
 })
 export class Decrypto implements OnInit {
   protected readonly gameService = inject(DecryptoGameService);
-  private readonly loadDataServerService = inject(KeyStorageService<DecryptoGameData>);
-  private readonly transloco = inject(TranslocoService);
-  private tosterService = inject(AppTosterService);
-  private fb = inject(FormBuilder);
+  protected readonly loadDataServerService = inject(KeyStorageService<DecryptoGameData>);
+  protected readonly transloco = inject(TranslocoService);
+  protected readonly tosterService = inject(AppTosterService);
+  protected readonly fb = inject(FormBuilder);
+  private readonly popupService = inject(PopupService);
   protected gameStarted = signal<boolean>(false);
-  private popupService = inject(PopupService);
   private timer = viewChild(Timer);
   public timerMode = TIMER_MODE.DOWN;
   public initialTime = CONFIG.gameTime;
@@ -97,6 +98,11 @@ export class Decrypto implements OnInit {
   }
 
   protected startGame(): void {
+    if (this.gameService.gameCardsFromServer.length <= CONFIG.defaultCards * CONFIG.defaultRounds) {
+      const message = this.transloco.translate('decrypto.decryptoCardDataError');
+      this.tosterService.showErrorToster(message);
+      return;
+    }
     this.gameService.generateCardsForGame();
     this.gameService.generateCards();
     this.gameService.generateGameHints();
@@ -123,6 +129,7 @@ export class Decrypto implements OnInit {
     this.gameService.gameAttempts.set(CONFIG.attempts);
     this.disableGameCodeInputs();
     this.timer()?.reset();
+    console.log(this.gameStarted());
   }
 
   protected newRound(): void {
@@ -200,7 +207,7 @@ export class Decrypto implements OnInit {
     }
   }
 
-  public checkFinishedTimer(): void {
+  protected checkFinishedTimer(): void {
     this.tosterService.showErrorToster(
       this.transloco.translate('decrypto.decryptoErrorMsg'),
       this.transloco.translate('decrypto.decryptoErrorMsgLabel'),

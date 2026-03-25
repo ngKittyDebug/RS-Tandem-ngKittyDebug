@@ -11,7 +11,7 @@ export class DecryptoGameAchievementsService {
   protected readonly toasterService = inject(AppTosterService);
   protected readonly translocoService = inject(TranslocoService);
 
-  public currentGameAchievements: AchievementList = BaseAchievements;
+  public currentGameAchievements: AchievementList = JSON.parse(JSON.stringify(BaseAchievements));
   public lastGameAchievement: DecryptoAchievement | undefined;
 
   public checkAchievements(time: number, mistakes: number): void {

@@ -5,12 +5,16 @@ import { generateNumber } from '../helpers/generate-number.helper';
 import { shuffleArray } from '../helpers/shuffle-array.helper';
 import { CONFIG } from './models/decrypto.constants';
 import { DecryptoGameAchievementsService } from './decrypto-game-achievements-service';
+import { AppTosterService } from '../../../../core/services/app-toster-service';
+import { TranslocoService } from '@jsverse/transloco';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DecryptoGameService {
   protected readonly gameAchievements = inject(DecryptoGameAchievementsService);
+  protected readonly toasterService = inject(AppTosterService);
+  protected readonly translocoService = inject(TranslocoService);
   public gameCards: Card[] = StartGameCards;
   public gameCardsForGame: Card[] = StartGameCards;
   public gameCardsFromServer: Card[] = [];
@@ -42,7 +46,7 @@ export class DecryptoGameService {
   }
 
   public generateCards(): void {
-    this.gameCards = this.gameCardsForGame.splice(0, 4);
+    this.gameCards = this.gameCardsForGame.slice(0, 4);
   }
 
   public generateCardsForGame(): void {

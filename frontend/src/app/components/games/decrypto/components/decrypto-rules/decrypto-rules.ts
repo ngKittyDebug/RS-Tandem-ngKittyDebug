@@ -7,7 +7,6 @@ import { injectContext } from '@taiga-ui/polymorpheus';
   selector: 'app-decrypto-rules',
   imports: [TranslocoDirective],
   templateUrl: './decrypto-rules.html',
-  styleUrl: './decrypto-rules.scss',
 })
 export class DecryptoRules {
   public readonly context = injectContext<TuiDialogContext<void>>();

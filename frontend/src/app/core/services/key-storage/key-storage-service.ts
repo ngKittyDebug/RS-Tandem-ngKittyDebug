@@ -30,7 +30,7 @@ export class KeyStorageService<T> {
   public sentData(data: KeyStorageResponse<T>): Observable<KeyStorageResponse<T>> {
     return this.http
       .post<KeyStorageResponse<T>>(this.getUrl(), data)
-      .pipe(catchError(this.handleError));
+      .pipe(catchError((err) => this.handleError(err)));
   }
 
   public getData(
@@ -41,12 +41,14 @@ export class KeyStorageService<T> {
       .get<KeyStorageResponse<T>>(url, {
         params,
       })
-      .pipe(catchError(this.handleError));
+      .pipe(catchError((err) => this.handleError(err)));
   }
 
   public getAllData(): Observable<KeyStorageResponse<T>> {
     const url = this.getUrl('/all');
-    return this.http.get<KeyStorageResponse<T>>(url).pipe(catchError(this.handleError));
+    return this.http
+      .get<KeyStorageResponse<T>>(url)
+      .pipe(catchError((err) => this.handleError(err)));
   }
 
   public removeData(
@@ -56,6 +58,6 @@ export class KeyStorageService<T> {
       .delete<KeyStorageResponse<T>>(this.getUrl(), {
         params,
       })
-      .pipe(catchError(this.handleError));
+      .pipe(catchError((err) => this.handleError(err)));
   }
 }
