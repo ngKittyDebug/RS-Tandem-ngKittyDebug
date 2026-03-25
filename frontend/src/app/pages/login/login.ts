@@ -25,6 +25,7 @@ import { USER_PATTERN } from '../../core/patterns/user-pattern';
 import { ImgCat } from './components/img-cat/img-cat';
 import { AppRoute, getRoutePath } from '../../app.routes';
 import { AppTosterService } from '../../core/services/app-toster-service';
+import { Loader } from '../../core/components/loader/loader';
 
 @Component({
   selector: 'app-login',
@@ -44,6 +45,7 @@ import { AppTosterService } from '../../core/services/app-toster-service';
     TuiPassword,
     TuiLink,
     ImgCat,
+    Loader,
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
