@@ -10,7 +10,18 @@ export enum AppRoute {
   LOGIN = 'login',
   USER_PROFILE = 'user-profile',
   MAIN = '',
+}
+
+export enum GameRoute {
+  DECRYPTO = 'decrypto',
   MERGE_GAME = 'merge-game',
+}
+
+export enum MergeGameRoute {
+  SETTINGS = 'settings',
+  BOARD = 'board',
+  QUIZ = 'quiz',
+  THEORY = 'theory',
 }
 
 export const getRoutePath = <T extends AppRoute>(route: T): `/${T}` => {
@@ -42,16 +53,22 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: AppRoute.MERGE_GAME,
+    path: GameRoute.DECRYPTO,
+    loadComponent: () => import('./components/games/decrypto/decrypto').then((m) => m.Decrypto),
+    providers: [provideTranslocoScope('decrypto')],
+    canActivate: [authGuard],
+  },
+  {
+    path: GameRoute.MERGE_GAME,
     loadComponent: () =>
       import('./components/games/merge-game/merge-game').then((m) => m.MergeGame),
     providers: [provideTranslocoScope('merge-game')],
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'settings', pathMatch: 'full' },
+      { path: '', redirectTo: MergeGameRoute.SETTINGS, pathMatch: 'full' },
 
       {
-        path: 'settings',
+        path: MergeGameRoute.SETTINGS,
         loadComponent: () =>
           import('./components/games/merge-game/components/settings/settings').then(
             (m) => m.Settings,
@@ -59,21 +76,21 @@ export const routes: Routes = [
       },
 
       {
-        path: 'board',
+        path: MergeGameRoute.BOARD,
         loadComponent: () =>
           import('./components/games/merge-game/components/board/board').then((m) => m.Board),
         canActivate: [boardGuard],
       },
 
       {
-        path: 'quiz',
+        path: MergeGameRoute.QUIZ,
         loadComponent: () =>
           import('./components/games/merge-game/components/quiz/quiz').then((m) => m.Quiz),
         canActivate: [quizGuard],
       },
 
       {
-        path: 'theory',
+        path: MergeGameRoute.THEORY,
         loadComponent: () =>
           import('./components/games/merge-game/components/theory/theory').then((m) => m.Theory),
       },
