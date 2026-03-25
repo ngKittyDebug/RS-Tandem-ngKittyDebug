@@ -3,7 +3,7 @@ import { GameMode, PersonalityMode, QuestionMode, StatusGame } from '../models/s
 import { QuizService } from './quiz-service';
 import { Observable, catchError, throwError } from 'rxjs';
 import { API_BASE_URL } from '../../../../core/constants/api.constants';
-import { GameResult, QuizState, ResponseData } from '../models/data.interface';
+import { GameResult, ResponseData } from '../models/data.interface';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -19,9 +19,6 @@ export class GameService {
   public readonly questionMode = signal<QuestionMode>(1);
   public readonly statusGame = signal<StatusGame>('idle');
 
-  public readonly activeQuiz = signal<QuizState | null>(null);
-  public readonly correctAnswers = signal<number>(0);
-  public readonly wrongAnswers = signal<number>(0);
   public readonly lastResult = signal<GameResult | null>(null);
 
   public setGameMode(mode: GameMode): void {

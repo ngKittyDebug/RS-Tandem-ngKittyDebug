@@ -18,7 +18,7 @@
     ></textarea>
 
     <div class="quiz__footer">
-      <img src="assets/images/cat-2.svg" alt="cat" class="quiz__cat" />
+      <app-cat class="quiz__cat"></app-cat>
       <button
         tuiButton
         appearance="gradient"
@@ -51,7 +51,7 @@
     </div>
 
     <div class="quiz__footer">
-      <img src="assets/images/cat-2.svg" alt="cat" class="quiz__cat" />
+      <app-cat class="quiz__cat"></app-cat>
       <button tuiButton appearance="gradient" size="m" (click)="onNext()">
         {{
           currentIndex() === wordCount() - 1

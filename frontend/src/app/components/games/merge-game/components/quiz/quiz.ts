@@ -10,10 +10,11 @@ import { AiService } from '../../services/ai-service';
 import { ResponseCheckAnswerAi } from '../../models/ai-metods.interface';
 import { tap } from 'rxjs';
 import { BoardService } from '../../services/board-service';
+import { Cat } from "../cat/cat";
 
 @Component({
   selector: 'app-quiz',
-  imports: [TranslocoDirective, FormsModule, TuiButton],
+  imports: [TranslocoDirective, FormsModule, TuiButton, Cat],
   templateUrl: './quiz.html',
   styleUrl: './quiz.scss',
 })
@@ -54,7 +55,6 @@ export class Quiz {
     const question = this.currentQuestion();
     if (!question) return;
     if (this.gameService.gameMode() === 'withAI') {
-      console.log('ai');
       this.aiService
         .checkAnswerAi({
           userAnswer: this.userAnswer(),
