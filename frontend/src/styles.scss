@@ -75,13 +75,17 @@ button[tuiButton][data-appearance='gradient'] {
   }
 }
 
-* {
-  box-sizing: border-box;
-}
-
 .t-root-content {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
   height: 100%;
+}
+
+[data-appearance='no-dialog-buttons'] .t-buttons {
+  display: none;
+}
+
+* {
+  box-sizing: border-box;
 }

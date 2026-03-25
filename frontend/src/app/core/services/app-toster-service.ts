@@ -7,12 +7,18 @@ export enum TosterLabels {
   Error = 'error',
   Warning = 'warning',
   Positive = 'meow',
+  Achievement = 'achievement',
 }
 
 export enum TosterAppearances {
   Error = 'negative',
   Warning = 'warning',
   Positive = 'positive',
+  Achievement = 'info',
+}
+
+export enum TosterIcons {
+  Achievement = '@tui.trophy',
 }
 
 @Injectable({
@@ -48,6 +54,22 @@ export class AppTosterService {
   ): void {
     this.alerts
       .open(message, { label, appearance: TosterAppearances.Positive, autoClose: closeTime })
+      .subscribe();
+  }
+
+  public showAchievementToster(
+    message: string,
+    label: string = TosterLabels.Achievement,
+    icon: string = TosterIcons.Achievement,
+    closeTime = DEFAULT_ALERT_CLOSE_TIME,
+  ): void {
+    this.alerts
+      .open(message, {
+        label,
+        appearance: TosterAppearances.Achievement,
+        icon,
+        autoClose: closeTime,
+      })
       .subscribe();
   }
 }

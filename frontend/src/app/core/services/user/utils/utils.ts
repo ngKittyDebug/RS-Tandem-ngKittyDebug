@@ -1,3 +1,3 @@
-export function getUrl(...paths: string[]): string {
-  return [import.meta.env['NG_APP_API_URL'], ...paths].join('');
+export function getUrl(baseUrl: string, ...paths: string[]): string {
+  return [baseUrl, ...paths].join('');
 }

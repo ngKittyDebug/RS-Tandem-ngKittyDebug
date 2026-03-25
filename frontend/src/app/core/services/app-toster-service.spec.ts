@@ -1,6 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AppTosterService, TosterAppearances, TosterLabels } from './app-toster-service';
+import {
+  AppTosterService,
+  TosterAppearances,
+  TosterIcons,
+  TosterLabels,
+} from './app-toster-service';
 import { of } from 'rxjs';
 import { TuiAlertService } from '@taiga-ui/core';
 
@@ -52,6 +57,18 @@ describe('AppTosterService', () => {
     expect(alertServiceMock.open).toHaveBeenCalledWith(message, {
       label: TosterLabels.Error,
       appearance: TosterAppearances.Error,
+      autoClose: 4000,
+    });
+  });
+
+  it('should call open with success parameters when showAchievementToster', () => {
+    const message = 'Achievement!';
+    service.showAchievementToster(message);
+
+    expect(alertServiceMock.open).toHaveBeenCalledWith(message, {
+      label: TosterLabels.Achievement,
+      appearance: TosterAppearances.Achievement,
+      icon: TosterIcons.Achievement,
       autoClose: 4000,
     });
   });

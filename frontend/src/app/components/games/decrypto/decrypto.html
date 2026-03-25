@@ -1,0 +1,135 @@
+<div class="decrypto" *transloco="let t">
+  <div class="decrypto__wrapper">
+    <div class="decrypto__controls">
+      <div class="decrypto__nav">
+        <button tuiButton type="button" size="s" class="decrypto__nav_button" (click)="newGame()">
+          {{ !gameStarted() ? t('decrypto.newGameBtn') : t('decrypto.stopGameBtn') }}
+        </button>
+        <button
+          tuiButton
+          type="button"
+          size="s"
+          class="decrypto__nav_button"
+          (click)="startGame()"
+          [disabled]="gameStarted()"
+        >
+          {{ t('decrypto.startBtn') }}
+        </button>
+        <button
+          tuiButton
+          type="button"
+          size="s"
+          class="decrypto__nav_button"
+          (click)="newRound()"
+          [disabled]="!gameService.roundResult()"
+        >
+          {{ t('decrypto.nextRoundBtn') }}
+        </button>
+        <button tuiButton type="button" size="s" class="decrypto__nav_button" (click)="openRules()">
+          {{ t('decrypto.rulesBtn') }}
+        </button>
+      </div>
+      <div class="decrypto__inf">
+        <p class="decrypto__inf_attempts">
+          {{ t('decrypto.gameAttempts') }}: {{ gameService.gameAttempts() }}
+        </p>
+        <app-timer
+          [timerMode]="timerMode"
+          [startValue]="initialTime"
+          (finishedTimer)="checkFinishedTimer()"
+        ></app-timer>
+        <p class="decrypto__inf_period">
+          {{ t('decrypto.gamePeriods') }}: {{ gameService.gamePeriod() }} / 3
+        </p>
+      </div>
+    </div>
+    <div class="decrypto__field">
+      <div class="decrypto__cards">
+        @for (gameCard of gameService.gameCards; track $index) {
+          <div class="decrypto__card">
+            <button
+              tuiButton
+              type="button"
+              class="decrypto__card_button"
+              size="s"
+              (click)="openCardDescription(gameCard.cardDescription, gameCard.cardName)"
+              [disabled]="gameService.gameResult() === null"
+            >
+              <tui-icon
+                icon="@tui.circle-question-mark"
+                class="decrypto__card_button_icon"
+              ></tui-icon>
+            </button>
+            <p class="decrypto__card_number">{{ $index + 1 }}</p>
+            <p class="decrypto__card_text">{{ gameCard.cardName }}</p>
+          </div>
+        }
+      </div>
+      <form class="decrypto__form" [formGroup]="decryptoForm" (ngSubmit)="submitDecryptoForm()">
+        <p class="decrypto__form_codes_label">{{ t('decrypto.codesLabels') }}</p>
+        <div class="decrypto__form_codes_inputs">
+          <tui-textfield tuiTextfieldSize="s" class="decrypto__form_number_field">
+            <input
+              class="decrypto__form_codes_input"
+              formControlName="code1"
+              tuiInputNumber
+              id="code1"
+              [max]="4"
+              [min]="1"
+              [step]="1"
+            />
+          </tui-textfield>
+          <tui-textfield tuiTextfieldSize="s" class="decrypto__form_number_field">
+            <input
+              class="decrypto__form_codes_input"
+              formControlName="code2"
+              tuiInputNumber
+              id="code2"
+              [max]="4"
+              [min]="1"
+              [step]="1"
+            />
+          </tui-textfield>
+          <tui-textfield tuiTextfieldSize="s" class="decrypto__form_number_field">
+            <input
+              class="decrypto__form_codes_input"
+              formControlName="code3"
+              tuiInputNumber
+              id="code3"
+              [max]="4"
+              [min]="1"
+              [step]="1"
+            />
+          </tui-textfield>
+        </div>
+        <p class="decrypto__form_hints_label">{{ t('decrypto.hintsLabels') }}</p>
+        <div class="decrypto__form_hints">
+          <tui-textfield tuiTextfieldSize="s" class="decrypto__form_hints_input">
+            <input [readOnly]="true" tuiTextfield formControlName="hint1" id="hint1" />
+          </tui-textfield>
+          <tui-textfield tuiTextfieldSize="s" class="decrypto__form_hints_input">
+            <input [readOnly]="true" tuiTextfield formControlName="hint2" id="hint2" />
+          </tui-textfield>
+          <tui-textfield tuiTextfieldSize="s" class="decrypto__form_hints_input">
+            <input [readOnly]="true" tuiTextfield formControlName="hint3" id="hint3" />
+          </tui-textfield>
+        </div>
+        <button
+          tuiButton
+          size="s"
+          appearance="gradient"
+          type="submit"
+          class="decrypto__form_check_button"
+          [disabled]="
+            decryptoForm.invalid ||
+            decryptoForm.pristine ||
+            gameService.gameResult() !== null ||
+            gameService.roundResult() === true
+          "
+        >
+          {{ t('decrypto.checkBtn') }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
