@@ -1,5 +1,5 @@
 {
-  "mockData": [
+  "data": [
     {
       "id": 1,
       "category": "Методы массива",
@@ -2655,5 +2655,11 @@
         }
       ]
     }
-  ]
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 10,
+    "total": 10,
+    "totalPages": 1
+  }
 }
