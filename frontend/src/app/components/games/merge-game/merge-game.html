@@ -1,0 +1,45 @@
+<header class="header" *transloco="let t">
+  <h2 tuiTitle>{{ t('mergeGame.title') }}</h2>
+
+  <nav class="nav">
+    <button
+      tuiButton
+      type="button"
+      size="xs"
+      appearance="outline-grayscale"
+      tuiButton
+      (click)="goToSettingsGame()"
+    >
+      {{ t('mergeGame.navigation.settings') }}
+    </button>
+
+    <button
+      tuiButton
+      type="button"
+      size="xs"
+      appearance="outline-grayscale"
+      tuiButton
+      (click)="goToTheory()"
+      [disabled]="
+        gameService.statusGame() === 'playing' || gameService.statusGame() === 'answering'
+      "
+    >
+      {{ t('mergeGame.navigation.theory') }}
+    </button>
+
+    <button
+      tuiButton
+      type="button"
+      size="xs"
+      appearance="outline-grayscale"
+      tuiButton
+      (click)="goToMain()"
+    >
+      {{ t('mergeGame.navigation.catalog') }}
+    </button>
+  </nav>
+</header>
+
+<main class="content">
+  <router-outlet />
+</main>

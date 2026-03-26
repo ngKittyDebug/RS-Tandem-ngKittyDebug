@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { provideTranslocoScope } from '@jsverse/transloco';
+import { quizGuard } from './core/guards/quiz-guard';
+import { boardGuard } from './core/guards/board-guard';
 import { guestGuard } from './core/guards/guest-guard';
 import { authGuard } from './core/guards/auth-guard';
 
@@ -12,6 +14,14 @@ export enum AppRoute {
 
 export enum GameRoute {
   DECRYPTO = 'decrypto',
+  MERGE_GAME = 'merge-game',
+}
+
+export enum MergeGameRoute {
+  SETTINGS = 'settings',
+  BOARD = 'board',
+  QUIZ = 'quiz',
+  THEORY = 'theory',
 }
 
 export const getRoutePath = <T extends AppRoute>(route: T): `/${T}` => {
@@ -47,6 +57,44 @@ export const routes: Routes = [
     loadComponent: () => import('./components/games/decrypto/decrypto').then((m) => m.Decrypto),
     providers: [provideTranslocoScope('decrypto')],
     canActivate: [authGuard],
+  },
+  {
+    path: GameRoute.MERGE_GAME,
+    loadComponent: () =>
+      import('./components/games/merge-game/merge-game').then((m) => m.MergeGame),
+    providers: [provideTranslocoScope('merge-game')],
+    canActivate: [authGuard],
+    children: [
+      { path: '', redirectTo: MergeGameRoute.SETTINGS, pathMatch: 'full' },
+
+      {
+        path: MergeGameRoute.SETTINGS,
+        loadComponent: () =>
+          import('./components/games/merge-game/components/settings/settings').then(
+            (m) => m.Settings,
+          ),
+      },
+
+      {
+        path: MergeGameRoute.BOARD,
+        loadComponent: () =>
+          import('./components/games/merge-game/components/board/board').then((m) => m.Board),
+        canActivate: [boardGuard],
+      },
+
+      {
+        path: MergeGameRoute.QUIZ,
+        loadComponent: () =>
+          import('./components/games/merge-game/components/quiz/quiz').then((m) => m.Quiz),
+        canActivate: [quizGuard],
+      },
+
+      {
+        path: MergeGameRoute.THEORY,
+        loadComponent: () =>
+          import('./components/games/merge-game/components/theory/theory').then((m) => m.Theory),
+      },
+    ],
   },
   {
     path: '**',

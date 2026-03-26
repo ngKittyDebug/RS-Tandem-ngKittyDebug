@@ -1,0 +1,29 @@
+<div class="board">
+  @for (row of rows(); track $index; let rowIndex = $index) {
+    @if (row.completed) {
+      <div class="board__row board__row--completed">
+        <span class="board__row-theme">{{ row.theme }}</span>
+      </div>
+    } @else {
+      @for (slot of row.slots; track $index; let slotIndex = $index) {
+        <div
+          class="board__slot"
+          cdkDropList
+          [id]="getSlotId(rowIndex, slotIndex)"
+          [cdkDropListData]="slot"
+          cdkDropListSortingDisabled
+          cdkDropListOrientation="horizontal"
+          [cdkDropListConnectedTo]="allSlotIds()"
+          (cdkDropListDropped)="onDrop($event, rowIndex, slotIndex)"
+        >
+          @if (slot) {
+            <div class="board__card" cdkDrag [cdkDragData]="slot">
+              <span>{{ slot.word }}</span>
+              <div *cdkDragPlaceholder class="board__card--placeholder"></div>
+            </div>
+          }
+        </div>
+      }
+    }
+  }
+</div>
