@@ -26,6 +26,9 @@ export class UserService {
   }
 
   public updateAvatar(data: UpdateAvatar): Observable<UpdateAvatar> {
-    return this.http.patch<UpdateAvatar>(getUrl(UserPath.BASE, UserPath.AVATAR), data);
+    return this.http.patch<UpdateAvatar>(
+      getUrl(this.baseUrl, UserPath.BASE, UserPath.AVATAR),
+      data,
+    );
   }
 }
