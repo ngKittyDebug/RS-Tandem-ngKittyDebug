@@ -46,11 +46,18 @@
     "accountChangeButton": "Сохранить изменения",
     "passwordChangeButton": "Изменить пароль",
 
+    "passwordModalTitle": "Подтвердите изменения",
+    "passwordModalDescription": "Введите ваш пароль для подтверждения изменений информации вашей учетной записи.",
+    "passwordModalButtonConfirm": "Подтвердить",
+    "passwordModalButtonCancel": "Отменить",
+
     "error": {
       "required": "Поле обязательно для заполнения",
+      "emailPattern": "Неверный формат email",
       "passwordPattern": "Минимум 8 символов на англ., одна заглавная буква, одна строчная и одна цифра",
       "usernamePattern": "Любые 3–20 символов, без пробелов",
-      "mismathPassword": "Пароли не совпадают"
+      "mismathPassword": "Пароли не совпадают",
+      "sameAsCurrentPassword": "Новый пароль должен отличаться от текущего"
     }
   },
 

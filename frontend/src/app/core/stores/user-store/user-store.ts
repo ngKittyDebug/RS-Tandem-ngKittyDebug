@@ -53,8 +53,8 @@ export class UserStore {
     }
   }
 
-  public async updateUser(data: UpdateUserDto): Promise<void> {
-    if (this._isUpdatingUser()) return;
+  public async updateUser(data: UpdateUserDto): Promise<boolean> {
+    if (this._isUpdatingUser()) return false;
 
     this._isUpdatingUser.set(true);
 
@@ -64,6 +64,7 @@ export class UserStore {
       this.toaster.showPositiveToster(
         this.transloco.translate('serverResponse.updateAccount.success'),
       );
+      return true;
     } catch (error) {
       const message = this.getMessageByStatus(error, {
         400: 'serverResponse.updateAccount.invalidData',
@@ -73,13 +74,14 @@ export class UserStore {
       });
 
       this.toaster.showErrorToster(message);
+      return false;
     } finally {
       this._isUpdatingUser.set(false);
     }
   }
 
-  public async changePassword(data: ChangePasswordDto): Promise<void> {
-    if (this._isChangingPassword()) return;
+  public async changePassword(data: ChangePasswordDto): Promise<boolean> {
+    if (this._isChangingPassword()) return false;
 
     this._isChangingPassword.set(true);
 
@@ -88,6 +90,7 @@ export class UserStore {
       this.toaster.showPositiveToster(
         this.transloco.translate('serverResponse.updatePassword.success'),
       );
+      return true;
     } catch (error) {
       const message = this.getMessageByStatus(error, {
         400: 'serverResponse.updatePassword.invalidData',
@@ -96,6 +99,7 @@ export class UserStore {
       });
 
       this.toaster.showErrorToster(message);
+      return false;
     } finally {
       this._isChangingPassword.set(false);
     }

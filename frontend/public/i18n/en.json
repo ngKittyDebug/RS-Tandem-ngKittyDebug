@@ -22,6 +22,9 @@
       "invalidPassword": "Old password is incorrect",
       "notFound": "User not found"
     },
+    "keyStorage": {
+      "notFound": "The record with the specified key was not found"
+    },
     "updateAvatar": {
       "success": "Avatar updated successfully",
       "invalidData": "Invalid data provided",

@@ -44,11 +44,18 @@
     "accountChangeButton": "Save Changes",
     "passwordChangeButton": "Change Password",
 
+    "passwordModalTitle": "Confirm Changes",
+    "passwordModalDescription": "Enter your password to confirm the changes to your account information",
+    "passwordModalButtonConfirm": "Confirm",
+    "passwordModalButtonCancel": "Cancel",
+
     "error": {
       "required": "This field is required",
+      "emailPattern": "Invalid email format",
       "passwordPattern": "Minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number",
       "usernamePattern": "Any 3–20 characters, no spaces required",
-      "mismathPassword": "Passwords do not match"
+      "mismathPassword": "Passwords do not match",
+      "sameAsCurrentPassword": "New password must be different from current password"
     }
   },
 

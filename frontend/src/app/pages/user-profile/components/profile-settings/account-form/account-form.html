@@ -1,0 +1,119 @@
+<section class="settings-card" *transloco="let t">
+  <header tuiHeader="body-m" class="settings-card__header">
+    <div class="settings-card__header-left">
+      <tui-icon icon="@tui.user"></tui-icon>
+      <h3 tuiTitle>{{ t('userProfile.accountSettings.accountTitle') }}</h3>
+    </div>
+
+    <button
+      class="settings-card__header-button"
+      tuiButton
+      type="button"
+      size="s"
+      (click)="toggleEdit(isAccountEditMode)"
+    >
+      {{
+        isAccountEditMode()
+          ? t('userProfile.accountSettings.cancelButton')
+          : t('userProfile.accountSettings.editButton')
+      }}
+    </button>
+  </header>
+
+  @if (isAccountEditMode()) {
+    <form [formGroup]="accountForm" (ngSubmit)="saveAccount()" tuiCardLarge="compact" tuiForm="m">
+      <tui-textfield iconStart="@tui.user">
+        <label tuiLabel for="username">{{ t('userProfile.accountSettings.usernameLabel') }}</label>
+        <input
+          formControlName="username"
+          [placeholder]="t('userProfile.accountSettings.usernamePlaceholder')"
+          tuiTextfield
+          type="text"
+          id="username"
+        />
+      </tui-textfield>
+      <tui-error [error]="getInputError(accountForm, 'username')"></tui-error>
+
+      <tui-textfield iconStart="@tui.mail">
+        <label tuiLabel for="email">{{ t('userProfile.accountSettings.emailLabel') }}</label>
+        <input
+          formControlName="email"
+          [placeholder]="t('userProfile.accountSettings.emailPlaceholder')"
+          tuiTextfield
+          type="email"
+          autocomplete="email"
+          id="email"
+        />
+      </tui-textfield>
+      <tui-error [error]="getInputError(accountForm, 'email')"></tui-error>
+
+      <button
+        class="settings-card__save"
+        tuiButton
+        type="button"
+        size="m"
+        (click)="openDialog.set(true)"
+        [disabled]="isSaveDisabled()"
+      >
+        <tui-icon icon="@tui.save"></tui-icon>
+        <span>{{ t('userProfile.accountSettings.accountChangeButton') }}</span>
+      </button>
+    </form>
+  } @else {
+    <div class="settings-card__content">
+      <span class="settings-card__label">{{ t('userProfile.accountSettings.usernameLabel') }}</span>
+      <span class="settings-card__value">{{ userStore.user()?.username || '' }}</span>
+      <span class="settings-card__label">Email</span>
+      <span class="settings-card__value">{{ userStore.user()?.email || '' }}</span>
+      <p class="settings-card__hint">{{ t('userProfile.accountSettings.hint') }}</p>
+    </div>
+  }
+
+  <ng-template
+    [tuiDialogOptions]="{ label: t('userProfile.accountSettings.passwordModalTitle'), size: 's' }"
+    [(tuiDialog)]="openDialog"
+    (tuiDialogChange)="openDialog.set($event)"
+  >
+    <form [formGroup]="passwordConfirmForm" (ngSubmit)="saveAccount()">
+      <p>{{ t('userProfile.accountSettings.passwordModalDescription') }}</p>
+      <tui-textfield iconStart="@tui.lock">
+        <label tuiLabel for="password">{{
+          t('userProfile.accountSettings.confirmPasswordLabel')
+        }}</label>
+        <input
+          tuiAutoFocus
+          formControlName="password"
+          [placeholder]="t('userProfile.accountSettings.passwordPlaceholder')"
+          tuiTextfield
+          type="password"
+          id="password"
+        />
+        <tui-icon tuiPassword />
+      </tui-textfield>
+      <tui-error [error]="getInputError(passwordConfirmForm, 'password')"></tui-error>
+      <p class="settings-card__actions">
+        <button
+          class="settings-card__actions-button"
+          size="m"
+          tuiButton
+          type="submit"
+          [disabled]="passwordConfirmForm.invalid || userStore.isUpdatingUser()"
+        >
+          <tui-icon icon="@tui.save"></tui-icon>
+          {{ t('userProfile.accountSettings.passwordModalButtonConfirm') }}
+        </button>
+        <button
+          class="settings-card__actions-button"
+          size="m"
+          tuiButton
+          appearance="outline"
+          type="button"
+          (pointerdown)="openDialog.set(false)"
+        >
+          <tui-icon icon="@tui.x"></tui-icon>
+          {{ t('userProfile.accountSettings.passwordModalButtonCancel') }}
+        </button>
+      </p>
+    </form>
+  </ng-template>
+</section>

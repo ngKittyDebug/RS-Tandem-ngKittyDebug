@@ -6,7 +6,6 @@ import { JwtService } from '@nestjs/jwt';
 import { createMockPrismaService } from 'prisma/__mocks__/prisma-service-mock';
 import {
   ConflictException,
-  ForbiddenException,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -175,21 +174,21 @@ describe('AuthService', () => {
   });
 
   describe('login', () => {
-    it('should throw ForbiddenException if user does not exist', async () => {
+    it('should throw UnauthorizedException if user does not exist', async () => {
       prismaMock.user.findFirst.mockResolvedValue(null);
 
       await expect(
         service.login(responseMock, mockLoginAuthDto),
-      ).rejects.toThrow(ForbiddenException);
+      ).rejects.toThrow(UnauthorizedException);
     });
 
-    it('should throw ForbiddenException if password is invalid', async () => {
+    it('should throw UnauthorizedException if password is invalid', async () => {
       prismaMock.user.findFirst.mockResolvedValue(mockUser as never);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
       await expect(
         service.login(responseMock, mockLoginAuthDto),
-      ).rejects.toThrow(ForbiddenException);
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -243,7 +242,13 @@ describe('AuthService', () => {
       expect(jwtService.verifyAsync).toHaveBeenCalledWith(mockRefreshToken);
       expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
         where: { id: mockPayload.id },
-        select: { id: true, email: true, username: true },
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          provider: true,
+          role: true,
+        },
       });
     });
   });
