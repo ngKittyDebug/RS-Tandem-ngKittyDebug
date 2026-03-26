@@ -52,7 +52,7 @@
               class="decrypto__card_button"
               size="s"
               (click)="openCardDescription(gameCard.cardDescription, gameCard.cardName)"
-              [disabled]="gameService.gameResult() === null"
+              [disabled]="gameService.roundResult() === null"
             >
               <tui-icon
                 icon="@tui.circle-question-mark"

@@ -135,7 +135,7 @@ export class Decrypto implements OnInit {
   }
 
   protected newRound(): void {
-    this.gameService.roundResult.set(false);
+    this.gameService.roundResult.set(null);
     this.gameService.gamePeriod.update((current) => current + 1);
     this.gameService.resetGameCards();
     this.gameService.resetGameHints();
@@ -153,11 +153,13 @@ export class Decrypto implements OnInit {
   }
 
   protected openRules(): void {
-    this.popupService.openPopup(
-      new PolymorpheusComponent(DecryptoRules),
-      this.transloco.translate('decrypto.gameRulesLabel'),
-      'l',
-    );
+    this.popupService
+      .openPopup(
+        new PolymorpheusComponent(DecryptoRules),
+        this.transloco.translate('decrypto.gameRulesLabel'),
+        'l',
+      )
+      .subscribe();
   }
 
   protected openCardDescription(
@@ -166,12 +168,9 @@ export class Decrypto implements OnInit {
   ): void {
     const lang = this.transloco.getActiveLang();
     if (cardDescription && cardName) {
-      this.popupService.openPopup(
-        cardDescription[lang],
-        cardName,
-        'no-dialog-buttons',
-        POPUP_SIZES.MEDIUM,
-      );
+      this.popupService
+        .openPopup(cardDescription[lang], cardName, 'no-dialog-buttons', POPUP_SIZES.MEDIUM)
+        .subscribe();
     }
   }
 
