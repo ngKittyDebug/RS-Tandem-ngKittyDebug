@@ -21,7 +21,7 @@ enum Provider {
 enum GameType {
   mergeGame
   decrypto
-  MeowVentLoop
+  eventLoop
   hangman
   citiesGame
 }
@@ -50,7 +50,7 @@ model GameStatistic {
 
   gameType  GameType 
   updatedAt DateTime    @updatedAt
-  playedCount Int @default(0)
+  playedCount Int @default(1)
   user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
