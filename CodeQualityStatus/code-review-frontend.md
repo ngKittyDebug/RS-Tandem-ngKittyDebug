@@ -1,10 +1,10 @@
 # Frontend Code Review — MeowVault
 
-## Дата ревью: 2026-03-19
+## Дата ревью: 2026-03-25
 
 ## Общая оценка: 5.0/10
 
-С предыдущего ревью (2026-03-16): реализована **страница регистрации** с формой, валидаторами и обработкой ошибок. **Страница профиля** теперь содержит `ProfileSidebar`, `ProfileStats`, `RecentActivity` и `UserStore`. **Main** обновлена с описанием и карточками игр. Исправлен `provideTranslocoPersistLang` (`useFactory`), `lang="ru"`, `<title>MeowVault</title>`, `app.spec.ts`. `OnPush` добавлен в `Registration`, `Main`, `NotFound`. Однако обнаружена **критическая архитектурная ошибка**: `RegistrationService` дублирует `AuthService.register()` — после регистрации токен не попадает в `AuthService`, `isLoggedIn` остаётся `false`. Страницы профиля и main содержат захардкоженные данные. Большинство MAJOR-замечаний из предыдущих ревью не исправлены.
+С предыдущего ревью (2026-03-19): добавлена навигация после успешной регистрации, `ThemeSwitcher` теперь корректно отображает текущую тему (`[checked]`), исправлена опечатка `ThemeSwither` в spec-файле, удалён неиспользуемый `title` signal в `App`. Появился `Decrypto`-компонент, `UserProfile settings` с `AccountForm`/`PasswordForm`, `PopupService`, `KeyStorageService`. Новый функциональный код (`UserStore`, `AccountForm`) написан лучше предыдущего — использует signals, `effect()`, `OnPush`. Однако `RegistrationService` по-прежнему дублирует `AuthService.register()`, `DecryptoGameService` хранит состояние в публичных мутабельных полях, `effect()` в `AccountForm` используется для мутации формы, дублируется HTTP-запрос при инициализации `Decrypto`, в production-коде остался `console.log`.
 
 > **Источники best practices:** [Angular v20+ Docs](https://angular.dev), Angular Signals Skill, Angular Component Skill, [Taiga UI](https://taiga-ui.dev)
 
@@ -14,70 +14,45 @@
 
 | Категория | Оценка | Статус | Δ |
 |-----------|--------|--------|---|
-| 1. Архитектура и структура проекта | 5/10 | Существенные замечания | ↓↓ |
+| 1. Архитектура и структура проекта | 4/10 | Существенные замечания | ↓ |
 | 2. Компоненты и Angular-паттерны | 5/10 | Существенные замечания | = |
-| 3. Управление состоянием (Signals, RxJS) | 5/10 | Существенные замечания | = |
-| 4. Формы и валидация | 5/10 | Существенные замечания | ↓ |
-| 5. Безопасность (фронтенд) | 5/10 | Существенные замечания | ↑ |
+| 3. Управление состоянием (Signals, RxJS) | 4/10 | Существенные замечания | ↓ |
+| 4. Формы и валидация | 6/10 | Есть замечания | ↑ |
+| 5. Безопасность (фронтенд) | 5/10 | Существенные замечания | = |
 | 6. i18n и локализация | 6/10 | Есть замечания | = |
 | 7. Стили и UI/UX | 5/10 | Есть замечания | = |
-| 8. Тестирование | 5/10 | Существенные замечания | ↑ |
+| 8. Тестирование | 6/10 | Есть замечания | ↑ |
 | 9. Конфигурация и сборка | 5/10 | Существенные замечания | = |
 
 ---
 
-## 1. Архитектура и структура проекта (5/10)
+## 1. Архитектура и структура проекта (4/10)
 
-Появились новые компоненты и сервисы — функциональность растёт. Но критическая ошибка с дублированием регистрации ломает основной user flow.
+### `[RESOLVED]` Навигация после успешной регистрации — добавлена
 
-### `[RESOLVED]` `provideTranslocoPersistLang` — `useFactory` вместо `useValue`
-
-**Файл:** `src/app/app.config.ts:43-46`
+**Файл:** `src/app/pages/registration/registration.ts:74`
 
 ```ts
-provideTranslocoPersistLang({
-  storage: { useFactory: () => localStorage },
-}),
+this.router.navigate([getRoutePath(AppRoute.MAIN)]);
 ```
 
 ---
 
-### `[RESOLVED]` `app.spec.ts` — тест заменён на реальную проверку
+### `[CRITICAL]` `RegistrationService` дублирует `AuthService.register()` — токен не попадает в `AuthService` — НЕ ИСПРАВЛЕНО
 
----
+**Файл:** `src/app/core/services/register-service.ts:12`, `src/app/pages/registration/registration.ts:44,73`
 
-### `[RESOLVED]` Страница Registration — реализована полностью (была заглушкой)
-
-**Файл:** `src/app/pages/registration/registration.ts`
-
-Форма с username, email, password, passwordRepeat, кастомный `passwordsValidator`, Taiga UI компоненты, обработка ошибок.
-
----
-
-### `[RESOLVED]` Страница UserProfile — реализована с компонентами
-
-**Файл:** `src/app/pages/user-profile/`
-
-`ProfileSidebar`, `ProfileStats`, `RecentActivity`, `UserStore` — полноценная структура.
-
----
-
-### `[CRITICAL]` `RegistrationService` дублирует `AuthService.register()` — токен не попадает в `AuthService` — НОВОЕ
-
-**Файл:** `src/app/core/services/register-service.ts`, `src/app/pages/registration/registration.ts:43,71`
-
-> **Принцип DRY / Single Source of Truth:** `AuthService.register()` (строка 23 `auth-service.ts`) и `RegistrationService.register()` оба отправляют `POST /auth/register`. Но каждый хранит `accessToken` в **своём** приватном signal. Страница регистрации использует `RegistrationService` → после успешной регистрации `AuthService.isLoggedIn()` = `false`.
+> **Принцип DRY / Single Source of Truth:** `AuthService.register()` и `RegistrationService.register()` оба отправляют `POST /auth/register`. `RegistrationService` хранит `accessToken` в **своём** приватном signal. После регистрации `AuthService.isLoggedIn()` = `false` — пользователь авторизован лишь формально.
 
 ```ts
-// register-service.ts — свой accessToken, изолирован от AuthService
-private accessToken = signal<string | null>(null);
-// registration.ts — использует RegistrationService
-private registrationService = inject(RegistrationService);
+// register-service.ts
+private accessToken = signal<string | null>(null); // изолирован от AuthService
+// registration.ts
 await firstValueFrom(this.registrationService.register(User));
 // После этого AuthService.isLoggedIn() === false!
 ```
 
-**Исправление:** Удалить `RegistrationService`. Использовать `AuthService.register()` в странице регистрации:
+**Исправление:** Удалить `RegistrationService`. Использовать `AuthService.register()` напрямую:
 ```ts
 private authService = inject(AuthService);
 await firstValueFrom(this.authService.register(dto));
@@ -86,16 +61,11 @@ this.router.navigate([getRoutePath(AppRoute.MAIN)]);
 
 ---
 
-### `[MAJOR]` Header всегда отображает аватар и кнопку logout без проверки авторизации — НЕ ИСПРАВЛЕНО
+### `[MAJOR]` Header всегда отображает `user_bar` без проверки авторизации — НЕ ИСПРАВЛЕНО
 
 **Файл:** `src/app/core/layout/header/header.html:10-28`
 
-```html
-<div class="user_bar">
-  <tui-avatar ...>
-  <button ...>{{ t('log-out') }}</button>
-</div>
-```
+Блок `.user_bar` с аватаром и кнопкой "Выход" показывается неавторизованным пользователям.
 
 **Исправление:**
 ```html
@@ -108,17 +78,37 @@ this.router.navigate([getRoutePath(AppRoute.MAIN)]);
 
 ---
 
-### `[MAJOR]` Duplicate `LoginResponse` interface — НОВОЕ
+### `[MAJOR]` Duplicate `LoginResponse` interface — НЕ ИСПРАВЛЕНО
 
-**Файл:** `src/app/pages/registration/models/register.interfaces.ts`
+**Файл:** `src/app/pages/registration/models/register.interfaces.ts:6-8`
 
 Определён отдельный `LoginResponse`, идентичный `auth/models/auth.interfaces.ts`. Нарушение DRY.
 
-**Исправление:** Использовать `LoginResponse` из `auth/models/auth.interfaces.ts`.
+**Исправление:** Импортировать `LoginResponse` из `auth/models/auth.interfaces.ts`.
+
+---
+
+### `[MAJOR]` `KeyStorageService` — обработка ошибок в неправильном слое — НОВОЕ
+
+**Файл:** `src/app/core/services/key-storage/key-storage-service.ts:21-27`
+
+> **Принцип Single Responsibility:** HTTP-сервис не должен содержать UI-нотификации. [Angular Style Guide — Services](https://angular.dev/style-guide#services)
+
+`KeyStorageService.handleError` самостоятельно показывает тостер при HTTP-ошибках. Контекст ошибки (какое сообщение показать) должен определять вызывающий код. Сравните с `UserStore` — там сервис бросает ошибку, store её обрабатывает.
+
+**Исправление:** Удалить `handleError` из сервиса. Пусть сервис бросает ошибку, а вызывающий код (компонент/store) показывает тостер.
 
 ---
 
 ## 2. Компоненты и Angular-паттерны (5/10)
+
+### `[RESOLVED]` Опечатка `ThemeSwither` в `theme-switcher.spec.ts` — исправлена
+
+---
+
+### `[RESOLVED]` `App` — неиспользуемый signal `title` — удалён
+
+---
 
 ### `[MAJOR]` Опечатка `LaguageSwitcher` — НЕ ИСПРАВЛЕНО
 
@@ -128,32 +118,29 @@ this.router.navigate([getRoutePath(AppRoute.MAIN)]);
 export class LaguageSwitcher // должно быть LanguageSwitcher
 ```
 
-**Исправление:** Переименовать класс, файл и все импорты.
-
 ---
 
 ### `[MAJOR]` Опечатка `AppTosterService` — НЕ ИСПРАВЛЕНО
 
-**Файлы:** `core/services/app-toster-service.ts:21`, `pages/login/login.ts:27`, `pages/registration/registration.ts:16`
+**Файлы:** `core/services/app-toster-service.ts:21`, `pages/login/login.ts:27`, `pages/registration/registration.ts:17`
 
-**Исправление:** Переименовать в `AppToasterService`, `TosterLabels` → `ToasterLabels`, `TosterAppearances` → `ToasterAppearances`.
-
----
-
-### `[MAJOR]` Компоненты без `ChangeDetectionStrategy.OnPush` — НЕ ИСПРАВЛЕНО (частично)
-
-OnPush добавлен в `Registration`, `Main`, `NotFound`, `LaguageSwitcher`, `ThemeSwitcher`. Отсутствует в:
-`App`, `Header`, `Footer`, `UserProfile`, `Login`, `ProfileSidebar`, `ProfileStats`, `RecentActivity`, `ImgCat`.
-
-> **Angular Component Skill:** `ChangeDetectionStrategy.OnPush` обязателен при использовании Signals. [Angular — Change detection](https://angular.dev/best-practices/skipping-subtrees)
+Переименовать в `AppToasterService`, `TosterLabels` → `ToasterLabels`, `TosterAppearances` → `ToasterAppearances`.
 
 ---
 
-### `[MAJOR]` `styleUrls` вместо `styleUrl` в нескольких компонентах — НОВОЕ
+### `[MAJOR]` Компоненты без `ChangeDetectionStrategy.OnPush` — НЕ ИСПРАВЛЕНО
 
-**Файлы:** `pages/registration/registration.ts:22`, `pages/main/main.ts:26`
+Отсутствует в: `App`, `Header`, `Footer`, `UserProfile`, `Login`, `ProfileSidebar`, `ProfileStats`, `RecentActivity`, `Decrypto`, `Timer`.
 
-> В Angular 19+ `styleUrls` (множ. число) для одного файла заменено на `styleUrl` (ед. число). [Angular Migration](https://angular.dev/reference/migrations/style-urls)
+> **Angular Component Skill:** `OnPush` обязателен при использовании Signals. [Angular — Change detection](https://angular.dev/best-practices/skipping-subtrees)
+
+---
+
+### `[MAJOR]` `styleUrls` вместо `styleUrl` — НЕ ИСПРАВЛЕНО
+
+**Файлы:** `pages/registration/registration.ts:23`, `pages/main/main.ts:26`
+
+> [Angular styleUrl migration](https://angular.dev/reference/migrations/style-urls)
 
 ```ts
 styleUrls: ['./registration.scss'], // устаревший API
@@ -163,19 +150,45 @@ styleUrls: ['./registration.scss'], // устаревший API
 
 ---
 
-### `[MINOR]` `App` компонент содержит неиспользуемый signal `title` — НЕ ИСПРАВЛЕНО
+### `[MAJOR]` `Decrypto.console.log` в production-коде — НОВОЕ
 
-**Файл:** `src/app/app.ts:15`
+**Файл:** `src/app/components/games/decrypto/decrypto.ts:132`
+
+```ts
+console.log(this.gameStarted());
+```
+
+Отладочный вывод в методе `newGame()`. Должен быть удалён перед слиянием.
+
+---
+
+### `[MAJOR]` `Decrypto` обращается к методам дочернего компонента через `viewChild` — НОВОЕ
+
+**Файл:** `src/app/components/games/decrypto/decrypto.ts:52,98-102`
+
+```ts
+private timerRef = viewChild(Timer);
+// ...
+this.timerRef()?.start();
+this.timerRef()?.stop();
+this.timerRef()?.reset();
+```
+
+> Прямой вызов методов дочернего компонента нарушает однонаправленный поток данных. [Angular — Component interaction](https://angular.dev/guide/components/inputs)
+
+**Исправление:** Передавать команды через `@Input()` signal или `@Output()` — `timerCommand = input<'start' | 'stop' | 'reset'>()`.
 
 ---
 
 ### `[MINOR]` `standalone: true` избыточно в Angular 21 — НЕ ИСПРАВЛЕНО
 
-**Файлы:** `language-switcher.ts:9`, `theme-switcher.ts:8`, `not-found.ts:14`, `main.ts:12`, `registration.ts:23`
+**Файлы:** `language-switcher.ts:9`, `theme-switcher.ts:9`, `not-found.ts:14`
+
+В Angular 19+ все компоненты standalone по умолчанию.
 
 ---
 
-## 3. Управление состоянием (Signals, RxJS) (5/10)
+## 3. Управление состоянием (Signals, RxJS) (4/10)
 
 ### `[MAJOR]` `AuthService` — `isRefreshing` и `refreshSubject` публичные — НЕ ИСПРАВЛЕНО
 
@@ -188,7 +201,59 @@ public refreshSubject = new BehaviorSubject<string | null>(null);
 
 > [Angular — Services best practices](https://angular.dev/style-guide#services)
 
-**Исправление:** Сделать `private` или перенести в приватный `AuthRefreshService`.
+---
+
+### `[MAJOR]` `DecryptoGameService` — шесть публичных мутабельных массивов — НОВОЕ
+
+**Файл:** `src/app/components/games/decrypto/services/decrypto-game-service.ts:18-23`
+
+```ts
+public gameCards: Card[] = StartGameCards;
+public gameCardsForGame: Card[] = StartGameCards;
+public gameCardsFromServer: Card[] = [];
+public gameWrightCode: number[] = [];
+public gameWrightCodes: number[][] = [];
+public gameHints: string[][] = [];
+```
+
+Поля напрямую изменяются снаружи (`decrypto.ts:59` — `this.gameService.gameCardsFromServer = data.storage.gameCards`). Angular не отслеживает такие изменения реактивно при `OnPush`.
+
+> [Angular Signals](https://angular.dev/guide/signals)
+
+**Исправление:** Заменить на signals с readonly-геттерами:
+```ts
+private readonly _gameCards = signal<Card[]>(StartGameCards);
+readonly gameCards = this._gameCards.asReadonly();
+setGameCards(cards: Card[]) { this._gameCards.set(cards); }
+```
+
+---
+
+### `[MAJOR]` `Decrypto.ngOnInit` — дублирующий вызов `loadDataServerService.getData` — НОВОЕ
+
+**Файл:** `src/app/components/games/decrypto/decrypto.ts:56-61`
+
+При инициализации вызывается `loadDataServerService.getData()`, и следом `newGame()` — который тоже вызывает `getData()` если `gameCardsFromServer.length === 0`. Два параллельных HTTP-запроса при каждом монтировании компонента.
+
+**Исправление:** Убрать прямой вызов `getData()` из `ngOnInit`, оставить только через `newGame()`.
+
+---
+
+### `[MAJOR]` `AccountForm` — `effect()` мутирует реактивную форму — НОВОЕ
+
+**Файл:** `src/app/pages/user-profile/components/profile-settings/account-form/account-form.ts:69-83`
+
+```ts
+private readonly syncUserToFormEffect = effect(() => {
+  const user = this.userStore.user();
+  if (!user || this.isAccountEditMode()) return;
+  this.accountForm.patchValue({ ... }, { emitEvent: false });
+});
+```
+
+> `effect()` не предназначен для мутации состояния вне сигнальной системы. [Angular — effects](https://angular.dev/guide/signals#effects)
+
+**Исправление:** Использовать `toSignal(this.userStore.user$)` + заполнение формы в `ngOnChanges`, или `linkedSignal()` для реактивной синхронизации.
 
 ---
 
@@ -206,46 +271,60 @@ protected value: string | null = null;
 
 ---
 
-### `[MINOR]` `AppTosterService` — подписки без управления жизненным циклом — НЕ ИСПРАВЛЕНО
+### `[MINOR]` `AppTosterService` — подписки без `takeUntilDestroyed` — НЕ ИСПРАВЛЕНО
 
 **Файл:** `core/services/app-toster-service.ts`
 
-`.subscribe()` без `takeUntilDestroyed`. Taiga alerts автозакрываются — риск минимален, но паттерн спорен.
+---
+
+### `[MINOR]` `ProfileSidebar` — `toSignal` с дублирующим `startWith` и `initialValue` — НОВОЕ
+
+**Файл:** `src/app/pages/user-profile/components/profile-sidebar/profile-sidebar.ts:32-35`
+
+```ts
+protected readonly activeLang = toSignal(
+  this.translocoService.langChanges$.pipe(startWith(this.translocoService.getActiveLang())),
+  { initialValue: this.translocoService.getActiveLang() }, // дублирует startWith
+);
+```
+
+`startWith` гарантирует синхронное начальное значение — `initialValue` избыточен.
+
+**Исправление:** Убрать `{ initialValue: ... }` — достаточно `startWith`.
 
 ---
 
-## 4. Формы и валидация (5/10)
+## 4. Формы и валидация (6/10)
 
-### `[CRITICAL]` Форма регистрации: нет `isLoading`, нет навигации после успеха, `throw Error` — НОВОЕ
+### `[MAJOR]` `Registration.submit()` — `throw new Error` для валидационных данных — НЕ ИСПРАВЛЕНО
 
-**Файл:** `src/app/pages/registration/registration.ts:61-83`
-
-> Множественные проблемы в `submit()`: (1) `throw new Error(...)` в `async` без внешнего `catch` = unhandled promise rejection. (2) Нет `isLoading` → возможна повторная отправка. (3) Нет навигации после успеха → пользователь остаётся на странице регистрации.
+**Файл:** `src/app/pages/registration/registration.ts:65-66`
 
 ```ts
-public async submit(): Promise<void> {
-  if (!username || !email || !password)
-    throw new Error(...); // unhandled rejection
-  try {
-    await firstValueFrom(this.registrationService.register(User));
-    // нет навигации!
-  } catch (error) { ... }
-}
+if (!username || !email || !password)
+  throw new Error(this.translocoService.translate('registration.error.invalidData'));
 ```
+
+`throw` внутри `async` без внешнего catch = unhandled promise rejection. Это ошибка валидации, не программная ошибка.
+
+**Исправление:**
+```ts
+if (this.registrationForm.invalid) return;
+```
+
+---
+
+### `[MINOR]` `Registration` — отсутствует `isLoading` при отправке формы — НЕ ИСПРАВЛЕНО
+
+**Файл:** `src/app/pages/registration/registration.ts:63`
+
+В отличие от `Login`, кнопка отправки не блокируется во время HTTP-запроса.
 
 **Исправление:**
 ```ts
 protected isLoading = signal(false);
-
-protected async submit(): Promise<void> {
-  if (this.registrationForm.invalid || this.isLoading()) return;
-  this.isLoading.set(true);
-  try {
-    await firstValueFrom(this.authService.register(dto));
-    this.router.navigate([getRoutePath(AppRoute.MAIN)]);
-  } catch (error) { /* обработка */ }
-  finally { this.isLoading.set(false); }
-}
+// в submit(): isLoading.set(true) / finally isLoading.set(false)
+// в шаблоне: [disabled]="isLoading()"
 ```
 
 ---
@@ -272,7 +351,7 @@ const key = error.status === 403 ? 'login.error.invalidCredentials' : 'login.err
 
 ---
 
-### `[MINOR]` `autocomplete="current-password"` на полях регистрации — НОВОЕ
+### `[MINOR]` `autocomplete="current-password"` на полях регистрации — НЕ ИСПРАВЛЕНО
 
 **Файл:** `src/app/pages/registration/registration.html:36,48`
 
@@ -305,25 +384,25 @@ constructor() {
 
 ---
 
-### `[MAJOR]` Main — внешний CDN URL для иконки — НОВОЕ
+### `[MAJOR]` Main — внешний CDN URL для иконки — НЕ ИСПРАВЛЕНО
 
 **Файл:** `src/app/pages/main/main.html:13`
-
-> Внешний CDN нарушает CSP, создаёт зависимость от третьей стороны, не работает offline. [MDN: CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
 
 ```html
 <tui-icon icon="https://cdn-icons-png.flaticon.com/64/12710/12710759.png" class="hover" />
 ```
 
-**Исправление:** Сохранить иконку локально в `public/assets/icons/`.
+> Внешний CDN нарушает CSP, создаёт зависимость от третьей стороны. [MDN: CSP](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
+
+**Исправление:** Сохранить иконку в `public/assets/icons/`.
 
 ---
 
 ## 6. i18n и локализация (6/10)
 
-### `[RESOLVED]` `index.html` — `lang="ru"`
+### `[RESOLVED]` `index.html` — `lang="ru"` — добавлен
 
-### `[RESOLVED]` `<title>MeowVault</title>`
+### `[RESOLVED]` `<title>MeowVault</title>` — добавлен
 
 ---
 
@@ -331,67 +410,63 @@ constructor() {
 
 **Файл:** `src/app/pages/login/login.html:87`
 
----
-
-### `[MINOR]` Неиспользуемые ключи перевода — НЕ ИСПРАВЛЕНО
-
-**Файлы:** `public/i18n/login/ru.json` — `loginWorks`, `buttons.google`, `divider`
+```html
+{{ isLoading() ? '...' : t('login.buttons.login') }}
+```
 
 ---
 
-### `[MINOR]` Опечатка `mismathPassword` в переводах — НОВОЕ
+### `[MINOR]` Неиспользуемые ключи перевода в login — НЕ ИСПРАВЛЕНО
 
-**Файл:** `public/i18n/user-profile/ru.json:45`, `en.json:45`
+**Файл:** `public/i18n/login/ru.json` — `loginWorks`, `buttons.google`, `divider`
+
+---
+
+### `[MINOR]` Опечатка `mismathPassword` в переводах — НЕ ИСПРАВЛЕНО
+
+**Файлы:** `public/i18n/user-profile/ru.json:51`, `en.json:51`
 
 ```json
 "mismathPassword": "Пароли не совпадают"
 ```
 
-`mismath` → `mismatch`. В `registration/ru.json` ключ написан правильно: `passwordMismatch`.
+`mismath` → `mismatch`. Используется в `password-form.ts:112`.
 
 ---
 
-### `[MAJOR]` Захардкоженные строки в UserProfile без i18n — НОВОЕ
+### `[MAJOR]` Захардкоженные строки в UserProfile без i18n — НЕ ИСПРАВЛЕНО
 
 **Файлы:** `profile-sidebar.html:25-26`, `profile-stats.html`, `recent-activity.html`
 
-Жанры `"Racing"`, `"Puzzle"`, числа `127`, `45,820`, `32`, время `"2"`, `"5"` — всё захардкожено на английском или без привязки к данным.
+`"Racing"`, `"Puzzle"`, `127`, `45,820`, `32`, `"2"`, `"5"` — всё статично, без привязки к данным.
 
 ---
 
 ## 7. Стили и UI/UX (5/10)
 
-### `[MAJOR]` `ThemeSwitcher` — checkbox не привязан к текущей теме — НЕ ИСПРАВЛЕНО
+### `[RESOLVED]` `ThemeSwitcher` — checkbox привязан к текущей теме
 
 **Файл:** `core/components/theme-switcher/theme-switcher.html:1`
 
 ```html
-<input tuiLike type="checkbox" (change)="onChangeTheme()" />
+<input tuiLike type="checkbox" [checked]="themeService.theme() === ThemeNames.Light" ... />
 ```
 
-**Исправление:** `[checked]="themeService.theme() === ThemeNames.Dark"`
+---
+
+### `[MAJOR]` Main — 6 захардкоженных карточек-заглушек `"Replace me"` — НЕ ИСПРАВЛЕНО
+
+**Файл:** `src/app/pages/main/main.html:36,46,56,66,76,86`
+
+6 копипастных блоков с `<section>Replace me</section>`.
+
+**Исправление:** Создать массив данных об играх и рендерить через `@for`.
 
 ---
 
-### `[MAJOR]` Main — 6 захардкоженных карточек-заглушек с `"Replace me"` — НОВОЕ
-
-**Файл:** `src/app/pages/main/main.html:31-97`
-
-6 копипастных блоков с `<section>Replace me</section>`. Заглушечный контент в production-коде.
-
-**Исправление:** Создать массив данных об играх (или получать из API) и рендерить через `@for`.
-
----
-
-### `[MINOR]` Кнопка "Начать" без действия — НОВОЕ
+### `[MINOR]` Кнопка "Начать" без действия — НЕ ИСПРАВЛЕНО
 
 **Файл:** `src/app/pages/main/main.html:26-28`
-
-```html
-<button appearance="secondary" tuiButton type="button" [size]="size" class="reg-button">
-  {{ t('main.button.start') }}
-</button>
-```
 
 Нет `routerLink`, нет `(click)` — мёртвый элемент.
 
@@ -405,54 +480,56 @@ constructor() {
 
 ---
 
-## 8. Тестирование (5/10)
+## 8. Тестирование (6/10)
 
-Значительный прогресс: реальные тесты для `AuthService`, Guards, `ProfileSidebar`, `UserService`. Но ключевая логика интерцептора и новых компонентов не покрыта.
+Значительный прогресс: добавлены содержательные тесты для `Timer`, `ThemeSwitcher`, `AccountForm`, `DecryptoGameService`. Smoke-тесты всё ещё преобладают.
 
-### `[CRITICAL]` Большинство spec-файлов — smoke-тесты — НЕ ИСПРАВЛЕНО (частично)
+### `[CRITICAL]` Интерцептор (bearer token, refresh queue, retry) — ноль значимых тестов — НЕ ИСПРАВЛЕНО
 
-Реальные тесты добавлены для `AuthService`, `AuthGuard`, `GuestGuard`, `Header`, `AppTosterService`, `ProfileSidebar`, `UserService`. Остаются smoke-уровня: `auth-interceptor.spec.ts`, `theme-service.spec.ts`, `login.spec.ts`, `registration.spec.ts`, `footer.spec.ts`, `img-cat.spec.ts`, `profile-stats.spec.ts`, `recent-activity.spec.ts`, `user-store.spec.ts`.
+**Файл:** `src/app/core/services/auth/auth-interceptor.spec.ts`
 
-Интерцептор (добавление Bearer, обработка 401, queue, retry) — ни одного значимого теста.
+Остаётся smoke-тест.
 
 ---
 
-### `[MAJOR]` `register-service.spec.ts` — describe называется `'AuthService'` — НОВОЕ
+### `[MAJOR]` `register-service.spec.ts` — describe называется `'AuthService'` — НЕ ИСПРАВЛЕНО
 
 **Файл:** `src/app/core/services/register-service.spec.ts:4`
 
 ```ts
 describe('AuthService', () => { // должно быть 'RegistrationService'
-  let service: RegistrationService;
 ```
 
 ---
 
-### `[MINOR]` Опечатка `ThemeSwither` в `theme-switcher.spec.ts` — НЕ ИСПРАВЛЕНО
+### `[MINOR]` Smoke-тесты не покрывают логику — НЕ ИСПРАВЛЕНО (частично)
 
-**Файл:** `core/components/theme-switcher/theme-switcher.spec.ts:6`
+Остаются smoke-уровня: `login.spec.ts`, `user-profile.spec.ts`, `footer.spec.ts`, `img-cat.spec.ts`, `user-store.spec.ts`.
 
 ---
 
 ## 9. Конфигурация и сборка (5/10)
 
-### `[MAJOR]` `validate-branch-name` — production dependency вместо dev — НЕ ИСПРАВЛЕНО
+### `[MAJOR]` `validate-branch-name` и `dotenv` — production dependencies — НЕ ИСПРАВЛЕНО
 
-**Файл:** `package.json`
+**Файл:** `frontend/package.json`
+
+```json
+"dotenv": "^17.3.1",
+"validate-branch-name": "^1.3.2"
+```
+
+Оба — dev-зависимости. Их присутствие в `dependencies` увеличивает production-бандл.
+
+**Исправление:** Перенести в `devDependencies`.
 
 ---
 
-### `[MAJOR]` `dotenv` — не используемый production dependency — НЕ ИСПРАВЛЕНО
-
-**Файл:** `package.json`
-
----
-
-### `[MINOR]` `EyeCompassDirective` — не используется ни в одном компоненте — НОВОЕ
+### `[MINOR]` `EyeCompassDirective` — не используется ни в одном компоненте — НЕ ИСПРАВЛЕНО
 
 **Файл:** `src/app/core/directive/eye-compass.directive.ts`
 
-Директива реализована для `[data-pupil]`, но в `registration.html` SVG использует `#pupil` (template ref) — директива никогда не активируется.
+Директива реализована для `[data-pupil]`, но в `registration.html` SVG использует `#pupil` — директива не активируется никогда.
 
 ---
 
@@ -461,36 +538,41 @@ describe('AuthService', () => { // должно быть 'RegistrationService'
 ### Приоритет 1 (обязательно)
 - [ ] Удалить `RegistrationService` — использовать `AuthService.register()` на странице регистрации
 - [ ] Исправить `ThemeService` — SSR-safe через `inject(DOCUMENT)`
-- [ ] Добавить `isLoading`, навигацию после успеха, убрать `throw new Error` в форме регистрации
-- [ ] Скрыть `user_bar` в Header для неавторизованных + кнопка входа
+- [ ] Добавить `@if (authService.isLoggedIn())` в Header
+- [ ] Убрать `throw new Error` → `return` в `registration.submit()`
 
 ### Приоритет 2 (важно)
+- [ ] Заменить `DecryptoGameService` публичные массивы на signals с методами-сеттерами
+- [ ] Убрать `console.log(this.gameStarted())` из `decrypto.ts:132`
+- [ ] Исправить дублирующий HTTP-запрос в `Decrypto.ngOnInit`
+- [ ] Заменить `effect()` для `patchValue` в `AccountForm` на `toSignal` + `ngOnChanges`
 - [ ] Переименовать `LaguageSwitcher` → `LanguageSwitcher`
 - [ ] Переименовать `AppTosterService` → `AppToasterService`
 - [ ] Добавить `OnPush` во все компоненты без него
 - [ ] Перенести `isRefreshing`/`refreshSubject` в `private`
-- [ ] Привязать `[checked]` checkbox к теме в `ThemeSwitcher`
 - [ ] Изменить `error.status === 403` → `401` в login
 - [ ] Заменить "Replace me" карточки на данные из массива/API
 - [ ] Убрать внешний CDN URL — сохранить иконку локально
 - [ ] Перенести `validate-branch-name` и `dotenv` в `devDependencies`
 - [ ] Перевести `LaguageSwitcher` на signals
 - [ ] Заменить `styleUrls` → `styleUrl`
-- [ ] Удалить дублирующий `LoginResponse` из `register.interfaces.ts`
-- [ ] Захардкоженные данные в профиле заменить на данные из API
+- [ ] Убрать дублирующий `LoginResponse` из `register.interfaces.ts`
+- [ ] Заменить `viewChild` для вызова методов таймера на signal input
+- [ ] Убрать `handleError` из `KeyStorageService`
 
 ### Приоритет 3 (желательно)
-- [ ] Удалить `console.log` в `header.ts:41`
-- [ ] Удалить мёртвый `title` signal в `App`
-- [ ] Заменить `getInputError` method binding на `computed()`
+- [ ] Добавить `isLoading = signal(false)` в Registration
 - [ ] Исправить `autocomplete="current-password"` → `"new-password"` в регистрации
 - [ ] Исправить опечатку `mismathPassword` в переводах
 - [ ] Добавить действие кнопке "Начать" на Main
 - [ ] Добавить реальные тесты для интерцептора
-- [ ] Исправить опечатку `ThemeSwither` в спеке
-- [ ] Удалить избыточный `standalone: true`
-- [ ] Удалить неиспользуемую `EyeCompassDirective` или подключить
 - [ ] Исправить `register-service.spec.ts` describe name
+- [ ] Удалить избыточный `standalone: true`
+- [ ] Удалить/подключить `EyeCompassDirective`
+- [ ] Удалить `console.log` в `header.ts:41`
+- [ ] Убрать лишний `initialValue` в `ProfileSidebar.activeLang`
+- [ ] Заменить `getInputError` method binding на `computed()`
+- [ ] Захардкоженные данные в профиле заменить данными из API
 
 ---
 
@@ -500,7 +582,9 @@ describe('AuthService', () => { // должно быть 'RegistrationService'
 |------|--------|
 | Angular v20 Route Guards | https://angular.dev/guide/routing/route-guards |
 | Angular Signals | https://angular.dev/guide/signals |
+| Angular Effects | https://angular.dev/guide/signals#effects |
 | Angular OnPush + Signals | https://angular.dev/best-practices/skipping-subtrees |
+| Angular Component Interaction | https://angular.dev/guide/components/inputs |
 | Angular SSR / DOCUMENT | https://angular.dev/guide/ssr |
 | Angular Style Guide | https://angular.dev/style-guide |
 | Angular styleUrl migration | https://angular.dev/reference/migrations/style-urls |
@@ -519,3 +603,4 @@ describe('AuthService', () => { // должно быть 'RegistrationService'
 | 2026-03-09 | 4.5/10 | 6 | 8 | 8 |
 | 2026-03-16 | 5.5/10 | 2 | 7 | 7 |
 | 2026-03-19 | 5.0/10 | 3 | 14 | 11 |
+| 2026-03-25 | 5.0/10 | 3 | 18 | 12 |
