@@ -15,18 +15,17 @@
         >
           {{ t('decrypto.startBtn') }}
         </button>
+        <button tuiButton type="button" size="s" class="decrypto__nav_button" (click)="openRules()">
+          {{ t('decrypto.rulesBtn') }}
+        </button>
         <button
           tuiButton
           type="button"
           size="s"
           class="decrypto__nav_button"
-          (click)="newRound()"
-          [disabled]="!gameService.roundResult()"
+          (click)="openAllGames()"
         >
-          {{ t('decrypto.nextRoundBtn') }}
-        </button>
-        <button tuiButton type="button" size="s" class="decrypto__nav_button" (click)="openRules()">
-          {{ t('decrypto.rulesBtn') }}
+          {{ t('decrypto.allGamesBtn') }}
         </button>
       </div>
       <div class="decrypto__inf">
@@ -128,6 +127,16 @@
           "
         >
           {{ t('decrypto.checkBtn') }}
+        </button>
+        <button
+          tuiButton
+          type="button"
+          size="s"
+          class="decrypto__form_check_button"
+          (click)="newRound()"
+          [disabled]="!gameService.roundResult()"
+        >
+          {{ t('decrypto.nextRoundBtn') }}
         </button>
       </form>
     </div>

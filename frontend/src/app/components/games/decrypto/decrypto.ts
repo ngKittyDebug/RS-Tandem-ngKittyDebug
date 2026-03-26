@@ -17,6 +17,8 @@ import { TIMER_MODE } from '../../timer/models/timer-mode.enum';
 import { CONFIG } from './services/models/decrypto.constants';
 import { KeyStorageService } from '../../../core/services/key-storage/key-storage-service';
 import { keysDataOnServer } from './models/decrypto.constants';
+import { Router } from '@angular/router';
+import { AppRoute, getRoutePath } from '../../../app.routes';
 
 export interface DecryptoGameData {
   gameCards: Card[];
@@ -48,6 +50,7 @@ export class Decrypto implements OnInit {
   protected readonly tosterService = inject(AppTosterService);
   protected readonly fb = inject(FormBuilder);
   private readonly popupService = inject(PopupService);
+  private router = inject(Router);
   protected gameStarted = signal<boolean>(false);
   private timer = viewChild(Timer);
   public timerMode = TIMER_MODE.DOWN;
@@ -129,7 +132,6 @@ export class Decrypto implements OnInit {
     this.gameService.gameAttempts.set(CONFIG.attempts);
     this.disableGameCodeInputs();
     this.timer()?.reset();
-    console.log(this.gameStarted());
   }
 
   protected newRound(): void {
@@ -171,6 +173,17 @@ export class Decrypto implements OnInit {
         POPUP_SIZES.MEDIUM,
       );
     }
+  }
+
+  protected openAllGames(): void {
+    this.decryptoForm.reset();
+    this.gameStarted.set(false);
+    this.gameService.gameResult.set(null);
+    this.gameService.gamePeriod.set(CONFIG.startRound);
+    this.gameService.gameAttempts.set(CONFIG.attempts);
+    this.disableGameCodeInputs();
+    this.timer()?.reset();
+    this.router.navigate([getRoutePath(AppRoute.MAIN)]);
   }
 
   protected submitDecryptoForm(): void {

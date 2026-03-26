@@ -21,9 +21,9 @@
         appearance="gradient"
         class="user_bar__logout_button"
         type="button"
-        (click)="logOutClick()"
+        (click)="authService.isLoggedIn() ? logOutClick() : logInClick()"
       >
-        {{ t('log-out') }}
+        {{ authService.isLoggedIn() ? t('log-out') : t('log-in') }}
       </button>
     </div>
   </div>
