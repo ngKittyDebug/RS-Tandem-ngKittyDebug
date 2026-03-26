@@ -18,6 +18,14 @@ enum Provider {
   Google
 }
 
+enum GameType {
+  mergeGame
+  decrypto
+  MeowVentLoop
+  hangman
+  citiesGame
+}
+
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
@@ -28,11 +36,27 @@ model User {
   updatedAt DateTime @updatedAt
   avatar    String?   
   provider  Provider @default(local)
-  providerId String?  @unique 
+  providerId String?  @unique
+
+  stats     GameStatistic[]
 
   @@map("users")
 }
 
+
+model GameStatistic {
+  id   Int   @id @default(autoincrement())
+  userId    String
+
+  gameType  GameType 
+  updatedAt DateTime    @updatedAt
+  playedCount Int @default(0)
+  user      User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@unique([userId, gameType])
+  @@map("game_statistic")
+}
 
 model Storage {
   id String @id @default(uuid())
