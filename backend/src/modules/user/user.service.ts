@@ -191,6 +191,10 @@ export class UserService {
         userId,
         gameType,
       },
+      omit: {
+        id: true,
+        userId: true,
+      },
     });
   }
 
@@ -201,6 +205,10 @@ export class UserService {
           userId,
           gameType,
         },
+      },
+      omit: {
+        id: true,
+        userId: true,
       },
     });
 
@@ -215,6 +223,10 @@ export class UserService {
     return await this.prisma.gameStatistic.findMany({
       where: {
         userId,
+      },
+      omit: {
+        id: true,
+        userId: true,
       },
     });
   }
