@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, DOCUMENT, inject, Injectable, signal } from '@angular/core';
 import { LoginDto, LoginResponse, RegisterDto } from './models/auth.interfaces';
 import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { API_BASE_URL, AUTH_ENDPOINT } from '../../constants/api.constants';
@@ -10,6 +10,7 @@ import { AUTH_PATHS } from './models/auth-path.enum';
 })
 export class AuthService {
   private http = inject(HttpClient);
+  private readonly document = inject(DOCUMENT);
   private accessToken = signal<string | null>(null);
 
   public isLoggedIn = computed(() => this.accessToken() !== null);
@@ -77,7 +78,7 @@ export class AuthService {
   }
 
   public loginWithGitHub(): void {
-    window.location.href = this.getUrl(AUTH_PATHS.GITHUB);
+    this.document.defaultView!.location.href = this.getUrl(AUTH_PATHS.GITHUB);
   }
 
   public getAccessToken(): string | null {
