@@ -7,7 +7,6 @@ import { TuiCardLarge, TuiHeader } from '@taiga-ui/layout';
 import { UserStore } from '../../../../core/stores/user-store/user-store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { finalize, startWith, switchMap } from 'rxjs';
-import { UserService } from '../../../../core/services/user/user-service';
 import { CloudinaryService } from '../../../../core/services/cloudinary/cloudinary-service';
 import { AppTosterService } from '../../../../core/services/app-toster-service';
 
@@ -33,7 +32,6 @@ const MAX_FILE_SIZE_KB = 500;
 })
 export class ProfileSidebar {
   private readonly cloudinaryService = inject(CloudinaryService);
-  protected readonly userService = inject(UserService);
   private translocoService = inject(TranslocoService);
   private toster = inject(AppTosterService);
   protected userStore = inject(UserStore);

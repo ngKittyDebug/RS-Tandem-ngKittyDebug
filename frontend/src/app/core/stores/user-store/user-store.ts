@@ -60,7 +60,16 @@ export class UserStore {
 
     try {
       const updatedUser = await firstValueFrom(this.userService.updateUser(data));
-      this._user.set(updatedUser);
+      this._user.update((user) => {
+        if (!user) {
+          return updatedUser;
+        }
+
+        return {
+          ...user,
+          ...updatedUser,
+        };
+      });
       this.toaster.showPositiveToster(
         this.transloco.translate('serverResponse.updateAccount.success'),
       );

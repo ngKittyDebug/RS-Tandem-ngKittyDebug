@@ -9,9 +9,7 @@
       "allowedTypes": "Допустимы только PNG, JPG, JPEG и WEBP",
       "maxSize": "Максимальный размер файла — ",
       "maxSizeType": "КБ",
-      "error": {
-        "uploadFailed": "Загрузка в Cloudinary не удалась"
-      }
+      "uploadFailed": "Загрузка в Cloudinary не удалась"
     }
   },
 
