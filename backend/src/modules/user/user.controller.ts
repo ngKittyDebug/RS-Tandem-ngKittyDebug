@@ -23,6 +23,9 @@ import {
   updateUserAvatarConfig,
   updatePasswordConfig,
   deleteUserConfig,
+  updateUserStatConfig,
+  getUserGameStatsByIdConfig,
+  getAllUserGamesStatsConfig,
 } from 'src/swagger-api-configs/user';
 import { GameType } from 'src/generated/prisma/enums';
 
@@ -72,6 +75,7 @@ export class UserController {
     return this.userService.deleteUser(id, confirmPasswordDto);
   }
 
+  @ApiSwagger(updateUserStatConfig)
   @Patch('stats/update')
   updateUserStat(
     @User('id') userId: string,
@@ -80,6 +84,7 @@ export class UserController {
     return this.userService.updateUserGameStats(userId, gameType);
   }
 
+  @ApiSwagger(getUserGameStatsByIdConfig)
   @Get('stats/id')
   getUserGameStatsById(
     @User('id') userId: string,
@@ -88,6 +93,7 @@ export class UserController {
     return this.userService.getUserGameStatsById(userId, gameType);
   }
 
+  @ApiSwagger(getAllUserGamesStatsConfig)
   @Get('stats/all')
   getAllUserGamesStats(@User('id') userId: string) {
     return this.userService.getAllUserGamesStats(userId);
