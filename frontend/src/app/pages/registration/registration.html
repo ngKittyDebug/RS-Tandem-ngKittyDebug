@@ -60,7 +60,7 @@
         size="m"
         [disabled]="!registrationForm.valid"
       >
-        @if (isLoading) {
+        @if (isLoading()) {
           <app-loader mode="inline"></app-loader>
         } @else {
           {{ t('registration.form.button') }}
