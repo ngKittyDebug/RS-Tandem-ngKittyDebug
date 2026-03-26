@@ -28,5 +28,5 @@
   "decryptoRules5": "If the code is correctly deciphered, you move on to the next round.",
   "decryptoRules6": "The faster you complete the game without any mistakes, the cooler the achievement you will earn. Try to collect all the achievements.",
   "decryptoRules7": "Good luck in the game!",
-  "decryptoCardDataError": "Meow. The game data has not been loaded. Wait a little and try to start a new game or reload the page."
+  "decryptoCardDataError": "Meow. The game data has not been loaded. Wait a little and try to reload the page."
 }

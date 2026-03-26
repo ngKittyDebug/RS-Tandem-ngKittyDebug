@@ -19,6 +19,8 @@ import { KeyStorageService } from '../../../core/services/key-storage/key-storag
 import { keysDataOnServer } from './models/decrypto.constants';
 import { Router } from '@angular/router';
 import { AppRoute, getRoutePath } from '../../../app.routes';
+import { filter, repeat, retry, take } from 'rxjs';
+import { Loader } from '../../../core/components/loader/loader';
 
 export interface DecryptoGameData {
   gameCards: Card[];
@@ -39,6 +41,7 @@ const dataToServer = {
     TuiButton,
     TranslocoDirective,
     Timer,
+    Loader,
   ],
   templateUrl: './decrypto.html',
   styleUrl: './decrypto.scss',
@@ -51,16 +54,26 @@ export class Decrypto implements OnInit {
   protected readonly fb = inject(FormBuilder);
   private readonly popupService = inject(PopupService);
   private router = inject(Router);
+  protected isLoading = signal<boolean>(false);
   protected gameStarted = signal<boolean>(false);
   private timer = viewChild(Timer);
   public timerMode = TIMER_MODE.DOWN;
   public initialTime = CONFIG.gameTime;
 
   public ngOnInit(): void {
-    this.newGame();
-    this.loadDataServerService.getData(dataToServer).subscribe((data) => {
-      this.gameService.gameCardsFromServer = data.storage.gameCards;
-    });
+    this.loadDataServerService
+      .getData(dataToServer)
+      .pipe(
+        retry({ count: 2, delay: 60000 }),
+        repeat({ count: 2, delay: 60000 }),
+        filter((data) => data?.storage?.gameCards?.length > 0),
+        take(1),
+      )
+      .subscribe((data) => {
+        this.gameService.gameCardsFromServer = data.storage.gameCards;
+        this.isLoading.set(true);
+        this.newGame();
+      });
   }
 
   public readonly decryptoForm = this.fb.nonNullable.group<DecryptoForm>({
@@ -101,11 +114,6 @@ export class Decrypto implements OnInit {
   }
 
   protected startGame(): void {
-    if (this.gameService.gameCardsFromServer.length <= CONFIG.defaultCards * CONFIG.defaultRounds) {
-      const message = this.transloco.translate('decrypto.decryptoCardDataError');
-      this.tosterService.showErrorToster(message);
-      return;
-    }
     this.gameService.generateCardsForGame();
     this.gameService.generateCards();
     this.gameService.generateGameHints();
