@@ -7,6 +7,7 @@ import { TuiBreakpointService, TuiButton, type TuiSizeL } from '@taiga-ui/core';
 import { TuiBlockStatus } from '@taiga-ui/layout';
 import { map, type Observable } from 'rxjs';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { AuthService } from '../../core/services/auth/auth-service';
 
 @Component({
   standalone: true,
@@ -30,6 +31,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
   ],
 })
 export class Main {
+  public authService = inject(AuthService);
   public breakpointService = inject(TuiBreakpointService);
 
   public size$: Observable<TuiSizeL> = this.breakpointService.pipe(
