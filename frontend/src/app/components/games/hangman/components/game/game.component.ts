@@ -12,4 +12,12 @@ import { TuiButton } from '@taiga-ui/core';
 export class GameComponent {
   @Output() public back = new EventEmitter<void>();
   @Output() public results = new EventEmitter<void>();
+
+  public userAnswer = '';
+  protected addLetter(letter: string): void {
+    this.userAnswer += letter;
+  }
+  protected reset(): void {
+    this.userAnswer = '';
+  }
 }

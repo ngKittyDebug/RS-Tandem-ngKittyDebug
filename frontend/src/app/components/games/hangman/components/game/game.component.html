@@ -30,41 +30,44 @@
       <div class="user-field">
         <div class="user-form">
           <div class="container">
-            <div class="editable">your answer</div>
+            <div class="editable">{{ userAnswer || 'your answer' }}</div>
           </div>
           <div class="keyboard">
             <div class="row">
-              <button size="s" tuiButton type="button">Q</button>
-              <button size="s" tuiButton type="button">W</button>
-              <button size="s" tuiButton type="button">E</button>
-              <button size="s" tuiButton type="button">R</button>
-              <button size="s" tuiButton type="button">T</button>
-              <button size="s" tuiButton type="button">Y</button>
-              <button size="s" tuiButton type="button">U</button>
-              <button size="s" tuiButton type="button">I</button>
-              <button size="s" tuiButton type="button">O</button>
-              <button size="s" tuiButton type="button">P</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('Q')">Q</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('W')">W</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('E')">E</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('R')">R</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('T')">T</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('Y')">Y</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('U')">U</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('I')">I</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('O')">O</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('P')">P</button>
             </div>
             <div class="row">
-              <button size="s" tuiButton type="button">A</button>
-              <button size="s" tuiButton type="button">S</button>
-              <button size="s" tuiButton type="button">D</button>
-              <button size="s" tuiButton type="button">F</button>
-              <button size="s" tuiButton type="button">G</button>
-              <button size="s" tuiButton type="button">H</button>
-              <button size="s" tuiButton type="button">J</button>
-              <button size="s" tuiButton type="button">K</button>
-              <button size="s" tuiButton type="button">L</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('A')">A</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('S')">S</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('D')">D</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('F')">F</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('G')">G</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('H')">H</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('J')">J</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('K')">K</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('L')">L</button>
             </div>
             <div class="row">
-              <button size="s" tuiButton type="button">Z</button>
-              <button size="s" tuiButton type="button">X</button>
-              <button size="s" tuiButton type="button">C</button>
-              <button size="s" tuiButton type="button">V</button>
-              <button size="s" tuiButton type="button">B</button>
-              <button size="s" tuiButton type="button">N</button>
-              <button size="s" tuiButton type="button">M</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('Z')">Z</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('X')">X</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('C')">C</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('V')">V</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('B')">B</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('N')">N</button>
+              <button size="s" tuiButton type="button" (click)="addLetter('M')">M</button>
             </div>
+            <button appearance="accent" size="m" tuiButton type="button" (click)="reset()">
+              reset
+            </button>
           </div>
         </div>
         <img src="./assets/images/cat1.png" alt="cat" width="150" class="cat-image" />
