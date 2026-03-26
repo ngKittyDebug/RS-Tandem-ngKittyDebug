@@ -117,8 +117,15 @@ export class Login {
           this.router.navigate([getRoutePath(AppRoute.MAIN)]);
         },
         error: (error) => {
-          const key =
-            error.status === 403 ? 'login.error.invalidCredentials' : 'login.error.serverError';
+          let key: string;
+
+          if (error.status === 401) {
+            key = 'login.error.invalidCredentials';
+          } else if (error.status === 400) {
+            key = 'login.error.invalidData';
+          } else {
+            key = 'login.error.serverError';
+          }
 
           const message = this.translocoService.translate(key);
           this.tosterService.showErrorToster(message);
@@ -139,6 +146,10 @@ export class Login {
     }
 
     return null;
+  }
+
+  protected loginWithGitHub(): void {
+    this.authService.loginWithGitHub();
   }
 
   private normalize(value: string): string {

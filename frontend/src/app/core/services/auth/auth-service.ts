@@ -76,6 +76,10 @@ export class AuthService {
       );
   }
 
+  public loginWithGitHub(): void {
+    window.location.href = this.getUrl(AUTH_PATHS.GITHUB);
+  }
+
   public getAccessToken(): string | null {
     return this.accessToken();
   }

@@ -3,4 +3,5 @@ export enum AUTH_PATHS {
   LOGIN = '/login',
   REFRESH = '/refresh',
   LOGOUT = '/logout',
+  GITHUB = '/github',
 }

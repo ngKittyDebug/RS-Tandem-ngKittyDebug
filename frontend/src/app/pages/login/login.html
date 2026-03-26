@@ -93,6 +93,17 @@
       <app-img-cat class="login__cat"></app-img-cat>
     </div>
 
+    <button
+      tuiButton
+      iconStart="@tui.paw-print"
+      appearance="outline"
+      class="login__button"
+      type="button"
+      (click)="loginWithGitHub()"
+    >
+      {{ t('login.buttons.loginWithGitHub') }}
+    </button>
+
     <div class="login__link">
       {{ t('login.links.noAccount') }}
       <a tuiLink [routerLink]="registerRouterPath">{{ t('login.links.signUp') }}</a>
