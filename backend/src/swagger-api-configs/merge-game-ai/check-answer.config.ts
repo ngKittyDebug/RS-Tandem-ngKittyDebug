@@ -41,7 +41,7 @@ export const checkAnswerConfig: ApiSwaggerConfig = {
     },
     {
       status: HttpStatus.INTERNAL_SERVER_ERROR,
-      description: 'Ошибка при обращении к ИИ-сервису',
+      description: 'Ошибка при обращении к ИИ-сервису (Groq API)',
     },
   ],
 };

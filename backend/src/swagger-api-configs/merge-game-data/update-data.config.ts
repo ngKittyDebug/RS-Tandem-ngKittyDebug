@@ -19,7 +19,14 @@ export const updateDataConfig: ApiSwaggerConfig = {
           {
             id: 1,
             word: 'Собака',
-            questions: [{ id: 1, question: 'Лает', answer: 'Собака' }],
+            questions: [
+              {
+                id: 1,
+                question: 'Лает',
+                answer: 'Собака',
+                keywords: ['животное'],
+              },
+            ],
           },
         ],
       },
@@ -28,5 +35,9 @@ export const updateDataConfig: ApiSwaggerConfig = {
   responses: [
     { status: HttpStatus.NOT_FOUND, description: 'Данные не найдены' },
     { status: HttpStatus.BAD_REQUEST, description: 'Некорректные данные' },
+    {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Ошибка сервера при обновлении данных',
+    },
   ],
 };

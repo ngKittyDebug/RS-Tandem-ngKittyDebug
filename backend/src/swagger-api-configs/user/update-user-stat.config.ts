@@ -21,11 +21,8 @@ export const updateUserStatConfig: ApiSwaggerConfig = {
     description: 'Статистика успешно обновлена',
     schema: {
       example: {
-        userId: 'user-123',
-        gameType: 'MERGE_GAME',
-        totalGames: 10,
-        wins: 7,
-        losses: 3,
+        gameType: 'mergeGame',
+        playedCount: 1,
         updatedAt: '2024-01-15T10:30:00.000Z',
       },
     },
@@ -42,6 +39,10 @@ export const updateUserStatConfig: ApiSwaggerConfig = {
     {
       status: HttpStatus.NOT_FOUND,
       description: 'Пользователь не найден',
+    },
+    {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Ошибка сервера при обновлении статистики',
     },
   ],
 };

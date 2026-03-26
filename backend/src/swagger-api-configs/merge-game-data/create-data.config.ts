@@ -18,7 +18,14 @@ export const createDataConfig: ApiSwaggerConfig = {
           {
             id: 1,
             word: 'Кошка',
-            questions: [{ id: 1, question: 'Мяукает', answer: 'Кошка' }],
+            questions: [
+              {
+                id: 1,
+                question: 'Мяукает',
+                answer: 'Кошка',
+                keywords: ['животное'],
+              },
+            ],
           },
         ],
       },
@@ -29,6 +36,10 @@ export const createDataConfig: ApiSwaggerConfig = {
     {
       status: HttpStatus.CONFLICT,
       description: 'Категория с таким названием уже существует',
+    },
+    {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Ошибка сервера при создании данных',
     },
   ],
 };

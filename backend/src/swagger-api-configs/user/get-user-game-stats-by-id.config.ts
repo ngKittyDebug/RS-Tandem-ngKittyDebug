@@ -21,14 +21,8 @@ export const getUserGameStatsByIdConfig: ApiSwaggerConfig = {
     description: 'Статистика успешно получена',
     schema: {
       example: {
-        userId: 'user-123',
-        gameType: 'MERGE_GAME',
-        totalGames: 10,
-        wins: 7,
-        losses: 3,
-        winRate: 0.7,
-        bestScore: 1500,
-        createdAt: '2024-01-01T00:00:00.000Z',
+        gameType: 'mergeGame',
+        playedCount: 10,
         updatedAt: '2024-01-15T10:30:00.000Z',
       },
     },
@@ -45,6 +39,10 @@ export const getUserGameStatsByIdConfig: ApiSwaggerConfig = {
     {
       status: HttpStatus.NOT_FOUND,
       description: 'Статистика не найдена',
+    },
+    {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Ошибка сервера при получении статистики',
     },
   ],
 };

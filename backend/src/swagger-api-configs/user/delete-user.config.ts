@@ -24,11 +24,15 @@ export const deleteUserConfig: ApiSwaggerConfig = {
     },
     {
       status: HttpStatus.FORBIDDEN,
-      description: 'Неверный пароль',
+      description: 'Неверный пароль или аккаунт зарегистрирован через OAuth',
     },
     {
       status: HttpStatus.NOT_FOUND,
       description: 'Пользователь не найден',
+    },
+    {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Ошибка сервера при удалении аккаунта',
     },
   ],
 };
