@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, computed } from '@angular/core';
+import { Component, inject, signal, OnInit, computed, DestroyRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TuiTextfield } from '@taiga-ui/core';
 import { TuiTree, TuiDataListWrapper } from '@taiga-ui/kit';
@@ -6,6 +6,7 @@ import { ResponseData, Word } from '../../models/data.interface';
 import { TuiSelect } from '@taiga-ui/kit';
 import { tap } from 'rxjs';
 import { GameService } from '../../services/game-service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-theory',
@@ -15,6 +16,7 @@ import { GameService } from '../../services/game-service';
 })
 export class Theory implements OnInit {
   private readonly gameService = inject(GameService);
+  private readonly destroyRef = inject(DestroyRef);
 
   private dataResponse = signal<ResponseData>({
     data: [],
@@ -47,6 +49,7 @@ export class Theory implements OnInit {
             this.selectedCategory.set(res.data[0].category);
           }
         }),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
   }

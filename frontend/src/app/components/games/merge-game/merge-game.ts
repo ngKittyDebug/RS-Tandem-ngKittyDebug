@@ -25,48 +25,32 @@ export class MergeGame {
   }
 
   protected goToMain(): void {
-    if (this.gameService.statusGame() !== 'playing') {
-      this.gameService.resetGame();
-      this.router.navigate([this.mainRouterPath]);
-      return;
-    } else {
-      this.dialogs
-        .open(TUI_CONFIRM, {
-          label: this.translocoService.translate('mergeGame.exitConfirm.label'),
-          data: {
-            content: this.translocoService.translate('mergeGame.exitConfirm.content'),
-            yes: this.translocoService.translate('mergeGame.exitConfirm.yes'),
-            no: this.translocoService.translate('mergeGame.exitConfirm.no'),
-          },
-        })
-        .pipe(filter(Boolean))
-        .subscribe(() => {
-          this.gameService.resetGame();
-          this.router.navigate([this.mainRouterPath]);
-        });
-    }
+    this.navigateWithConfirm(this.mainRouterPath);
   }
 
   protected goToSettingsGame(): void {
+    this.navigateWithConfirm('/merge-game/settings');
+  }
+
+  private navigateWithConfirm(path: string): void {
     if (this.gameService.statusGame() !== 'playing') {
       this.gameService.resetGame();
-      this.router.navigate(['/merge-game/settings']);
+      this.router.navigate([path]);
       return;
-    } else {
-      this.dialogs
-        .open(TUI_CONFIRM, {
-          label: this.translocoService.translate('mergeGame.exitConfirm.label'),
-          data: {
-            content: this.translocoService.translate('mergeGame.exitConfirm.content'),
-            yes: this.translocoService.translate('mergeGame.exitConfirm.yes'),
-            no: this.translocoService.translate('mergeGame.exitConfirm.no'),
-          },
-        })
-        .pipe(filter(Boolean))
-        .subscribe(() => {
-          this.gameService.resetGame();
-          this.router.navigate(['/merge-game/settings']);
-        });
     }
+    this.dialogs
+      .open(TUI_CONFIRM, {
+        label: this.translocoService.translate('mergeGame.exitConfirm.label'),
+        data: {
+          content: this.translocoService.translate('mergeGame.exitConfirm.content'),
+          yes: this.translocoService.translate('mergeGame.exitConfirm.yes'),
+          no: this.translocoService.translate('mergeGame.exitConfirm.no'),
+        },
+      })
+      .pipe(filter(Boolean))
+      .subscribe(() => {
+        this.gameService.resetGame();
+        this.router.navigate([path]);
+      });
   }
 }

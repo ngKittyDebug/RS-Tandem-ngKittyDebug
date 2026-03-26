@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Question } from '../../models/data.interface';
@@ -7,10 +7,11 @@ import { TuiButton } from '@taiga-ui/core';
 import { QuizService } from '../../services/quiz-service';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { AiService } from '../../services/ai-service';
-import { ResponseCheckAnswerAi } from '../../models/ai-metods.interface';
+import { ResponseCheckAnswerAi } from '../../models/ai-methods.interface';
 import { tap } from 'rxjs';
 import { BoardService } from '../../services/board-service';
 import { Cat } from '../cat/cat';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-quiz',
@@ -24,6 +25,7 @@ export class Quiz {
   private readonly boardService = inject(BoardService);
   private readonly aiService = inject(AiService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
   protected aiFeedback = signal<string | null>(null);
 
   protected readonly activeQuiz = this.quizService.activeQuiz;
@@ -44,7 +46,7 @@ export class Quiz {
     const quiz = this.activeQuiz();
     const word = this.currentWord();
     if (!quiz || !word) return null;
-    return this.quizService.getRandomQuestion(word);
+    return this.quizService.getRandomQuestion();
   });
 
   protected userAnswer = signal('');
@@ -69,6 +71,7 @@ export class Quiz {
             this.aiFeedback.set(res.feedback);
             this.showAnswer.set(true);
           }),
+          takeUntilDestroyed(this.destroyRef),
         )
         .subscribe();
     } else {

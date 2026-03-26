@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { API_BASE_URL } from '../../../../core/constants/api.constants';
-import { CheckAnswerAi, ResponseCheckAnswerAi } from '../models/ai-metods.interface';
+import { CheckAnswerAi, ResponseCheckAnswerAi } from '../models/ai-methods.interface';
 import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable({

@@ -1,9 +1,10 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { DestroyRef, inject, Injectable, signal } from '@angular/core';
 
 import { Data, ResponseData, Row } from '../models/data.interface';
 import { QuizService } from './quiz-service';
 import { GameService } from './game-service';
-import { finalize, tap } from 'rxjs';
+import { tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 const sortRandom = (): number => Math.random() - 0.5;
 @Injectable({
@@ -12,6 +13,7 @@ const sortRandom = (): number => Math.random() - 0.5;
 export class BoardService {
   private readonly quizService = inject(QuizService);
   private readonly gameService = inject(GameService);
+  private readonly destroyRef = inject(DestroyRef);
   public readonly allRowsCompleted = signal(false);
   private dataResponse = signal<ResponseData>({
     data: [],
@@ -84,8 +86,12 @@ export class BoardService {
             })),
           );
         }),
-        finalize(() => console.log(this.dataResponse())),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
+  }
+
+  public updateRows(rows: Row[]): void {
+    this.rows.set(rows);
   }
 }

@@ -68,7 +68,7 @@ export class Board {
 
     newRows = this.boardService.checkRow(newRows, rowIndex);
     newRows = this.boardService.checkRow(newRows, prevRow);
-    this.rows.set(newRows);
+    this.boardService.updateRows(newRows);
   }
 
   protected onRestart(): void {

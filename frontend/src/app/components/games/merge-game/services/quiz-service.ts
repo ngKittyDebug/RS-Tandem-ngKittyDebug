@@ -15,12 +15,11 @@ export class QuizService {
     this.wrongAnswers.set(0);
   }
 
-  public getRandomQuestion(word: string): Question | null {
+  public getRandomQuestion(): Question | null {
     const quiz = this.activeQuiz();
-    if (!quiz) return null;
-    const questions = quiz.questions.filter(() => quiz.words.includes(word));
-    if (!questions.length) return null;
-    return questions[Math.floor(Math.random() * questions.length)];
+    if (!quiz || !quiz.questions.length) return null;
+
+    return quiz.questions[Math.floor(Math.random() * quiz.questions.length)];
   }
 
   public checkAnswer(userAnswer: string, keywords: string[]): boolean {
