@@ -19,6 +19,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { EyeCompassDirective } from '../../core/directive/eye-compass.directive';
 import { Loader } from '../../core/components/loader/loader';
 import { CommonModule } from '@angular/common';
+import { UserStore } from '../../core/stores/user-store/user-store';
 
 @Component({
   selector: 'app-registration',
@@ -51,6 +52,7 @@ export class Registration {
   private toster = inject(AppTosterService);
   protected loginRouterPath = getRoutePath(AppRoute.LOGIN);
   private router = inject(Router);
+  private userStore = inject(UserStore);
   public t(key: string): string {
     return this.translocoService.translate(key);
   }
@@ -80,6 +82,7 @@ export class Registration {
     this.isLoading.set(true);
     try {
       await firstValueFrom(this.AuthService.register(User));
+      await this.userStore.loadUser();
       this.router.navigate([getRoutePath(AppRoute.MAIN)]);
     } catch (error) {
       if (error instanceof HttpErrorResponse) {
