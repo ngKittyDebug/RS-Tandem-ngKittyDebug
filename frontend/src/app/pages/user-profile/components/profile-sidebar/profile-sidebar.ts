@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { TuiAvatar, TuiAvatarOutline, TuiBadge } from '@taiga-ui/kit';
+import { TuiAvatar, TuiAvatarOutline, TuiBadge, TuiSkeleton } from '@taiga-ui/kit';
 import { TuiAppearance, TuiButton, TuiIcon } from '@taiga-ui/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { TuiCardLarge, TuiHeader } from '@taiga-ui/layout';
@@ -26,6 +26,7 @@ const MAX_FILE_SIZE_KB = 500;
     TuiButton,
     DatePipe,
     TuiAvatarOutline,
+    TuiSkeleton,
   ],
   templateUrl: './profile-sidebar.html',
   styleUrl: './profile-sidebar.scss',
@@ -37,7 +38,8 @@ export class ProfileSidebar {
   private toster = inject(AppTosterService);
   protected userStore = inject(UserStore);
 
-  protected readonly isUploading = signal(false);
+  protected readonly isAvatarUpdating = signal(false);
+  protected readonly isAvatarImageLoading = signal(false);
 
   protected readonly activeLang = toSignal(
     this.translocoService.langChanges$.pipe(startWith(this.translocoService.getActiveLang())),
@@ -56,19 +58,28 @@ export class ProfileSidebar {
       return;
     }
 
-    this.isUploading.set(true);
+    this.isAvatarUpdating.set(true);
 
     this.cloudinaryService
       .uploadImage(file)
       .pipe(
-        switchMap(({ secure_url }) => this.userStore.updateAvatar({ avatar: secure_url })),
+        switchMap(({ secure_url }) => {
+          this.isAvatarImageLoading.set(true);
+          return this.userStore.updateAvatar({ avatar: secure_url });
+        }),
         finalize(() => {
-          this.isUploading.set(false);
+          this.isAvatarUpdating.set(false);
           input.value = '';
         }),
       )
       .subscribe({
+        next: (success) => {
+          if (!success) {
+            this.isAvatarImageLoading.set(false);
+          }
+        },
         error: () => {
+          this.isAvatarImageLoading.set(false);
           this.toster.showErrorToster(
             this.translocoService.translate('userProfile.userInfo.changeAvatar.uploadFailed'),
           );
@@ -76,7 +87,6 @@ export class ProfileSidebar {
       });
   }
 
-  // TODO написать тесты и стянуть develop
   private validateFile(file: File): string | null {
     const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
     const maxSizeKb = MAX_FILE_SIZE_KB;

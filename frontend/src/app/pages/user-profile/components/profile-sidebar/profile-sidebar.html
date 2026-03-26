@@ -2,8 +2,17 @@
   <div tuiCardLarge tuiAppearance="floating">
     <header tuiHeader>
       <div class="avatar">
-        <tui-avatar size="xxl" tuiAvatarOutline="var(--tui-background-accent-2)">
-          <img alt="cat-1" [src]="userStore.user()?.avatar || 'assets/images/cat-1.png'" />
+        <tui-avatar
+          size="xxl"
+          tuiAvatarOutline="var(--tui-background-accent-2)"
+          [tuiSkeleton]="isAvatarUpdating() || isAvatarImageLoading()"
+        >
+          <img
+            alt="cat-1"
+            [src]="userStore.user()?.avatar || 'assets/images/cat-1.png'"
+            (load)="isAvatarImageLoading.set(false)"
+            (error)="isAvatarImageLoading.set(false)"
+          />
         </tui-avatar>
         <button
           class="avatar__button"
@@ -12,6 +21,7 @@
           size="s"
           appearance="gradient"
           (click)="fileInput.click()"
+          [disabled]="isAvatarUpdating() || isAvatarImageLoading()"
         >
           <tui-icon icon="@tui.camera" />
         </button>
