@@ -43,7 +43,7 @@ export class Main {
   private readonly router = inject(Router);
 
   public goReg(): void {
-    this.router.navigate([getRoutePath(AppRoute.LOGIN)]);
+    this.router.navigate([getRoutePath(AppRoute.REGISTRATION)]);
   }
   public goDecrypto(): void {
     this.router.navigate([getRoutePath(GameRoute.DECRYPTO)]);

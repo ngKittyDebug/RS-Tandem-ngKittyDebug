@@ -8,18 +8,16 @@
       </hgroup>
     </header>
   </div>
-
+  <div class="description">
+    <p tuiSubtitle>
+      <tui-icon icon="https://cdn-icons-png.flaticon.com/64/12710/12710759.png" class="hover" />
+      {{ t('main.description.first') }}
+    </p>
+    <p tuiSubtitle>{{ t('main.description.second') }}</p>
+    <p tuiSubtitle>{{ t('main.description.third') }}</p>
+  </div>
   @if (size$ | async; as size) {
     @if (authService.isLoggedIn()) {
-      <div class="description">
-        <p tuiSubtitle>
-          <tui-icon icon="https://cdn-icons-png.flaticon.com/64/12710/12710759.png" class="hover" />
-          {{ t('main.description.first') }}
-        </p>
-        <p tuiSubtitle>{{ t('main.description.second') }}</p>
-        <p tuiSubtitle>{{ t('main.description.third') }}</p>
-      </div>
-
       <div class="card-container">
         <div tuiCardLarge tuiSurface="floating">
           <header tuiHeader>
