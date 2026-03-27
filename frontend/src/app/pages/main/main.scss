@@ -121,12 +121,17 @@ header .image {
 }
 section {
   display: flex;
-  block-size: 3.125rem;
-  border-radius: 0.75rem;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
   color: var(--tui-text-secondary);
-  border: 1px dashed;
+  gap: 1rem;
+}
+section img {
+  width: 30%;
+}
+section p {
+  padding: 0.5rem;
 }
 
 .label {
@@ -134,7 +139,7 @@ section {
 }
 
 .reg-button {
-  transition: all 0.2s ease;
+  transition: all 0.5s ease;
   background: linear-gradient(to right, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
   color: #8b5cf6;
 }
