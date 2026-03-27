@@ -16,7 +16,7 @@
     "hangman": "Hangman",
     "mergegame": "Merge Game",
     "wordchain": "Word Chain",
-    "loopgame": "MeowLoop",
+    "loopgame": "Meowvent Loop",
     "diaries": "Diaries"
   },
   "gameDescription": {
@@ -24,7 +24,7 @@
     "hangman": "Hangman is a dramatic game where the player have just several tries to guess a word.",
     "mergegame": "Find the common idea and group the words into sets of four like a true soft-pawed master. A correct match will reveal the category and bonus questions on the topic.",
     "wordchain": "An engaging vocabulary game where each new word starts with the last letter of the previous one",
-    "loopgame": "Emotional game with a timer. Guess the words in one minute - as much as you can!",
+    "loopgame": "Who meows first? Learn Event Loop by placing console output in the correct order",
     "diaries": "Development is magic. We all wrote our development diaries for many weeks."
   },
   "play": "Play"
