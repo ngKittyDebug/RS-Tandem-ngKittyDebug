@@ -124,15 +124,7 @@ export class Decrypto implements OnInit {
     this.enableGameCodeInputs();
     this.gameStarted.set(true);
     this.timer()?.start();
-    this.userService.statsUpdate(GameLabels.Decrypto).subscribe((data) => {
-      console.log(data);
-    });
-    this.userService.statsGetGame(GameLabels.Decrypto).subscribe((data) => {
-      console.log(data);
-    });
-    this.userService.statsGetAll().subscribe((data) => {
-      console.log(data);
-    });
+    this.userService.statsUpdate(GameLabels.Decrypto).subscribe();
   }
 
   protected newGame(): void {
