@@ -20,11 +20,12 @@ import { LoginMode } from './models/login-mode.interface';
 import { AuthService } from '../../core/services/auth/auth-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LoginField } from './models/login-field.type';
-import { finalize } from 'rxjs';
+import { finalize, from, switchMap } from 'rxjs';
 import { USER_PATTERN } from '../../core/patterns/user-pattern';
 import { ImgCat } from './components/img-cat/img-cat';
 import { AppRoute, getRoutePath } from '../../app.routes';
 import { AppTosterService } from '../../core/services/app-toster-service';
+import { UserStore } from '../../core/stores/user-store/user-store';
 import { Loader } from '../../core/components/loader/loader';
 
 @Component({
@@ -57,6 +58,7 @@ export class Login {
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
   private tosterService = inject(AppTosterService);
+  private userStore = inject(UserStore);
   protected loginMode = signal<LoginMode>('email');
   protected isLoading = signal<boolean>(false);
   protected registerRouterPath = getRoutePath(AppRoute.REGISTRATION);
@@ -109,6 +111,7 @@ export class Login {
     this.authService
       .login(data)
       .pipe(
+        switchMap(() => from(this.userStore.loadUser())),
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.isLoading.set(false)),
       )

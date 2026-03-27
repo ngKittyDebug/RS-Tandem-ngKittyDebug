@@ -25,6 +25,11 @@
     "keyStorage": {
       "notFound": "The record with the specified key was not found"
     },
+    "updateAvatar": {
+      "success": "Avatar updated successfully",
+      "invalidData": "Invalid data provided",
+      "notFound": "User not found"
+    },
     "defaultError": "An error occurred. Please try again later."
   }
 }

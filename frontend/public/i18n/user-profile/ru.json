@@ -4,7 +4,13 @@
 
   "userInfo": {
     "createdTitle": "Участник с",
-    "genresTitle": "Любимые жанры"
+    "genresTitle": "Любимые жанры",
+    "changeAvatar": {
+      "allowedTypes": "Допустимы только PNG, JPG, JPEG и WEBP",
+      "maxSize": "Максимальный размер файла — ",
+      "maxSizeType": "КБ",
+      "uploadFailed": "Загрузка в Cloudinary не удалась"
+    }
   },
 
   "statistic": {

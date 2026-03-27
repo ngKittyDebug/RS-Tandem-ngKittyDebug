@@ -12,6 +12,7 @@ describe('UserService', () => {
     BASE = '/user',
     PROFILE = '/profile',
     PASSWORD = '/password',
+    AVATAR = '/avatar',
   }
 
   beforeEach(() => {
@@ -85,5 +86,21 @@ describe('UserService', () => {
     expect(req.request.body).toEqual(dto);
 
     req.flush(null);
+  });
+
+  it('should send PATCH request to update avatar', () => {
+    const dto = {
+      avatar: 'avatar',
+    };
+
+    service.updateAvatar(dto).subscribe((response) => {
+      expect(response).toEqual(dto);
+    });
+
+    const req = httpMock.expectOne(`${UserPath.BASE}${UserPath.AVATAR}`);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual(dto);
+
+    req.flush(dto);
   });
 });

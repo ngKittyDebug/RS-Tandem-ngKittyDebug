@@ -14,6 +14,7 @@ describe('AccountForm', () => {
     user: signal<User | null>({
       username: 'user',
       email: 'user@test.com',
+      avatar: 'https://example.com/avatar.jpg',
       createdAt: '2026-03-14T00:00:00Z',
     }),
   };
