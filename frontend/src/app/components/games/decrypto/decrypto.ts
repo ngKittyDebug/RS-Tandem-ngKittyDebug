@@ -59,7 +59,7 @@ export class Decrypto implements OnInit {
   private readonly userService = inject(UserService);
   private readonly destroyRef = inject(DestroyRef);
   private router = inject(Router);
-  protected isLoading = signal<boolean>(false);
+  protected isLoaded = signal<boolean>(false);
   protected gameStarted = signal<boolean>(false);
   private timer = viewChild(Timer);
   public timerMode = TIMER_MODE.DOWN;
@@ -76,7 +76,7 @@ export class Decrypto implements OnInit {
       )
       .subscribe((data) => {
         this.gameService.gameCardsFromServer = data.storage.gameCards;
-        this.isLoading.set(true);
+        this.isLoaded.set(true);
         this.newGame();
       });
   }

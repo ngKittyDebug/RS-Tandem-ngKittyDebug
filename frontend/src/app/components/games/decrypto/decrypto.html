@@ -44,7 +44,7 @@
       </div>
     </div>
     <div class="decrypto__field">
-      @if (isLoading()) {
+      @if (isLoaded()) {
         <div class="decrypto__cards">
           @for (gameCard of gameService.gameCards; track $index) {
             <div class="decrypto__card">
