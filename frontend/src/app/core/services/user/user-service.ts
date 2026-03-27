@@ -1,10 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ChangePasswordDto, UpdateUserDto, User } from './models/user.interfaces';
+import {
+  ChangePasswordDto,
+  StatsResponseData,
+  UpdateUserDto,
+  User,
+} from './models/user.interfaces';
 import { UserPath } from './models/user-path.enum';
 import { getUrl } from './utils/utils';
 import { API_BASE_URL } from '../../constants/api.constants';
+import { GameLabels } from '../../../shared/enums/game-labels.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -23,5 +29,30 @@ export class UserService {
 
   public changePassword(data: ChangePasswordDto): Observable<void> {
     return this.http.patch<void>(getUrl(this.baseUrl, UserPath.BASE, UserPath.PASSWORD), data);
+  }
+
+  public statsUpdate(game: GameLabels): Observable<StatsResponseData> {
+    return this.http.patch<StatsResponseData>(
+      getUrl(this.baseUrl, UserPath.BASE, UserPath.STATS_UPDATE),
+      '',
+      {
+        params: { game },
+      },
+    );
+  }
+
+  public statsGetGame(game: GameLabels): Observable<StatsResponseData> {
+    return this.http.get<StatsResponseData>(
+      getUrl(this.baseUrl, UserPath.BASE, UserPath.STATS_GET_GAME),
+      {
+        params: { game },
+      },
+    );
+  }
+
+  public statsGetAll(): Observable<StatsResponseData[]> {
+    return this.http.get<StatsResponseData[]>(
+      getUrl(this.baseUrl, UserPath.BASE, UserPath.STATS_GET_ALL),
+    );
   }
 }

@@ -21,6 +21,8 @@ import { Router } from '@angular/router';
 import { AppRoute, getRoutePath } from '../../../app.routes';
 import { filter, repeat, retry, take } from 'rxjs';
 import { Loader } from '../../../core/components/loader/loader';
+import { UserService } from '../../../core/services/user/user-service';
+import { GameLabels } from '../../../shared/enums/game-labels.enum';
 
 export interface DecryptoGameData {
   gameCards: Card[];
@@ -53,6 +55,7 @@ export class Decrypto implements OnInit {
   protected readonly tosterService = inject(AppTosterService);
   protected readonly fb = inject(FormBuilder);
   private readonly popupService = inject(PopupService);
+  protected readonly userService = inject(UserService);
   private router = inject(Router);
   protected isLoading = signal<boolean>(false);
   protected gameStarted = signal<boolean>(false);
@@ -121,14 +124,18 @@ export class Decrypto implements OnInit {
     this.enableGameCodeInputs();
     this.gameStarted.set(true);
     this.timer()?.start();
+    this.userService.statsUpdate(GameLabels.Decrypto).subscribe((data) => {
+      console.log(data);
+    });
+    this.userService.statsGetGame(GameLabels.Decrypto).subscribe((data) => {
+      console.log(data);
+    });
+    this.userService.statsGetAll().subscribe((data) => {
+      console.log(data);
+    });
   }
 
   protected newGame(): void {
-    if (this.gameService.gameCardsFromServer.length === 0) {
-      this.loadDataServerService.getData(dataToServer).subscribe((data) => {
-        this.gameService.gameCardsFromServer = data.storage.gameCards;
-      });
-    }
     this.gameService.generateWrightCodesForGame();
     this.gameService.generateWrightCode();
     this.gameService.resetGameCards();

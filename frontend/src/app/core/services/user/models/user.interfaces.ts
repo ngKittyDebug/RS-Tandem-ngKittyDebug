@@ -17,3 +17,13 @@ export interface ChangePasswordDto {
 export interface MessageResponse {
   message: string;
 }
+
+export interface StatsUpdateData {
+  game: string;
+}
+
+export interface StatsResponseData {
+  gameType: string;
+  playedCount: number;
+  updatedAt: string;
+}
