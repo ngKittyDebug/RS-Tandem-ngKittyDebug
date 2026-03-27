@@ -26,6 +26,12 @@
     "keyStorage": {
       "notFound": "The record with the specified key was not found"
     },
+    "statistics": {
+      "defaultError": "Server error when receiving statistics",
+      "wrongGameType": "Incorrect game type",
+      "notAuthUser": "User is not logged in",
+      "statisticsNotFound": "Statistics not found"
+    },
     "defaultError": "An error occurred. Please try again later."
   }
 }

@@ -44,9 +44,7 @@
       </div>
     </div>
     <div class="decrypto__field">
-      @if (!isLoading()) {
-        <app-loader mode="inline"></app-loader>
-      } @else {
+      @if (isLoading()) {
         <div class="decrypto__cards">
           @for (gameCard of gameService.gameCards; track $index) {
             <div class="decrypto__card">
@@ -143,6 +141,8 @@
             {{ t('decrypto.nextRoundBtn') }}
           </button>
         </form>
+      } @else {
+        <app-loader mode="inline"></app-loader>
       }
     </div>
   </div>

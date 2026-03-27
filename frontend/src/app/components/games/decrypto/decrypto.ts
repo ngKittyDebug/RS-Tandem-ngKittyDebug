@@ -1,11 +1,11 @@
-import { Component, inject, OnInit, signal, viewChild } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { TuiButton, TuiIcon, TuiTextfield } from '@taiga-ui/core';
 import { TuiInputNumber } from '@taiga-ui/kit';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DecryptoForm } from './models/decrypto-form.interface';
 import { DecryptoGameService } from './services/decrypto-game-service';
-
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { DecryptoRules } from './components/decrypto-rules/decrypto-rules';
 import { AppTosterService } from '../../../core/services/app-toster-service';
@@ -19,10 +19,11 @@ import { KeyStorageService } from '../../../core/services/key-storage/key-storag
 import { keysDataOnServer } from './models/decrypto.constants';
 import { Router } from '@angular/router';
 import { AppRoute, getRoutePath } from '../../../app.routes';
-import { filter, repeat, retry, take } from 'rxjs';
+import { filter, retry, take, throwError } from 'rxjs';
 import { Loader } from '../../../core/components/loader/loader';
 import { UserService } from '../../../core/services/user/user-service';
 import { GameLabels } from '../../../shared/enums/game-labels.enum';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export interface DecryptoGameData {
   gameCards: Card[];
@@ -55,7 +56,8 @@ export class Decrypto implements OnInit {
   protected readonly tosterService = inject(AppTosterService);
   protected readonly fb = inject(FormBuilder);
   private readonly popupService = inject(PopupService);
-  protected readonly userService = inject(UserService);
+  private readonly userService = inject(UserService);
+  private readonly destroyRef = inject(DestroyRef);
   private router = inject(Router);
   protected isLoading = signal<boolean>(false);
   protected gameStarted = signal<boolean>(false);
@@ -68,9 +70,9 @@ export class Decrypto implements OnInit {
       .getData(dataToServer)
       .pipe(
         retry({ count: 2, delay: 60000 }),
-        repeat({ count: 2, delay: 60000 }),
         filter((data) => data?.storage?.gameCards?.length > 0),
         take(1),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((data) => {
         this.gameService.gameCardsFromServer = data.storage.gameCards;
@@ -124,7 +126,20 @@ export class Decrypto implements OnInit {
     this.enableGameCodeInputs();
     this.gameStarted.set(true);
     this.timer()?.start();
-    this.userService.statsUpdate(GameLabels.Decrypto).subscribe();
+    this.userService.statsUpdate(GameLabels.Decrypto).subscribe({
+      error: (err: HttpErrorResponse) => {
+        let message = this.transloco.translate('serverResponse.statistics.defaultError');
+        if (err.status === 404) {
+          message = this.transloco.translate('serverResponse.statistics.statisticsNotFound');
+        } else if (err.status === 401) {
+          message = this.transloco.translate('serverResponse.statistics.notAuthUser');
+        } else if (err.status === 400) {
+          message = this.transloco.translate('serverResponse.statistics.wrongGameType');
+        }
+        this.tosterService.showErrorToster(message);
+        return throwError(() => err);
+      },
+    });
   }
 
   protected newGame(): void {

@@ -46,10 +46,8 @@ export class DecryptoGameService {
   }
 
   public generateCards(): void {
-    this.gameCards = this.gameCardsForGame.slice(
-      0 + (CONFIG.defaultCards * this.gamePeriod() - CONFIG.defaultCards),
-      4 + (CONFIG.defaultCards * this.gamePeriod() - CONFIG.defaultCards),
-    );
+    const offset = CONFIG.defaultCards * (this.gamePeriod() - 1);
+    this.gameCards = this.gameCardsForGame.slice(offset, offset + CONFIG.defaultCards);
   }
 
   public generateCardsForGame(): void {

@@ -8,14 +8,16 @@
       <app-language-switcher></app-language-switcher>
     </div>
     <div class="user_bar">
-      <tui-avatar
-        size="s"
-        tuiAvatarOutline="var(--tui-background-accent-2)"
-        class="user_bar__avatar"
-        (click)="avatarClick()"
-      >
-        <img alt="cat-1" src="assets/images/cat-1.png" />
-      </tui-avatar>
+      @if (authService.isLoggedIn()) {
+        <tui-avatar
+          size="s"
+          tuiAvatarOutline="var(--tui-background-accent-2)"
+          class="user_bar__avatar"
+          (click)="avatarClick()"
+        >
+          <img alt="cat-1" src="assets/images/cat-1.png" />
+        </tui-avatar>
+      }
       <button
         tuiButton
         appearance="gradient"

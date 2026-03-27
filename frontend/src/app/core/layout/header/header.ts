@@ -25,7 +25,7 @@ import { AppRoute, getRoutePath } from '../../../app.routes';
   styleUrl: './header.scss',
 })
 export class Header {
-  public authService = inject(AuthService);
+  protected readonly authService = inject(AuthService);
   private router = inject(Router);
 
   protected avatarClick(): void {
@@ -38,19 +38,12 @@ export class Header {
         this.router.navigate([getRoutePath(AppRoute.MAIN)]);
       },
       error: (error) => {
-        console.log(error);
+        console.error(error);
       },
     });
   }
 
   protected logInClick(): void {
-    this.authService.logout().subscribe({
-      next: () => {
-        this.router.navigate([getRoutePath(AppRoute.LOGIN)]);
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });
+    this.router.navigate([getRoutePath(AppRoute.LOGIN)]);
   }
 }
