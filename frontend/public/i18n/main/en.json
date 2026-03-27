@@ -15,16 +15,16 @@
     "decrypto": "Decrypto",
     "hangman": "Hangman",
     "mergegame": "Merge Game",
-    "cities": "Cities",
+    "wordchain": "Word Chain",
     "loopgame": "MeowLoop",
     "diaries": "Diaries"
   },
   "gameDescription": {
-    "decrypto": "Decrypto is a funny game where the player must investigate the mystical case and find a hidden word.",
-    "hangman": "Hangman is a dramatic game where you have just several tries to guess a word.",
-    "mergegame": "Merge-Game is an amazing experience where the player have to merge question and answer cards",
-    "cities": "Cities is an interesting journey where the player opens new locations on the map",
-    "loopgame": "Meow-Loop is an emotional game with a timer. Guess more words in one minute!",
+    "decrypto": "Decrypto Solo is an association game for one person, where you have to solve the transmitted secret messages.",
+    "hangman": "Hangman is a dramatic game where the player have just several tries to guess a word.",
+    "mergegame": "Find the common idea and group the words into sets of four like a true soft-pawed master. A correct match will reveal the category and bonus questions on the topic.",
+    "wordchain": "An engaging vocabulary game where each new word starts with the last letter of the previous one",
+    "loopgame": "Emotional game with a timer. Guess the words in one minute - as much as you can!",
     "diaries": "Development is magic. We all wrote our development diaries for many weeks."
   },
   "play": "Play"
