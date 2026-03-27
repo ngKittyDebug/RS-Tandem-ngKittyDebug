@@ -1,12 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import {
-  ChangePasswordDto,
-  StatsResponseData,
-  UpdateUserDto,
-  User,
-} from './models/user.interfaces';
+import { ChangePasswordDto, StatsResponseData, UpdateAvatar, UpdateUserDto, User } from './models/user.interfaces';
 import { UserPath } from './models/user-path.enum';
 import { getUrl } from './utils/utils';
 import { API_BASE_URL } from '../../constants/api.constants';
@@ -53,6 +48,13 @@ export class UserService {
   public statsGetAll(): Observable<StatsResponseData[]> {
     return this.http.get<StatsResponseData[]>(
       getUrl(this.baseUrl, UserPath.BASE, UserPath.STATS_GET_ALL),
+    );
+  }
+  
+  public updateAvatar(data: UpdateAvatar): Observable<UpdateAvatar> {
+    return this.http.patch<UpdateAvatar>(
+      getUrl(this.baseUrl, UserPath.BASE, UserPath.AVATAR),
+      data,
     );
   }
 }

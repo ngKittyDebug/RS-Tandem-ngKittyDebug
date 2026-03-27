@@ -5,4 +5,5 @@ export enum UserPath {
   STATS_UPDATE = '/stats/update',
   STATS_GET_GAME = '/stats/id',
   STATS_GET_ALL = '/stats/all',
+  AVATAR = '/avatar',
 }

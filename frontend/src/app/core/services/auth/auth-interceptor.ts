@@ -9,8 +9,15 @@ import { inject } from '@angular/core';
 import { AuthService } from './auth-service';
 import { catchError, filter, Observable, of, switchMap, take, throwError } from 'rxjs';
 import { AUTH_PATHS } from './models/auth-path.enum';
+import { CLOUDINARY_API_HOST } from '../cloudinary/models/cloudinary.constants';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const isCloudinaryRequest = req.url.includes(CLOUDINARY_API_HOST);
+
+  if (isCloudinaryRequest) {
+    return next(req);
+  }
+
   const authService = inject(AuthService);
   const token = authService.getAccessToken();
 

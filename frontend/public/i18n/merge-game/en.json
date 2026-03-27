@@ -1,0 +1,69 @@
+{
+  "title": "Merge Game - JS/TS",
+
+  "navigation": {
+    "theory": "Theory",
+    "catalog": "All Games",
+    "start": "Start Game",
+    "settings": "Settings Game"
+  },
+
+  "gameSetup": {
+    "title": "Game Setup",
+    "subtitle": "Test your logic and associative thinking",
+    "description1": "Find hidden connections and group the words into sets of 4 in row that share the same idea. After a correct match, a category and related questions will appear.",
+    "description2": "In the “Theory” section you can view the categories, questions, and correct answers.",
+
+    "mode": {
+      "question": "Play with AI helper?",
+      "options": {
+        "withAI": "With AI",
+        "withoutAI": "Without AI"
+      }
+    },
+
+    "personality": {
+      "question": "Choose AI personality:",
+      "options": {
+        "strict": "Strict",
+        "kind": "Kind",
+        "neutral": "Neutral"
+      }
+    },
+
+    "questions": {
+      "question": "How many questions per category?",
+      "options": {
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5"
+      }
+    }
+  },
+
+  "gameQuiz": {
+    "placeholder": "Enter answer...",
+    "check": "Check",
+    "correctAnswer": "Correct answer:",
+    "backToBoard": "Back to board",
+    "NextQuestion": "Next question",
+    "right": "✓ Right!",
+    "wrong": "✗ Not quite..."
+  },
+
+  "gameResult": {
+    "title": "Game finished!",
+    "mode": "Mode:",
+    "correct": "Correct:",
+    "wrong": "Wrong:"
+  },
+
+  "exitConfirm": {
+    "label": "Exit the game?",
+    "content": "Your progress will be lost",
+    "yes": "Exit",
+    "no": "Stay"
+  }
+}
