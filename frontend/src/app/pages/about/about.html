@@ -1,0 +1,7 @@
+<section *transloco="let t">
+  <h1>{{ t('about.aboutTitle') }}</h1>
+
+  @for (git of gitHubData(); track git.id) {
+    <app-github-cards [gitHubSignal]="git"></app-github-cards>
+  }
+</section>

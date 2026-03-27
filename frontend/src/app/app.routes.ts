@@ -9,6 +9,7 @@ export enum AppRoute {
   REGISTRATION = 'registration',
   LOGIN = 'login',
   USER_PROFILE = 'user-profile',
+  ABOUT = 'about',
   MAIN = '',
 }
 
@@ -51,6 +52,12 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/user-profile/user-profile').then((m) => m.UserProfile),
     providers: [provideTranslocoScope('user-profile')],
     canActivate: [authGuard],
+  },
+  {
+    path: AppRoute.ABOUT,
+    loadComponent: () => import('./pages/about/about').then((m) => m.About),
+    providers: [provideTranslocoScope('about')],
+    canActivate: [guestGuard],
   },
   {
     path: GameRoute.DECRYPTO,
