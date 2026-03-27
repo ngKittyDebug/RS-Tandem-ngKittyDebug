@@ -31,6 +31,7 @@
       "wrongGameType": "Incorrect game type",
       "notAuthUser": "User is not logged in",
       "statisticsNotFound": "Statistics not found"
+    },
     "updateAvatar": {
       "success": "Avatar updated successfully",
       "invalidData": "Invalid data provided",
