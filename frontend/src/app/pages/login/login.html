@@ -77,6 +77,8 @@
     <tui-error [error]="getInputError('password')"></tui-error>
 
     <div class="login__footer">
+      <app-img-cat class="login__cat"></app-img-cat>
+
       <button
         tuiButton
         appearance="gradient"
@@ -90,7 +92,17 @@
           {{ t('login.buttons.login') }}
         }
       </button>
-      <app-img-cat class="login__cat"></app-img-cat>
+
+      <button
+        tuiButton
+        iconStart="@tui.paw-print"
+        appearance="outline"
+        class="login__button"
+        type="button"
+        (click)="loginWithGitHub()"
+      >
+        {{ t('login.buttons.loginWithGitHub') }}
+      </button>
     </div>
 
     <div class="login__link">
