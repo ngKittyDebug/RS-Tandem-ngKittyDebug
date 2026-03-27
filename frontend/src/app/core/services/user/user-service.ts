@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ChangePasswordDto, UpdateUserDto, User } from './models/user.interfaces';
+import { ChangePasswordDto, UpdateAvatar, UpdateUserDto, User } from './models/user.interfaces';
 import { UserPath } from './models/user-path.enum';
 import { getUrl } from './utils/utils';
 import { API_BASE_URL } from '../../constants/api.constants';
@@ -23,5 +23,12 @@ export class UserService {
 
   public changePassword(data: ChangePasswordDto): Observable<void> {
     return this.http.patch<void>(getUrl(this.baseUrl, UserPath.BASE, UserPath.PASSWORD), data);
+  }
+
+  public updateAvatar(data: UpdateAvatar): Observable<UpdateAvatar> {
+    return this.http.patch<UpdateAvatar>(
+      getUrl(this.baseUrl, UserPath.BASE, UserPath.AVATAR),
+      data,
+    );
   }
 }

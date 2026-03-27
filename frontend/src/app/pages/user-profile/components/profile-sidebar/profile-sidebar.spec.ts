@@ -7,6 +7,9 @@ import { ProfileSidebar } from './profile-sidebar';
 import { TranslocoService, TranslocoTestingModule } from '@jsverse/transloco';
 import { UserStore } from '../../../../core/stores/user-store/user-store';
 import { signal } from '@angular/core';
+import { AppTosterService } from '../../../../core/services/app-toster-service';
+import { CloudinaryService } from '../../../../core/services/cloudinary/cloudinary-service';
+import { throwError } from 'rxjs';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -29,6 +32,15 @@ describe('ProfileSidebar', () => {
       email: 'user@test.com',
       createdAt,
     }),
+    updateAvatar: vi.fn(),
+  };
+
+  const tosterMock = {
+    showErrorToster: vi.fn(),
+  };
+
+  const cloudinaryServiceMock = {
+    uploadImage: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -43,7 +55,11 @@ describe('ProfileSidebar', () => {
           },
         }),
       ],
-      providers: [{ provide: UserStore, useValue: userStoreMock }],
+      providers: [
+        { provide: UserStore, useValue: userStoreMock },
+        { provide: AppTosterService, useValue: tosterMock },
+        { provide: CloudinaryService, useValue: cloudinaryServiceMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProfileSidebar);
@@ -65,6 +81,12 @@ describe('ProfileSidebar', () => {
     );
   });
 
+  it('should render fallback avatar when user has no avatar', () => {
+    const avatarImg = fixture.nativeElement.querySelector('img');
+
+    expect(avatarImg?.getAttribute('src')).toBe('assets/images/cat-1.png');
+  });
+
   it('should format created date using active language locale', async () => {
     const pipe = new DatePipe('en');
 
@@ -81,5 +103,78 @@ describe('ProfileSidebar', () => {
     fixture.detectChanges();
 
     expect(subtitle()).toBe(expectedEn);
+  });
+
+  it('should disable upload button while avatar is updationg or loading', () => {
+    const button = fixture.nativeElement.querySelector('.avatar__button');
+
+    expect(button.disabled).toBe(false);
+
+    component['isAvatarUpdating'].set(true);
+    fixture.detectChanges();
+    expect(button.disabled).toBe(true);
+
+    component['isAvatarUpdating'].set(false);
+    component['isAvatarImageLoading'].set(true);
+    fixture.detectChanges();
+    expect(button.disabled).toBe(true);
+  });
+
+  it('should show error toaster for invalid file type', () => {
+    const file = new File(['avatar'], 'avatar.gif', { type: 'image/gif' });
+    const input = fixture.nativeElement.querySelector('input[type="file"]');
+
+    Object.defineProperty(input, 'files', {
+      value: {
+        item: () => file,
+      },
+    });
+
+    component['onFileSelected'](input);
+    expect(tosterMock.showErrorToster).toHaveBeenCalledWith(
+      transloco.translate('userProfile.userInfo.changeAvatar.allowedTypes'),
+    );
+    expect(input.value).toBe('');
+  });
+
+  it('should show uploadFailed toaster when uploadImage fails', () => {
+    const file = new File(['avatar'], 'avatar.png', { type: 'image/png' });
+    const input = fixture.nativeElement.querySelector('input[type="file"]');
+
+    Object.defineProperty(input, 'files', {
+      value: { item: () => file },
+    });
+
+    cloudinaryServiceMock.uploadImage.mockReturnValue(throwError(() => new Error('upload failed')));
+
+    component['onFileSelected'](input);
+
+    expect(userStoreMock.updateAvatar).not.toHaveBeenCalled();
+    expect(component['isAvatarUpdating']()).toBe(false);
+    expect(component['isAvatarImageLoading']()).toBe(false);
+    expect(tosterMock.showErrorToster).toHaveBeenCalledWith(
+      transloco.translate('userProfile.userInfo.changeAvatar.uploadFailed'),
+    );
+    expect(input.value).toBe('');
+  });
+
+  it('should stop image loading on image error event', () => {
+    component['isAvatarImageLoading'].set(true);
+    fixture.detectChanges();
+
+    const img: HTMLImageElement = fixture.nativeElement.querySelector('img');
+    img.dispatchEvent(new Event('error'));
+    fixture.detectChanges();
+
+    expect(component['isAvatarImageLoading']()).toBe(false);
+  });
+
+  it('should call file input click when avatar button is clicked', () => {
+    const button = fixture.nativeElement.querySelector('.avatar__button');
+    const input = fixture.nativeElement.querySelector('input[type="file"]');
+
+    const clickSpy = vi.spyOn(input, 'click');
+    button.click();
+    expect(clickSpy).toHaveBeenCalled();
   });
 });

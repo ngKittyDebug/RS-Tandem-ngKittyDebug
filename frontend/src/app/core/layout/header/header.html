@@ -14,7 +14,10 @@
         class="user_bar__avatar"
         (click)="avatarClick()"
       >
-        <img alt="cat-1" src="assets/images/cat-1.png" />
+        <img
+          alt="user profile icon"
+          [src]="userStore.user()?.avatar || 'assets/images/cat-1.png'"
+        />
       </tui-avatar>
       <button
         tuiButton
