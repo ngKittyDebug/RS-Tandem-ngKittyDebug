@@ -1,6 +1,13 @@
-<section *transloco="let t">
-  <div>
+<section *transloco="let t" class="about__cards__section">
+  <div class="container">
     <h3>{{ gitHubSignal().name }}</h3>
+    <tui-avatar [src]="gitHubSignal().imageLink" />
+    @for(badge of gitHubSignal().badges; track $index) {
+    <tui-badge appearance="primary">{{badge}}</tui-badge>
+    }
+
     <a [href]="gitHubSignal().gitHubLink">{{ t('about.gutHubLinkTitle') }}</a>
+
+
   </div>
 </section>

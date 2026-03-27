@@ -1,7 +1,8 @@
-<section *transloco="let t">
+<section *transloco="let t" class="about_section">
   <h1>{{ t('about.aboutTitle') }}</h1>
-
-  @for (git of gitHubData(); track git.id) {
+  <div class="cards_container">
+    @for (git of gitHubData(); track git.id) {
     <app-github-cards [gitHubSignal]="git"></app-github-cards>
-  }
+    }
+  </div>
 </section>
