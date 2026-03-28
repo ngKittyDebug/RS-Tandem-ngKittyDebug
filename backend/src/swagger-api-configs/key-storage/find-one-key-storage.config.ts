@@ -29,7 +29,15 @@ export const findOneKeyStorageConfig: ApiSwaggerConfig = {
   responses: [
     {
       status: HttpStatus.NOT_FOUND,
-      description: 'Запись с указанным ключом не найдена',
+      description: 'Запись с указанным ключом не найдена (возвращает null)',
+    },
+    {
+      status: HttpStatus.BAD_REQUEST,
+      description: 'Некорректный ключ',
+    },
+    {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Ошибка сервера при получении записи',
     },
   ],
 };

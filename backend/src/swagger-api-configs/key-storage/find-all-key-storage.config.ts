@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import type { ApiSwaggerConfig } from '../../decorators/swagger.decorator';
 
 export const findAllKeyStorageConfig: ApiSwaggerConfig = {
@@ -25,4 +26,10 @@ export const findAllKeyStorageConfig: ApiSwaggerConfig = {
       },
     },
   },
+  responses: [
+    {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Ошибка сервера при получении записей',
+    },
+  ],
 };

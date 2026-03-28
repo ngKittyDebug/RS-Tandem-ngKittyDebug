@@ -3,9 +3,11 @@ import {
   Controller,
   Delete,
   Get,
+  ParseEnumPipe,
   Patch,
   HttpStatus,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiAuth, ApiSwagger } from 'src/decorators/swagger.decorator';
@@ -21,7 +23,11 @@ import {
   updateUserAvatarConfig,
   updatePasswordConfig,
   deleteUserConfig,
+  updateUserStatConfig,
+  getUserGameStatsByIdConfig,
+  getAllUserGamesStatsConfig,
 } from 'src/swagger-api-configs/user';
+import { GameType } from 'src/generated/prisma/enums';
 
 @ApiTags('User')
 @ApiAuth()
@@ -67,5 +73,29 @@ export class UserController {
     @Body() confirmPasswordDto: ConfirmPasswordDto,
   ) {
     return this.userService.deleteUser(id, confirmPasswordDto);
+  }
+
+  @ApiSwagger(updateUserStatConfig)
+  @Patch('stats/update')
+  updateUserStat(
+    @User('id') userId: string,
+    @Query('game', new ParseEnumPipe(GameType)) gameType: GameType,
+  ) {
+    return this.userService.updateUserGameStats(userId, gameType);
+  }
+
+  @ApiSwagger(getUserGameStatsByIdConfig)
+  @Get('stats/id')
+  getUserGameStatsById(
+    @User('id') userId: string,
+    @Query('game', new ParseEnumPipe(GameType)) gameType: GameType,
+  ) {
+    return this.userService.getUserGameStatsById(userId, gameType);
+  }
+
+  @ApiSwagger(getAllUserGamesStatsConfig)
+  @Get('stats/all')
+  getAllUserGamesStats(@User('id') userId: string) {
+    return this.userService.getAllUserGamesStats(userId);
   }
 }

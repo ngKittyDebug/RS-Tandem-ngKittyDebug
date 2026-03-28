@@ -17,7 +17,14 @@ export const findOneDataConfig: ApiSwaggerConfig = {
           {
             id: 1,
             word: 'Кошка',
-            questions: [{ id: 1, question: 'Мяукает', answer: 'Кошка' }],
+            questions: [
+              {
+                id: 1,
+                question: 'Мяукает',
+                answer: 'Кошка',
+                keywords: ['животное'],
+              },
+            ],
           },
         ],
       },
@@ -26,5 +33,9 @@ export const findOneDataConfig: ApiSwaggerConfig = {
   responses: [
     { status: HttpStatus.NOT_FOUND, description: 'Данные не найдены' },
     { status: HttpStatus.BAD_REQUEST, description: 'Некорректный ID' },
+    {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Ошибка сервера при получении данных',
+    },
   ],
 };

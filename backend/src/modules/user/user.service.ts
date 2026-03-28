@@ -12,7 +12,7 @@ import { compare, genSalt, hash } from 'bcrypt-ts';
 import { ConfigService } from '@nestjs/config';
 import { UpdateUserPassword } from './dto/update-user-pass.dto';
 import { ConfirmPasswordDto } from './dto/delete-user-account.dto';
-import { Provider, Prisma } from 'src/generated/prisma/client';
+import { Provider, Prisma, GameType } from 'src/generated/prisma/client';
 import { AvatarUpdateDto } from './dto/update-avatar.dto';
 
 @Injectable()
@@ -172,6 +172,61 @@ export class UserService {
       data: { avatar: dto.avatar },
       select: {
         avatar: true,
+      },
+    });
+  }
+
+  async updateUserGameStats(userId: string, gameType: GameType) {
+    return this.prisma.gameStatistic.upsert({
+      where: {
+        userId_gameType: {
+          userId,
+          gameType,
+        },
+      },
+      update: {
+        playedCount: { increment: 1 },
+      },
+      create: {
+        userId,
+        gameType,
+      },
+      omit: {
+        id: true,
+        userId: true,
+      },
+    });
+  }
+
+  async getUserGameStatsById(userId: string, gameType: GameType) {
+    const stats = await this.prisma.gameStatistic.findUnique({
+      where: {
+        userId_gameType: {
+          userId,
+          gameType,
+        },
+      },
+      omit: {
+        id: true,
+        userId: true,
+      },
+    });
+
+    if (!stats) {
+      throw new NotFoundException(`Статистика не найдена для игры ${gameType}`);
+    }
+
+    return stats;
+  }
+
+  async getAllUserGamesStats(userId: string) {
+    return await this.prisma.gameStatistic.findMany({
+      where: {
+        userId,
+      },
+      omit: {
+        id: true,
+        userId: true,
       },
     });
   }

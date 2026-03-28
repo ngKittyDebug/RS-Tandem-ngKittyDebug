@@ -38,7 +38,14 @@ export const findAllDataConfig: ApiSwaggerConfig = {
               {
                 id: 1,
                 word: 'Кошка',
-                questions: [{ id: 1, question: 'Мяукает', answer: 'Кошка' }],
+                questions: [
+                  {
+                    id: 1,
+                    question: 'Мяукает',
+                    answer: 'Кошка',
+                    keywords: ['животное'],
+                  },
+                ],
               },
             ],
           },
@@ -56,6 +63,10 @@ export const findAllDataConfig: ApiSwaggerConfig = {
     {
       status: HttpStatus.BAD_REQUEST,
       description: 'Некорректные параметры пагинации',
+    },
+    {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Ошибка сервера при получении данных',
     },
   ],
 };

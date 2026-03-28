@@ -18,5 +18,9 @@ export const deleteDataConfig: ApiSwaggerConfig = {
   responses: [
     { status: HttpStatus.NOT_FOUND, description: 'Данные не найдены' },
     { status: HttpStatus.BAD_REQUEST, description: 'Некорректный ID' },
+    {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Ошибка сервера при удалении данных',
+    },
   ],
 };

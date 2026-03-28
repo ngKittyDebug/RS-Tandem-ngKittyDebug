@@ -14,6 +14,7 @@ export const findUserConfig: ApiSwaggerConfig = {
         username: 'john_doe',
         avatar: 'https://example.com/avatar.jpg',
         createdAt: '2024-01-01T00:00:00.000Z',
+        role: 'user',
       },
     },
   },
@@ -21,10 +22,6 @@ export const findUserConfig: ApiSwaggerConfig = {
     {
       status: HttpStatus.UNAUTHORIZED,
       description: 'Пользователь не авторизован',
-    },
-    {
-      status: HttpStatus.NOT_FOUND,
-      description: 'Пользователь не найден',
     },
   ],
 };
