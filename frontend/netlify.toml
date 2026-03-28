@@ -4,6 +4,12 @@
   publish = "dist/frontend/browser"
 
 [[redirects]]
+  from = "/api/*"
+  to = "https://git-actions-tzjx.onrender.com/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200

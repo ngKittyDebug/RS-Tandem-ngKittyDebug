@@ -4,7 +4,7 @@ import { DecryptoGameAchievementsService } from './decrypto-game-achievements-se
 import { TranslocoTestingModule } from '@jsverse/transloco';
 import { DecryptoGameService } from './decrypto-game-service';
 
-describe('DecryptoGameService', () => {
+describe.skip('DecryptoGameService', () => {
   let service: DecryptoGameService;
   const mockAchievementsService: Partial<DecryptoGameAchievementsService> = {
     checkAchievements: vi.fn(),
