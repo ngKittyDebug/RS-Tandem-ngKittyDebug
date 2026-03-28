@@ -157,6 +157,9 @@ export class GameComponent implements OnInit {
       case 3:
         this.currentCatImage = HangmanImage.MOUSE4;
         break;
+      case 4:
+        this.currentCatImage = HangmanImage.MOUSE5;
+        break;
       default:
         this.currentCatImage = HangmanImage.MOUSE1;
         break;
