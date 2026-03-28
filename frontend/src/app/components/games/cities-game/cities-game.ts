@@ -14,10 +14,28 @@ import { TuiMessage, TuiDataListWrapper, TuiTextarea } from '@taiga-ui/kit';
 import { TuiTextfield, TuiButton } from '@taiga-ui/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { KeyStorageService } from '../../../core/services/key-storage/key-storage-service';
 
 interface Message {
   text: string;
   type: 'incoming' | 'outgoing';
+}
+export interface CitiesGameStorage {
+  words: Word[];
+}
+export interface Word {
+  word: string;
+  wordDescription: WordDescription;
+}
+
+export interface WordDescription {
+  en: string;
+  ru: string;
+}
+export interface CitiesGameVocabularResponse {
+  id: string;
+  key: string;
+  storage: CitiesGameStorage;
 }
 
 @Component({
@@ -61,6 +79,7 @@ export class CitiesGame implements OnInit {
   private index = 0;
   public isRunning = true;
   private timeoutId?: ReturnType<typeof setTimeout>;
+  protected readonly loadDataServise = inject(KeyStorageService<CitiesGameStorage>);
 
   public runMessages(): void {
     if (this.index >= this.messages.length) {
@@ -77,7 +96,17 @@ export class CitiesGame implements OnInit {
       });
     }, 500);
   }
+  public words: Word[] = [];
+
   public ngOnInit(): void {
+    this.loadDataServise
+      .getData({
+        key: 'citiesGameVocabular',
+      })
+      .subscribe((response) => {
+        this.words = response.storage.words;
+        this.cdr.markForCheck();
+      });
     this.runMessages();
   }
 
@@ -89,6 +118,7 @@ export class CitiesGame implements OnInit {
       clearTimeout(this.timeoutId);
     }
     this.runMessages();
+    console.log(this.words);
   }
 
   public messageForm = this.fb.group({

@@ -1,8 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
+import { KeyStorageService } from '../../../core/services/key-storage/key-storage-service';
 
 import { CitiesGame } from './cities-game';
-
+const mockKeyStorageService = {
+  getData: vi.fn().mockReturnValue({
+    subscribe: (cb: (value: { storage: { words: unknown[] } }) => void) =>
+      cb({
+        storage: {
+          words: [],
+        },
+      }),
+  }),
+};
 describe('CitiesGame', () => {
   let component: CitiesGame;
   let fixture: ComponentFixture<CitiesGame>;
@@ -18,6 +28,12 @@ describe('CitiesGame', () => {
             defaultLang: 'ru',
           },
         }),
+      ],
+      providers: [
+        {
+          provide: KeyStorageService,
+          useValue: mockKeyStorageService,
+        },
       ],
     }).compileComponents();
 
