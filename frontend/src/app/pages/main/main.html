@@ -56,7 +56,7 @@
             <p>{{ t('main.gameDescription.mergegame') }}</p>
           </section>
           <footer>
-            <button appearance="gradient" size="m" tuiButton type="button">
+            <button appearance="gradient" size="m" tuiButton type="button" (click)="goMerge()">
               {{ t('main.play') }}
             </button>
           </footer>
@@ -70,7 +70,7 @@
             <p>{{ t('main.gameDescription.wordchain') }}</p>
           </section>
           <footer>
-            <button appearance="gradient" size="m" tuiButton type="button">
+            <button appearance="gradient" size="m" tuiButton type="button" (click)="goWordChain()">
               {{ t('main.play') }}
             </button>
           </footer>
@@ -84,7 +84,7 @@
             <p>{{ t('main.gameDescription.loopgame') }}</p>
           </section>
           <footer>
-            <button appearance="gradient" size="m" tuiButton type="button">
+            <button appearance="gradient" size="m" tuiButton type="button" (click)="goLoop()">
               {{ t('main.play') }}
             </button>
           </footer>

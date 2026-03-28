@@ -16,6 +16,8 @@ export enum GameRoute {
   DECRYPTO = 'decrypto',
   MERGE_GAME = 'merge-game',
   HANGMAN = 'hangman',
+  WORD_CHAIN = 'word-chain',
+  LOOP = 'meowloop',
 }
 
 export enum MergeGameRoute {
@@ -59,6 +61,7 @@ export const routes: Routes = [
     providers: [provideTranslocoScope('decrypto')],
     canActivate: [authGuard],
   },
+
   {
     path: GameRoute.MERGE_GAME,
     loadComponent: () =>

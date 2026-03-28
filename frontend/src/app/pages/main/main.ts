@@ -51,4 +51,13 @@ export class Main {
   public goHangman(): void {
     this.router.navigate([getRoutePath(GameRoute.HANGMAN)]);
   }
+  public goMerge(): void {
+    this.router.navigate([getRoutePath(GameRoute.MERGE_GAME)]);
+  }
+  public goWordChain(): void {
+    this.router.navigate([getRoutePath(GameRoute.WORD_CHAIN)]);
+  }
+  public goLoop(): void {
+    this.router.navigate([getRoutePath(GameRoute.LOOP)]);
+  }
 }
