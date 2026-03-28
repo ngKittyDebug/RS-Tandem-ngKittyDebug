@@ -27,10 +27,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((err) => {
       if (err instanceof HttpErrorResponse && err.status === 401) {
         if (req.url.endsWith(AUTH_PATHS.REFRESH)) {
-          return authService.logout().pipe(
-            catchError(() => of(void 0)),
-            switchMap(() => throwError(() => err)),
-          );
+          authService.clearLocalSession();
+          return throwError(() => err);
         }
         return handle401(req, next, authService);
       }

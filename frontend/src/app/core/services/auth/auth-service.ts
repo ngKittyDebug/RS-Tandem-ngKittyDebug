@@ -98,6 +98,11 @@ export class AuthService {
     return this.accessToken();
   }
 
+  public clearLocalSession(): void {
+    this.accessToken.set(null);
+    this.isSessionChecked.set(true);
+  }
+
   public ensureSession(): Observable<boolean> {
     if (this.isLoggedIn()) {
       this.isSessionChecked.set(true);
