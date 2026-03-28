@@ -237,7 +237,7 @@ export class AuthService {
       httpOnly: true,
       expires,
       secure: !isDev(this.configService),
-      sameSite: isDev(this.configService) ? 'lax' : 'none',
+      sameSite: 'lax',
     });
   }
 
