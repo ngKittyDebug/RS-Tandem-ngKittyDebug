@@ -38,19 +38,36 @@ export class GameComponent implements OnInit {
   private readonly http = inject(HttpClient);
   private readonly cdr = inject(ChangeDetectorRef);
 
-  public userAnswer = '';
   public currentQuestion = '';
   public correctAnswer = '';
+
+  public guessedLetters: string[] = [];
+
+  public displayedWord = '';
 
   public ngOnInit(): void {
     this.loadWords();
   }
 
   protected addLetter(letter: string): void {
-    this.userAnswer += letter;
+    const upperLetter = letter.toUpperCase();
+    const upperAnswer = this.correctAnswer.toUpperCase();
+    if (this.guessedLetters.includes(upperLetter)) {
+      return;
+    }
+    if (upperAnswer.includes(upperLetter)) {
+      this.guessedLetters.push(upperLetter);
+      this.updateDisplayedWord();
+      console.log('Correct letter:', upperLetter);
+    } else {
+      console.log('error');
+    }
+    this.cdr.detectChanges();
   }
   protected reset(): void {
-    this.userAnswer = '';
+    this.guessedLetters = [];
+    this.updateDisplayedWord();
+    this.cdr.detectChanges();
   }
 
   private loadWords(): void {
@@ -62,7 +79,9 @@ export class GameComponent implements OnInit {
         const randomWord = words[randomIndex];
 
         this.currentQuestion = randomWord.description;
-        this.correctAnswer = randomWord.word;
+        this.correctAnswer = randomWord.word.toUpperCase();
+
+        this.updateDisplayedWord();
 
         console.log('Question loaded:', this.currentQuestion);
         console.log('Answer loaded:', this.correctAnswer);
@@ -73,5 +92,11 @@ export class GameComponent implements OnInit {
         console.error('Error loading hangman words:', error);
       },
     });
+  }
+  private updateDisplayedWord(): void {
+    this.displayedWord = this.correctAnswer
+      .split('')
+      .map((letter) => (this.guessedLetters.includes(letter) ? letter : '_'))
+      .join(' ');
   }
 }
