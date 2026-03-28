@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, HostListener, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { LoginForm } from './models/login-form.interface';
@@ -51,7 +51,7 @@ import { Loader } from '../../core/components/loader/loader';
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class Login {
+export class Login implements OnInit {
   private fb = inject(FormBuilder);
   private translocoService = inject(TranslocoService);
   private authService = inject(AuthService);
@@ -74,6 +74,10 @@ export class Login {
       Validators.pattern(PASSWORD_PATTERN),
     ]),
   });
+
+  public ngOnInit(): void {
+    this.redirectIfAuthorized();
+  }
 
   protected switchMode(mode: LoginMode): void {
     if (this.loginMode() === mode) return;
@@ -117,7 +121,7 @@ export class Login {
       )
       .subscribe({
         next: () => {
-          this.router.navigate([getRoutePath(AppRoute.MAIN)]);
+          this.router.navigate([getRoutePath(AppRoute.MAIN)], { replaceUrl: true });
         },
         error: (error) => {
           let key: string;
@@ -155,7 +159,29 @@ export class Login {
     this.authService.loginWithGitHub();
   }
 
+  @HostListener('window:pageshow', ['$event'])
+  protected onPageShow(event: PageTransitionEvent): void {
+    if (!event.persisted) {
+      return;
+    }
+
+    this.redirectIfAuthorized();
+  }
+
   private normalize(value: string): string {
     return value.trim().toLocaleLowerCase();
+  }
+
+  private redirectIfAuthorized(): void {
+    this.authService
+      .ensureSession()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((isLoggedIn) => {
+        if (!isLoggedIn) {
+          return;
+        }
+
+        this.router.navigate([getRoutePath(AppRoute.MAIN)], { replaceUrl: true });
+      });
   }
 }
