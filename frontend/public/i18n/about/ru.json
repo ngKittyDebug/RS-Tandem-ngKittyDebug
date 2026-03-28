@@ -3,9 +3,9 @@
   "teamTitle": "Наша команда",
   "aiTitle": "AI Ассистенты",
   "aiDescription": "Наша команда использовала различные AI-инструменты для помощи в разработке, обучении и генерации контента",
-  "usedBy": "Использовал",
   "gutHubLinkTitle": "Перейти на GitHub",
   "componentsLabel": "Компоненты",
+  "gameLabel": "Игра",
   "organizationLink": "Организация GitHub",
   "repositoryLink": "Репозиторий проекта",
   "description": {
@@ -16,52 +16,33 @@
   "roles": {
     "alex": "Backend & DevOps Lead",
     "maria": "Team Lead & Frontend Developer",
-    "pavel": "Frontend Developer & Game Creator",
+    "pavel": "Frontend Developer",
     "oksana": "Frontend Developer",
-    "alena": "Frontend Developer & AI Integration",
-    "nadezhda": "Frontend Developer & Game Designer",
-    "mentor": "Ментор проекта"
+    "alena": "Frontend Developer",
+    "nadezhda": "Frontend Developer",
+    "mentor": "Mentor"
   },
-  "descriptions": {
-    "alex": "Nest.js backend, Prisma ORM, Supabase, JWT auth, CI/CD, GitHub Actions, Role Guards, Swagger, key-storages модуль, GitHub OAuth",
-    "maria": "Team Lead, Loader, User Profile (Account Settings), градиентная кнопка, Event Loop игра, Wiki",
-    "pavel": "Decrypto игра, Timer, Achievements service, KeyStorage service, тесты",
-    "oksana": "Registration страница, EyeCompass директива, Programming Cities игра",
-    "alena": "Login страница, Merge Game, Groq AI интеграция, GitHub OAuth кнопка на фронте, Cat компонент",
-    "nadezhda": "404 страница, Main страница, Hangman игра (коты)",
-    "mentor": "Консультации, код-ревью, техническое руководство, владелец цепного AI Коляныча, автоматизации ревью с помощью Коляныча, изучение возможностей AI"
+  "games": {
+    "maria": "Event Loop Game",
+    "pavel": "Decrypto",
+    "oksana": "Word Chain",
+    "alena": "Merge Game",
+    "nadezhda": "Hangman"
   },
   "components": {
-    "alex": "Backend API, JWT Auth, CORS, CI/CD, Prisma ORM, Supabase, GitHub Actions, Role Guards, Swagger, key-storages, GitHub OAuth",
-    "maria": "Loader, User Profile, Account Settings, Theme Switcher, Language Switcher, градиентная кнопка, Wiki, логотип",
-    "pavel": "Decrypto игра, Timer, Achievements, KeyStorage, Header, Language Switcher, Theme Switcher",
-    "oksana": "Registration страница, EyeCompass директива",
-    "alena": "Login страница, Merge Game, Groq AI, GitHub OAuth кнопка, Cat компонент",
-    "nadezhda": "404 страница, Main страница, Hangman игра",
-    "mentor": "Код-ревью, архитектурные решения"
-  },
-  "aiUsers": {
-    "alena": "Алёна",
-    "alex": "Алексей",
-    "oksana": "Оксана",
-    "maria": "Мария",
-    "nadezhda": "Надежда",
-    "jspowwow": "Сасарик"
-  },
-  "aiRoles": {
-    "chatgpt": "Design & Content AI",
-    "claude": "Content Generator & Code Refactoring",
-    "groq": "AI API Integration",
-    "qwen": "Smart Thoughts Generator",
-    "codeQualityBot": "Code Review Bot",
-    "ai": "Learning Assistant"
+    "alex": "Backend API, JWT Auth, CORS, CI/CD, Prisma ORM, Supabase, GitHub Actions, Role Guards, Swagger, key-storages, GitHub OAuth, Merge Game CRUD, User CRUD API",
+    "maria": "Loader, User Profile, Account Settings, Change avatar, User Store, User Service",
+    "pavel": "Timer, Achievements, KeyStorage, Header, Footer, Language Switcher, Theme Switcher, Toast, Popup",
+    "oksana": "Registration страница, EyeCompass директива, Набор масКОТов для проекта",
+    "alena": "Login страница, Groq AI, GitHub OAuth кнопка, AuthService, Guards, Interceptors",
+    "nadezhda": "404, Main, Games cards template",
+    "mentor": "Код-ревью, архитектурные решения, изучение возможностей AI в проекте, натравил ручного миньона Claudя на весь проект"
   },
   "aiDescriptions": {
-    "chatgpt": "Генерация изображений (Алёна — персонажи, Надежда — котики для Hangman), ревью кода, помощь с тестами, оформление дневников",
-    "claude": "Создание списка слов для игр (Алёна), , исправление ошибок в дневниках",
-    "groq": "Интеграция AI для проверки ответов в Merge Game (Алёна + Алексей на бэкенде)",
-    "qwen": "Генерация 'умных мыслей дня/ночи' для дневников, рефакторинг Swagger декораторов, заполнения документации (Алексей), вайб-код about страницы",
-    "codeQualityBot": "Автоматическое ревью PR, подсветка проблем в коде, составление статуса проекта",
-    "ai": "Объяснение кода Angular (Оксана), генерация дизайна проекта (Мария), помощь с рефакторингом"
+    "chatgpt": "Генерация изображений (Alena1409 — персонажи, kozochkina82 — котики для Hangman), ревью кода, помощь с тестами, оформление дневников",
+    "claude": "Создание списка слов для игр (Alena1409), исправление ошибок в дневниках",
+    "groq": "Интеграция AI для проверки ответов в Merge Game (Alena1409 + AlexGorSer на бэкенде)",
+    "qwen": "Генерация 'умных мыслей дня/ночи' для дневников, рефакторинг Swagger декораторов, заполнения документации (AlexGorSer), вайб-код about страницы",
+    "codeQualityBot": "Автоматическое ревью PR, подсветка проблем в коде, составление статуса проекта"
   }
 }

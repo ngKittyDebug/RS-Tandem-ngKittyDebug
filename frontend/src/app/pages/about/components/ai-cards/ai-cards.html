@@ -4,14 +4,7 @@
       <tui-avatar [src]="aiSignal().imageLink" size="m" />
       <div class="card-info">
         <h3 class="card-name">{{ aiSignal().name }}</h3>
-        <span class="card-used-by"
-          >{{ t('about.usedBy') }}: {{ t(aiSignal().usedByTranslationKey) }}</span
-        >
       </div>
-    </div>
-
-    <div class="card-role">
-      <span class="role-label">{{ t(aiSignal().roleTranslationKey) }}</span>
     </div>
 
     <p class="card-description">{{ t(aiSignal().descriptionTranslationKey) }}</p>

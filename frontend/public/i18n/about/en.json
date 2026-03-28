@@ -3,9 +3,9 @@
   "teamTitle": "Our Team",
   "aiTitle": "AI Assistants",
   "aiDescription": "Our team used various AI tools to help with development, learning, and content generation",
-  "usedBy": "Used by",
   "gutHubLinkTitle": "Go to GitHub",
   "componentsLabel": "Components",
+  "gameLabel": "Game",
   "organizationLink": "GitHub Organization",
   "repositoryLink": "Project Repository",
   "description": {
@@ -16,52 +16,33 @@
   "roles": {
     "alex": "Backend & DevOps Lead",
     "maria": "Team Lead & Frontend Developer",
-    "pavel": "Frontend Developer & Game Creator",
+    "pavel": "Frontend Developer",
     "oksana": "Frontend Developer",
-    "alena": "Frontend Developer & AI Integration",
-    "nadezhda": "Frontend Developer & Game Designer",
-    "mentor": "Project Mentor"
+    "alena": "Frontend Developer",
+    "nadezhda": "Frontend Developer",
+    "mentor": "Mentor"
   },
-  "descriptions": {
-    "alex": "Nest.js backend, Prisma ORM, Supabase, JWT auth, CI/CD, GitHub Actions, Role Guards, Swagger, key-storages module, GitHub OAuth",
-    "maria": "Team Lead, Loader, User Profile (Account Settings), gradient button, Event Loop game, Wiki",
-    "pavel": "Decrypto game, Timer, Achievements service, KeyStorage service, tests",
-    "oksana": "Registration page, EyeCompass directive, Programming Cities game",
-    "alena": "Login page, Merge Game, Groq AI integration, GitHub OAuth button on frontend, Cat component",
-    "nadezhda": "404 page, Main page, Hangman game (cats)",
-    "mentor": "Consultations, code review, technical leadership, owner of chain AI Kolyanych, automation of review with Kolyanych, exploring AI capabilities"
+  "games": {
+    "maria": "Event Loop Game",
+    "pavel": "Decrypto",
+    "oksana": "Programming Cities",
+    "alena": "Merge Game",
+    "nadezhda": "Hangman"
   },
   "components": {
-    "alex": "Backend API, JWT Auth, CORS, CI/CD, Prisma ORM, Supabase, GitHub Actions, Role Guards, Swagger, key-storages, GitHub OAuth",
-    "maria": "Loader, User Profile, Account Settings, Theme Switcher, Language Switcher, gradient button, Wiki, logo",
-    "pavel": "Decrypto game, Timer, Achievements, KeyStorage, Header, Language Switcher, Theme Switcher",
-    "oksana": "Registration page, EyeCompass directive",
-    "alena": "Login page, Merge Game, Groq AI, GitHub OAuth button, Cat component",
+    "alex": "Backend API, JWT Auth, CORS, CI/CD, Prisma ORM, Supabase, GitHub Actions, Role Guards, Swagger, key-storages, GitHub OAuth, Merge Game CRUD, AI module (Groq)",
+    "maria": "Loader, User Profile, Account Settings, Theme Switcher, Language Switcher, gradient button, Wiki, logo, Header, User Store, User Service, Logout button",
+    "pavel": "Decrypto game, Timer, Achievements, KeyStorage, Header, Footer, Language Switcher, Theme Switcher, Toast, Popup",
+    "oksana": "Registration page, EyeCompass directive, mascots design, Word Chain game",
+    "alena": "Login page, Merge Game, Groq AI, GitHub OAuth button, Cat component, AuthService, Guards, Interceptors",
     "nadezhda": "404 page, Main page, Hangman game",
-    "mentor": "Code review, architectural decisions"
-  },
-  "aiUsers": {
-    "alena": "Alena",
-    "alex": "Alexey",
-    "oksana": "Oksana",
-    "maria": "Maria",
-    "nadezhda": "Nadezhda",
-    "jspowwow": "Sasarik"
-  },
-  "aiRoles": {
-    "chatgpt": "Design & Content AI",
-    "claude": "Content Generator & Code Refactoring",
-    "groq": "AI API Integration",
-    "qwen": "Smart Thoughts Generator",
-    "codeQualityBot": "Code Review Bot",
-    "ai": "Learning Assistant"
+    "mentor": "Code review, architectural decisions, exploring the potential of AI in the project"
   },
   "aiDescriptions": {
-    "chatgpt": "Generated images (Alena — characters, Nadezhda — cats for Hangman), code review, test help, diary formatting",
-    "claude": "Created word lists for games (Alena), diary error fixing",
-    "groq": "AI integration for answer checking in Merge Game (Alena + Alexey on backend)",
-    "qwen": "Generated 'smart thoughts day/night' for dev diaries, refactored Swagger decorators, documentation filling (Alexey), vibe-coding about page",
-    "codeQualityBot": "Automatic PR review, code problem highlighting, chain AI JsPowWow (Sasarik)",
-    "ai": "Explained Angular code (Oksana), generated project design (Maria), refactoring help"
+    "chatgpt": "Generated images (Alena1409 — characters, kozochkina82 — cats for Hangman), code review, test help, diary formatting",
+    "claude": "Created word lists for games (Alena1409), diary error fixing",
+    "groq": "AI integration for answer checking in Merge Game (Alena1409 + AlexGorSer on backend)",
+    "qwen": "Generated 'smart thoughts day/night' for dev diaries, refactored Swagger decorators, documentation filling (AlexGorSer), vibe-coding about page",
+    "codeQualityBot": "Automatic PR review, code problem highlighting, project status composition"
   }
 }

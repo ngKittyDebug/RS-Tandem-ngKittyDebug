@@ -5,15 +5,12 @@
         <tui-avatar [src]="gitHubSignal().imageLink" size="m" />
         <div class="card-info">
           <h3 class="card-name">{{ gitHubSignal().name }}</h3>
-          <span class="card-real-name">{{ gitHubSignal().realName }}</span>
         </div>
       </div>
 
       <div class="card-role">
         <span class="role-label">{{ t(gitHubSignal().roleTranslationKey) }}</span>
       </div>
-
-      <p class="card-description">{{ t(gitHubSignal().descriptionTranslationKey) }}</p>
 
       <div class="card-components">
         <span class="components-label">{{ t('about.componentsLabel') }}:</span>
@@ -22,6 +19,13 @@
           [innerHTML]="t(gitHubSignal().componentsTranslationKey)"
         ></span>
       </div>
+
+      @if (gitHubSignal().gameTranslationKey) {
+        <div class="card-game">
+          <span class="game-label">{{ t('about.gameLabel') }}:</span>
+          <span class="game-name">{{ t(gitHubSignal().gameTranslationKey!) }}</span>
+        </div>
+      }
 
       <div class="card-badges">
         @for (badge of gitHubSignal().badges; track $index) {
