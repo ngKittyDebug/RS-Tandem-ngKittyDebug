@@ -25,21 +25,21 @@
   "games": {
     "maria": "Event Loop Game",
     "pavel": "Decrypto",
-    "oksana": "Programming Cities",
+    "oksana": "Word Chain",
     "alena": "Merge Game",
     "nadezhda": "Hangman"
   },
   "components": {
-    "alex": "Backend API, JWT Auth, CORS, CI/CD, Prisma ORM, Supabase, GitHub Actions, Role Guards, Swagger, key-storages, GitHub OAuth, Merge Game CRUD, AI module (Groq)",
-    "maria": "Loader, User Profile, Account Settings, Theme Switcher, Language Switcher, gradient button, Wiki, logo, Header, User Store, User Service, Logout button",
-    "pavel": "Decrypto game, Timer, Achievements, KeyStorage, Header, Footer, Language Switcher, Theme Switcher, Toast, Popup",
-    "oksana": "Registration page, EyeCompass directive, mascots design, Word Chain game",
-    "alena": "Login page, Merge Game, Groq AI, GitHub OAuth button, Cat component, AuthService, Guards, Interceptors",
-    "nadezhda": "404 page, Main page, Hangman game",
-    "mentor": "Code review, architectural decisions, exploring the potential of AI in the project"
+    "alex": "Backend API, JWT Auth, CORS, CI/CD, Prisma ORM, Supabase, GitHub Actions, Role Guards, Swagger, key-storages, GitHub OAuth, Merge Game CRUD, User CRUD API",
+    "maria": "Loader, User Profile, Account Settings, Change avatar, User Store, User Service",
+    "pavel": "Timer, Achievements, KeyStorage, Header, Footer, Language Switcher, Theme Switcher, Toast, Popup",
+    "oksana": "Registration page, EyeCompass directive, Project mascots",
+    "alena": "Login page, Groq AI, GitHub OAuth button, AuthService, Guards, Interceptors",
+    "nadezhda": "404, Main, Games cards template",
+    "mentor": "Code review, architectural decisions, exploring AI capabilities in the project, deployed manual minion Claudya on the entire project"
   },
   "aiDescriptions": {
-    "chatgpt": "Generated images (Alena1409 — characters, kozochkina82 — cats for Hangman), code review, test help, diary formatting",
+    "chatgpt": "Image generation (Alena1409 — characters, kozochkina82 — cats for Hangman), code review, test help, diary formatting",
     "claude": "Created word lists for games (Alena1409), diary error fixing",
     "groq": "AI integration for answer checking in Merge Game (Alena1409 + AlexGorSer on backend)",
     "qwen": "Generated 'smart thoughts day/night' for dev diaries, refactored Swagger decorators, documentation filling (AlexGorSer), vibe-coding about page",
