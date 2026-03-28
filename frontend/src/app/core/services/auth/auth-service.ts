@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, DOCUMENT, inject, Injectable, signal } from '@angular/core';
 import { LoginDto, LoginResponse, RegisterDto } from './models/auth.interfaces';
-import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { API_BASE_URL, AUTH_ENDPOINT } from '../../constants/api.constants';
 import { AUTH_PATHS } from './models/auth-path.enum';
 
@@ -12,6 +12,7 @@ export class AuthService {
   private http = inject(HttpClient);
   private readonly document = inject(DOCUMENT);
   private accessToken = signal<string | null>(null);
+  private isSessionChecked = signal(false);
 
   public isLoggedIn = computed(() => this.accessToken() !== null);
   public isRefreshing = false;
@@ -27,7 +28,10 @@ export class AuthService {
         withCredentials: true,
       })
       .pipe(
-        tap((res) => this.accessToken.set(res.accessToken)),
+        tap((res) => {
+          this.accessToken.set(res.accessToken);
+          this.isSessionChecked.set(true);
+        }),
         map(() => void 0),
         catchError((err) => {
           this.accessToken.set(null);
@@ -42,7 +46,10 @@ export class AuthService {
         withCredentials: true,
       })
       .pipe(
-        tap((res) => this.accessToken.set(res.accessToken)),
+        tap((res) => {
+          this.accessToken.set(res.accessToken);
+          this.isSessionChecked.set(true);
+        }),
         map(() => void 0),
         catchError((err) => {
           this.accessToken.set(null);
@@ -57,7 +64,10 @@ export class AuthService {
         withCredentials: true,
       })
       .pipe(
-        tap((res) => this.accessToken.set(res.accessToken)),
+        tap((res) => {
+          this.accessToken.set(res.accessToken);
+          this.isSessionChecked.set(true);
+        }),
         map(() => void 0),
         catchError((err) => {
           this.accessToken.set(null);
@@ -72,7 +82,10 @@ export class AuthService {
         withCredentials: true,
       })
       .pipe(
-        tap(() => this.accessToken.set(null)),
+        tap(() => {
+          this.accessToken.set(null);
+          this.isSessionChecked.set(true);
+        }),
         map(() => void 0),
       );
   }
@@ -83,5 +96,22 @@ export class AuthService {
 
   public getAccessToken(): string | null {
     return this.accessToken();
+  }
+
+  public ensureSession(): Observable<boolean> {
+    if (this.isLoggedIn()) {
+      this.isSessionChecked.set(true);
+      return of(true);
+    }
+
+    if (this.isSessionChecked()) {
+      return of(false);
+    }
+
+    return this.refresh().pipe(
+      map(() => this.isLoggedIn()),
+      catchError(() => of(false)),
+      tap(() => this.isSessionChecked.set(true)),
+    );
   }
 }

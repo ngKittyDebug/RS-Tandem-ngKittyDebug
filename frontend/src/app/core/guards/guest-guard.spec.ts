@@ -11,16 +11,17 @@ import {
 import { guestGuard } from './guest-guard';
 import { AuthService } from '../services/auth/auth-service';
 import { AppRoute, getRoutePath } from '../../app.routes';
+import { firstValueFrom, Observable, of } from 'rxjs';
 
 describe('guestGuard', () => {
   const executeGuard: CanActivateFn = (...guardParameters) =>
     TestBed.runInInjectionContext(() => guestGuard(...guardParameters));
 
-  let authServiceMock: { isLoggedIn: () => boolean };
+  let authServiceMock: { ensureSession: () => Observable<boolean> };
   let router: Router;
 
   beforeEach(() => {
-    authServiceMock = { isLoggedIn: (): boolean => false };
+    authServiceMock = { ensureSession: (): Observable<boolean> => of(false) };
 
     TestBed.configureTestingModule({
       providers: [provideRouter([]), { provide: AuthService, useValue: authServiceMock }],
@@ -33,26 +34,30 @@ describe('guestGuard', () => {
     expect(executeGuard).toBeTruthy();
   });
 
-  it('should allow access if user is not logged in', () => {
-    authServiceMock.isLoggedIn = (): boolean => false;
+  it('should allow access if user is not logged in', async () => {
+    authServiceMock.ensureSession = (): Observable<boolean> => of(false);
 
     const route = {} as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
 
-    const result = executeGuard(route, state);
+    const result = await firstValueFrom(
+      executeGuard(route, state) as Observable<boolean | UrlTree>,
+    );
 
     expect(result).toBe(true);
   });
 
-  it('should redirect to main if user is logged in', () => {
-    authServiceMock.isLoggedIn = (): boolean => true;
+  it('should redirect to main if user is logged in', async () => {
+    authServiceMock.ensureSession = (): Observable<boolean> => of(true);
 
     const route = {} as ActivatedRouteSnapshot;
     const state = {} as RouterStateSnapshot;
 
     const mainPath = getRoutePath(AppRoute.MAIN);
 
-    const result = executeGuard(route, state) as UrlTree;
+    const result = (await firstValueFrom(
+      executeGuard(route, state) as Observable<boolean | UrlTree>,
+    )) as UrlTree;
 
     expect(router.serializeUrl(result)).toBe(router.serializeUrl(router.createUrlTree([mainPath])));
   });
