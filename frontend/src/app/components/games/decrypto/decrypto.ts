@@ -1,11 +1,11 @@
-import { Component, inject, OnInit, signal, viewChild } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal, viewChild } from '@angular/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { TuiButton, TuiIcon, TuiTextfield } from '@taiga-ui/core';
 import { TuiInputNumber } from '@taiga-ui/kit';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DecryptoForm } from './models/decrypto-form.interface';
 import { DecryptoGameService } from './services/decrypto-game-service';
-
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PolymorpheusComponent } from '@taiga-ui/polymorpheus';
 import { DecryptoRules } from './components/decrypto-rules/decrypto-rules';
 import { AppTosterService } from '../../../core/services/app-toster-service';
@@ -17,6 +17,13 @@ import { TIMER_MODE } from '../../timer/models/timer-mode.enum';
 import { CONFIG } from './services/models/decrypto.constants';
 import { KeyStorageService } from '../../../core/services/key-storage/key-storage-service';
 import { keysDataOnServer } from './models/decrypto.constants';
+import { Router } from '@angular/router';
+import { AppRoute, getRoutePath } from '../../../app.routes';
+import { filter, retry, take, throwError } from 'rxjs';
+import { Loader } from '../../../core/components/loader/loader';
+import { UserService } from '../../../core/services/user/user-service';
+import { GameLabels } from '../../../shared/enums/game-labels.enum';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export interface DecryptoGameData {
   gameCards: Card[];
@@ -37,6 +44,7 @@ const dataToServer = {
     TuiButton,
     TranslocoDirective,
     Timer,
+    Loader,
   ],
   templateUrl: './decrypto.html',
   styleUrl: './decrypto.scss',
@@ -48,16 +56,29 @@ export class Decrypto implements OnInit {
   protected readonly tosterService = inject(AppTosterService);
   protected readonly fb = inject(FormBuilder);
   private readonly popupService = inject(PopupService);
+  private readonly userService = inject(UserService);
+  private readonly destroyRef = inject(DestroyRef);
+  private router = inject(Router);
+  protected isLoaded = signal<boolean>(false);
   protected gameStarted = signal<boolean>(false);
   private timer = viewChild(Timer);
   public timerMode = TIMER_MODE.DOWN;
   public initialTime = CONFIG.gameTime;
 
   public ngOnInit(): void {
-    this.newGame();
-    this.loadDataServerService.getData(dataToServer).subscribe((data) => {
-      this.gameService.gameCardsFromServer = data.storage.gameCards;
-    });
+    this.loadDataServerService
+      .getData(dataToServer)
+      .pipe(
+        retry({ count: 2, delay: 60000 }),
+        filter((data) => data?.storage?.gameCards?.length > 0),
+        take(1),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((data) => {
+        this.gameService.gameCardsFromServer = data.storage.gameCards;
+        this.isLoaded.set(true);
+        this.newGame();
+      });
   }
 
   public readonly decryptoForm = this.fb.nonNullable.group<DecryptoForm>({
@@ -98,11 +119,6 @@ export class Decrypto implements OnInit {
   }
 
   protected startGame(): void {
-    if (this.gameService.gameCardsFromServer.length <= CONFIG.defaultCards * CONFIG.defaultRounds) {
-      const message = this.transloco.translate('decrypto.decryptoCardDataError');
-      this.tosterService.showErrorToster(message);
-      return;
-    }
     this.gameService.generateCardsForGame();
     this.gameService.generateCards();
     this.gameService.generateGameHints();
@@ -110,14 +126,23 @@ export class Decrypto implements OnInit {
     this.enableGameCodeInputs();
     this.gameStarted.set(true);
     this.timer()?.start();
+    this.userService.statsUpdate(GameLabels.Decrypto).subscribe({
+      error: (err: HttpErrorResponse) => {
+        let message = this.transloco.translate('serverResponse.statistics.defaultError');
+        if (err.status === 404) {
+          message = this.transloco.translate('serverResponse.statistics.statisticsNotFound');
+        } else if (err.status === 401) {
+          message = this.transloco.translate('serverResponse.statistics.notAuthUser');
+        } else if (err.status === 400) {
+          message = this.transloco.translate('serverResponse.statistics.wrongGameType');
+        }
+        this.tosterService.showErrorToster(message);
+        return throwError(() => err);
+      },
+    });
   }
 
   protected newGame(): void {
-    if (this.gameService.gameCardsFromServer.length === 0) {
-      this.loadDataServerService.getData(dataToServer).subscribe((data) => {
-        this.gameService.gameCardsFromServer = data.storage.gameCards;
-      });
-    }
     this.gameService.generateWrightCodesForGame();
     this.gameService.generateWrightCode();
     this.gameService.resetGameCards();
@@ -129,11 +154,10 @@ export class Decrypto implements OnInit {
     this.gameService.gameAttempts.set(CONFIG.attempts);
     this.disableGameCodeInputs();
     this.timer()?.reset();
-    console.log(this.gameStarted());
   }
 
   protected newRound(): void {
-    this.gameService.roundResult.set(false);
+    this.gameService.roundResult.set(null);
     this.gameService.gamePeriod.update((current) => current + 1);
     this.gameService.resetGameCards();
     this.gameService.resetGameHints();
@@ -151,11 +175,13 @@ export class Decrypto implements OnInit {
   }
 
   protected openRules(): void {
-    this.popupService.openPopup(
-      new PolymorpheusComponent(DecryptoRules),
-      this.transloco.translate('decrypto.gameRulesLabel'),
-      'l',
-    );
+    this.popupService
+      .openPopup(
+        new PolymorpheusComponent(DecryptoRules),
+        this.transloco.translate('decrypto.gameRulesLabel'),
+        'l',
+      )
+      .subscribe();
   }
 
   protected openCardDescription(
@@ -164,13 +190,21 @@ export class Decrypto implements OnInit {
   ): void {
     const lang = this.transloco.getActiveLang();
     if (cardDescription && cardName) {
-      this.popupService.openPopup(
-        cardDescription[lang],
-        cardName,
-        'no-dialog-buttons',
-        POPUP_SIZES.MEDIUM,
-      );
+      this.popupService
+        .openPopup(cardDescription[lang], cardName, 'no-dialog-buttons', POPUP_SIZES.MEDIUM)
+        .subscribe();
     }
+  }
+
+  protected openAllGames(): void {
+    this.decryptoForm.reset();
+    this.gameStarted.set(false);
+    this.gameService.gameResult.set(null);
+    this.gameService.gamePeriod.set(CONFIG.startRound);
+    this.gameService.gameAttempts.set(CONFIG.attempts);
+    this.disableGameCodeInputs();
+    this.timer()?.reset();
+    this.router.navigate([getRoutePath(AppRoute.MAIN)]);
   }
 
   protected submitDecryptoForm(): void {
