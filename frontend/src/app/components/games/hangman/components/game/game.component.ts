@@ -22,6 +22,13 @@ interface HangmanWordsByLevel {
   expert: HangmanWord[];
   insane: HangmanWord[];
 }
+enum HangmanImage {
+  MOUSE1 = 'assets/images/mouse11.png',
+  MOUSE2 = 'assets/images/mouse22.png',
+  MOUSE3 = 'assets/images/mouse33.png',
+  MOUSE4 = 'assets/images/mouse44.png',
+  MOUSE5 = 'assets/images/mouse55.png',
+}
 
 @Component({
   selector: 'app-game',
@@ -42,32 +49,69 @@ export class GameComponent implements OnInit {
   public correctAnswer = '';
 
   public guessedLetters: string[] = [];
+  public wrongLetters: string[] = [];
 
   public displayedWord = '';
+  public mistakes = 0;
+  public maxMistakes = 4;
+  public isGameOver = false;
+
+  public currentCatImage = HangmanImage.MOUSE1;
 
   public ngOnInit(): void {
     this.loadWords();
   }
 
   protected addLetter(letter: string): void {
-    const upperLetter = letter.toUpperCase();
-    const upperAnswer = this.correctAnswer.toUpperCase();
-    if (this.guessedLetters.includes(upperLetter)) {
+    if (this.isGameOver) {
       return;
     }
-    if (upperAnswer.includes(upperLetter)) {
+    const upperLetter = letter.toUpperCase();
+    //const upperAnswer = this.correctAnswer.toUpperCase();
+    if (this.isLetterUsed(upperLetter)) {
+      return;
+    }
+    if (this.correctAnswer.includes(upperLetter)) {
       this.guessedLetters.push(upperLetter);
       this.updateDisplayedWord();
       console.log('Correct letter:', upperLetter);
     } else {
+      this.wrongLetters.push(upperLetter);
+      this.mistakes++;
+      this.updateCatImage();
       console.log('error');
     }
+
+    if (this.mistakes > this.maxMistakes) {
+      this.isGameOver = true;
+    }
+
     this.cdr.detectChanges();
   }
   protected reset(): void {
     this.guessedLetters = [];
+    this.wrongLetters = [];
+    this.mistakes = 0;
+    this.isGameOver = false;
+    this.currentCatImage = HangmanImage.MOUSE1;
     this.updateDisplayedWord();
     this.cdr.detectChanges();
+  }
+  protected isLetterUsed(letter: string): boolean {
+    return this.guessedLetters.includes(letter) || this.wrongLetters.includes(letter);
+  }
+
+  protected isCorrectLetter(letter: string): boolean {
+    return this.guessedLetters.includes(letter);
+  }
+
+  protected isWrongLetter(letter: string): boolean {
+    return this.wrongLetters.includes(letter);
+  }
+
+  protected closeModal(): void {
+    this.isGameOver = false;
+    this.reset();
   }
 
   private loadWords(): void {
@@ -98,5 +142,24 @@ export class GameComponent implements OnInit {
       .split('')
       .map((letter) => (this.guessedLetters.includes(letter) ? letter : '_'))
       .join(' ');
+  }
+  private updateCatImage(): void {
+    switch (this.mistakes) {
+      case 0:
+        this.currentCatImage = HangmanImage.MOUSE1;
+        break;
+      case 1:
+        this.currentCatImage = HangmanImage.MOUSE2;
+        break;
+      case 2:
+        this.currentCatImage = HangmanImage.MOUSE3;
+        break;
+      case 3:
+        this.currentCatImage = HangmanImage.MOUSE4;
+        break;
+      default:
+        this.currentCatImage = HangmanImage.MOUSE1;
+        break;
+    }
   }
 }

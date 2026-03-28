@@ -93,3 +93,54 @@ p {
   padding: 0.5rem 1rem;
   width: 50ch;
 }
+.correct-key {
+  background-color: #facc15 !important;
+  color: black !important;
+  border-color: #facc15 !important;
+}
+
+.wrong-key {
+  background-color: #ef4444 !important;
+  color: white !important;
+  border-color: #ef4444 !important;
+}
+
+button[disabled] {
+  opacity: 1 !important;
+  cursor: not-allowed;
+}
+
+.mistakes-counter {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 12px 0;
+}
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-window {
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  text-align: center;
+  min-width: 320px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-window h2 {
+  font-size: 36px;
+  margin-bottom: 16px;
+  color: #ef4444;
+}
+
+.modal-window p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
