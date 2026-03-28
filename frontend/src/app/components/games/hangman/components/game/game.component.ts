@@ -5,6 +5,7 @@ import {
   OnInit,
   Output,
   inject,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { TuiButton } from '@taiga-ui/core';
 import { HttpClient } from '@angular/common/http';
@@ -13,6 +14,15 @@ interface HangmanWord {
   description: string;
   word: string;
 }
+
+interface HangmanWordsByLevel {
+  easy: HangmanWord[];
+  medium: HangmanWord[];
+  hard: HangmanWord[];
+  expert: HangmanWord[];
+  insane: HangmanWord[];
+}
+
 @Component({
   selector: 'app-game',
   standalone: true,
@@ -26,6 +36,7 @@ export class GameComponent implements OnInit {
   @Output() public results = new EventEmitter<void>();
 
   private readonly http = inject(HttpClient);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   public userAnswer = '';
   public currentQuestion = '';
@@ -43,13 +54,20 @@ export class GameComponent implements OnInit {
   }
 
   private loadWords(): void {
-    this.http.get<HangmanWord[]>('../../data/hangman-words.json').subscribe({
-      next: (words) => {
+    this.http.get<HangmanWordsByLevel>('assets/data/hangman-words.json').subscribe({
+      next: (wordsByLevel) => {
+        const words = wordsByLevel.easy;
+
         const randomIndex = Math.floor(Math.random() * words.length);
         const randomWord = words[randomIndex];
 
         this.currentQuestion = randomWord.description;
         this.correctAnswer = randomWord.word;
+
+        console.log('Question loaded:', this.currentQuestion);
+        console.log('Answer loaded:', this.correctAnswer);
+
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Error loading hangman words:', error);
