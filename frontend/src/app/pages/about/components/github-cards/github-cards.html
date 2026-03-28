@@ -1,13 +1,35 @@
-<section *transloco="let t" class="about__cards__section">
-  <div class="container">
-    <h3>{{ gitHubSignal().name }}</h3>
-    <tui-avatar [src]="gitHubSignal().imageLink" />
-    @for(badge of gitHubSignal().badges; track $index) {
-    <tui-badge appearance="primary">{{badge}}</tui-badge>
-    }
+<section *transloco="let t" class="github-card">
+  <a [href]="gitHubSignal().gitHubLink" target="_blank" rel="noopener noreferrer" class="card-link">
+    <div class="card-content">
+      <div class="card-header">
+        <tui-avatar [src]="gitHubSignal().imageLink" size="m" />
+        <div class="card-info">
+          <h3 class="card-name">{{ gitHubSignal().name }}</h3>
+          <span class="card-real-name">{{ gitHubSignal().realName }}</span>
+        </div>
+      </div>
 
-    <a [href]="gitHubSignal().gitHubLink">{{ t('about.gutHubLinkTitle') }}</a>
+      <div class="card-role">
+        <span class="role-label">{{ t(gitHubSignal().roleTranslationKey) }}</span>
+      </div>
 
+      <p class="card-description">{{ t(gitHubSignal().descriptionTranslationKey) }}</p>
 
-  </div>
+      <div class="card-components">
+        <span class="components-label">{{ t('about.componentsLabel') }}:</span>
+        <span
+          class="components-list"
+          [innerHTML]="t(gitHubSignal().componentsTranslationKey)"
+        ></span>
+      </div>
+
+      <div class="card-badges">
+        @for (badge of gitHubSignal().badges; track $index) {
+          <tui-badge appearance="primary" size="s">{{ badge }}</tui-badge>
+        }
+      </div>
+
+      <span class="card-link-text">{{ t('about.gutHubLinkTitle') }}</span>
+    </div>
+  </a>
 </section>

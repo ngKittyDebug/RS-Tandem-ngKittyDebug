@@ -1,4 +1,67 @@
 {
-  "aboutTitle": "This is about",
-  "gutHubLinkTitle": "Link to Github"
+  "aboutTitle": "About MeowVault",
+  "teamTitle": "Our Team",
+  "aiTitle": "AI Assistants",
+  "aiDescription": "Our team used various AI tools to help with development, learning, and content generation",
+  "usedBy": "Used by",
+  "gutHubLinkTitle": "Go to GitHub",
+  "componentsLabel": "Components",
+  "organizationLink": "GitHub Organization",
+  "repositoryLink": "Project Repository",
+  "description": {
+    "part1": "MeowVault is a cozy educational catalog with several games that help improve your JavaScript and TypeScript skills and prepare for technical interviews 🐾😸",
+    "part2": "Users learn through practice and small game tasks, without stress or overload 🎮🐱",
+    "part3": "Learning here is as soft and pleasant as a kitty supporting you with its paw before an interview 🐈💛"
+  },
+  "roles": {
+    "alex": "Backend & DevOps Lead",
+    "maria": "Team Lead & Frontend Developer",
+    "pavel": "Frontend Developer & Game Creator",
+    "oksana": "Frontend Developer",
+    "alena": "Frontend Developer & AI Integration",
+    "nadezhda": "Frontend Developer & Game Designer",
+    "mentor": "Project Mentor"
+  },
+  "descriptions": {
+    "alex": "Nest.js backend, Prisma ORM, Supabase, JWT auth, CI/CD, GitHub Actions, Role Guards, Swagger, key-storages module, GitHub OAuth",
+    "maria": "Team Lead, Loader, User Profile (Account Settings), gradient button, Event Loop game, Wiki",
+    "pavel": "Decrypto game, Timer, Achievements service, KeyStorage service, tests",
+    "oksana": "Registration page, EyeCompass directive, Programming Cities game",
+    "alena": "Login page, Merge Game, Groq AI integration, GitHub OAuth button on frontend, Cat component",
+    "nadezhda": "404 page, Main page, Hangman game (cats)",
+    "mentor": "Consultations, code review, technical leadership, owner of chain AI Kolyanych, automation of review with Kolyanych, exploring AI capabilities"
+  },
+  "components": {
+    "alex": "Backend API, JWT Auth, CORS, CI/CD, Prisma ORM, Supabase, GitHub Actions, Role Guards, Swagger, key-storages, GitHub OAuth",
+    "maria": "Loader, User Profile, Account Settings, Theme Switcher, Language Switcher, gradient button, Wiki, logo",
+    "pavel": "Decrypto game, Timer, Achievements, KeyStorage, Header, Language Switcher, Theme Switcher",
+    "oksana": "Registration page, EyeCompass directive",
+    "alena": "Login page, Merge Game, Groq AI, GitHub OAuth button, Cat component",
+    "nadezhda": "404 page, Main page, Hangman game",
+    "mentor": "Code review, architectural decisions"
+  },
+  "aiUsers": {
+    "alena": "Alena",
+    "alex": "Alexey",
+    "oksana": "Oksana",
+    "maria": "Maria",
+    "nadezhda": "Nadezhda",
+    "jspowwow": "Sasarik"
+  },
+  "aiRoles": {
+    "chatgpt": "Design & Content AI",
+    "claude": "Content Generator & Code Refactoring",
+    "groq": "AI API Integration",
+    "qwen": "Smart Thoughts Generator",
+    "codeQualityBot": "Code Review Bot",
+    "ai": "Learning Assistant"
+  },
+  "aiDescriptions": {
+    "chatgpt": "Generated images (Alena — characters, Nadezhda — cats for Hangman), code review, test help, diary formatting",
+    "claude": "Created word lists for games (Alena), diary error fixing",
+    "groq": "AI integration for answer checking in Merge Game (Alena + Alexey on backend)",
+    "qwen": "Generated 'smart thoughts day/night' for dev diaries, refactored Swagger decorators, documentation filling (Alexey), vibe-coding about page",
+    "codeQualityBot": "Automatic PR review, code problem highlighting, chain AI JsPowWow (Sasarik)",
+    "ai": "Explained Angular code (Oksana), generated project design (Maria), refactoring help"
+  }
 }

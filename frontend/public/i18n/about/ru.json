@@ -1,4 +1,67 @@
 {
-  "aboutTitle": "Это Эбоут",
-  "gutHubLinkTitle": "Ссылка на GitHub"
+  "aboutTitle": "О проекте MeowVault",
+  "teamTitle": "Наша команда",
+  "aiTitle": "AI Ассистенты",
+  "aiDescription": "Наша команда использовала различные AI-инструменты для помощи в разработке, обучении и генерации контента",
+  "usedBy": "Использовал",
+  "gutHubLinkTitle": "Перейти на GitHub",
+  "componentsLabel": "Компоненты",
+  "organizationLink": "Организация GitHub",
+  "repositoryLink": "Репозиторий проекта",
+  "description": {
+    "part1": "MeowVault — это уютный учебный каталог с несколькими играми, которые помогают прокачать знания JavaScript, TypeScript и подготовиться к техническому интервью 🐾😸",
+    "part2": "Пользователь учится через практику и небольшие игровые задания, без стресса и перегруза 🎮🐱",
+    "part3": "Обучение здесь такое же мягкое и приятное, как котик, который поддерживает тебя лапкой перед собеседованием 🐈💛"
+  },
+  "roles": {
+    "alex": "Backend & DevOps Lead",
+    "maria": "Team Lead & Frontend Developer",
+    "pavel": "Frontend Developer & Game Creator",
+    "oksana": "Frontend Developer",
+    "alena": "Frontend Developer & AI Integration",
+    "nadezhda": "Frontend Developer & Game Designer",
+    "mentor": "Ментор проекта"
+  },
+  "descriptions": {
+    "alex": "Nest.js backend, Prisma ORM, Supabase, JWT auth, CI/CD, GitHub Actions, Role Guards, Swagger, key-storages модуль, GitHub OAuth",
+    "maria": "Team Lead, Loader, User Profile (Account Settings), градиентная кнопка, Event Loop игра, Wiki",
+    "pavel": "Decrypto игра, Timer, Achievements service, KeyStorage service, тесты",
+    "oksana": "Registration страница, EyeCompass директива, Programming Cities игра",
+    "alena": "Login страница, Merge Game, Groq AI интеграция, GitHub OAuth кнопка на фронте, Cat компонент",
+    "nadezhda": "404 страница, Main страница, Hangman игра (коты)",
+    "mentor": "Консультации, код-ревью, техническое руководство, владелец цепного AI Коляныча, автоматизации ревью с помощью Коляныча, изучение возможностей AI"
+  },
+  "components": {
+    "alex": "Backend API, JWT Auth, CORS, CI/CD, Prisma ORM, Supabase, GitHub Actions, Role Guards, Swagger, key-storages, GitHub OAuth",
+    "maria": "Loader, User Profile, Account Settings, Theme Switcher, Language Switcher, градиентная кнопка, Wiki, логотип",
+    "pavel": "Decrypto игра, Timer, Achievements, KeyStorage, Header, Language Switcher, Theme Switcher",
+    "oksana": "Registration страница, EyeCompass директива",
+    "alena": "Login страница, Merge Game, Groq AI, GitHub OAuth кнопка, Cat компонент",
+    "nadezhda": "404 страница, Main страница, Hangman игра",
+    "mentor": "Код-ревью, архитектурные решения"
+  },
+  "aiUsers": {
+    "alena": "Алёна",
+    "alex": "Алексей",
+    "oksana": "Оксана",
+    "maria": "Мария",
+    "nadezhda": "Надежда",
+    "jspowwow": "Сасарик"
+  },
+  "aiRoles": {
+    "chatgpt": "Design & Content AI",
+    "claude": "Content Generator & Code Refactoring",
+    "groq": "AI API Integration",
+    "qwen": "Smart Thoughts Generator",
+    "codeQualityBot": "Code Review Bot",
+    "ai": "Learning Assistant"
+  },
+  "aiDescriptions": {
+    "chatgpt": "Генерация изображений (Алёна — персонажи, Надежда — котики для Hangman), ревью кода, помощь с тестами, оформление дневников",
+    "claude": "Создание списка слов для игр (Алёна), , исправление ошибок в дневниках",
+    "groq": "Интеграция AI для проверки ответов в Merge Game (Алёна + Алексей на бэкенде)",
+    "qwen": "Генерация 'умных мыслей дня/ночи' для дневников, рефакторинг Swagger декораторов, заполнения документации (Алексей), вайб-код about страницы",
+    "codeQualityBot": "Автоматическое ревью PR, подсветка проблем в коде, составление статуса проекта",
+    "ai": "Объяснение кода Angular (Оксана), генерация дизайна проекта (Мария), помощь с рефакторингом"
+  }
 }
