@@ -18,14 +18,14 @@ import { KeyStorageService } from '../../../core/services/key-storage/key-storag
 
 interface Message {
   text: string;
-  type: 'incoming' | 'outgoing';
+  type: 'incoming' | 'outgoing' | 'incomingSad';
 }
 export interface CitiesGameStorage {
   words: Word[];
 }
 export interface Word {
   word: string;
-  wordDescription: WordDescription;
+  wordDescription?: WordDescription;
 }
 
 export interface WordDescription {
@@ -57,6 +57,7 @@ export interface CitiesGameVocabularResponse {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CitiesGame implements OnInit {
+  protected readonly loadDataServise = inject(KeyStorageService<CitiesGameStorage>);
   protected citiesRouterPath = getRoutePath(AppRoute.CITIES_GAME);
   private translocoService = inject(TranslocoService);
   private zone = inject(NgZone);
@@ -66,20 +67,22 @@ export class CitiesGame implements OnInit {
     return this.translocoService.translate(key);
   }
   public messages: Message[] = [
-    { text: 'citiesGame.messageFromCat1', type: 'incoming' },
-    { text: 'citiesGame.messageFromCat2', type: 'incoming' },
-    { text: 'citiesGame.messageFromCat3', type: 'incoming' },
-    { text: 'citiesGame.messageFromCat4', type: 'incoming' },
-    { text: 'citiesGame.messageFromCat5', type: 'incoming' },
-    { text: 'citiesGame.messageFromCat6', type: 'incoming' },
-    { text: 'citiesGame.messageFromCat7', type: 'incoming' },
+    { text: 'citiesGame.messageFromCat1', type: 'incomingSad' },
+    { text: 'citiesGame.messageFromCat2', type: 'incomingSad' },
+    { text: 'citiesGame.messageFromCat3', type: 'incomingSad' },
+    { text: 'citiesGame.messageFromCat4', type: 'incomingSad' },
+    { text: 'citiesGame.messageFromCat5', type: 'incomingSad' },
+    { text: 'citiesGame.messageFromCat6', type: 'incomingSad' },
+    { text: 'citiesGame.messageFromCat7', type: 'incomingSad' },
+    { text: 'citiesGame.messageFromCat8', type: 'incomingSad' },
   ];
-  public myMessage: string[] = [];
+
   public visibleMessages: Message[] = [];
   private index = 0;
   public isRunning = true;
   private timeoutId?: ReturnType<typeof setTimeout>;
-  protected readonly loadDataServise = inject(KeyStorageService<CitiesGameStorage>);
+  public words: Word[] = [];
+  public usedWords: string[] = ['frontend'];
 
   public runMessages(): void {
     if (this.index >= this.messages.length) {
@@ -96,7 +99,6 @@ export class CitiesGame implements OnInit {
       });
     }, 500);
   }
-  public words: Word[] = [];
 
   public ngOnInit(): void {
     this.loadDataServise
@@ -110,27 +112,109 @@ export class CitiesGame implements OnInit {
     this.runMessages();
   }
 
-  public restart(): void {
-    this.visibleMessages = [];
-    this.index = 0;
-    this.isRunning = true;
-    if (this.timeoutId) {
-      clearTimeout(this.timeoutId);
-    }
-    this.runMessages();
-    console.log(this.words);
-  }
-
   public messageForm = this.fb.group({
     message: [''],
   });
 
+  public lastLatterFromCat = 'd';
+
+  public sasarikScript(message: string): void {
+    const isFirstLetterOk = message.toLowerCase().trim()[0] === this.lastLatterFromCat;
+    const index = this.words.findIndex(
+      (word) => word.word.toLowerCase().trim() === message.toLowerCase().trim(),
+    );
+    const used = this.usedWords.indexOf(message.toLowerCase().trim());
+    const isFound = index !== -1;
+    const isUsed = used !== -1;
+
+    const lastLetterMessage = message[message.length - 1];
+    const nextWordFromCat: number = this.words.findIndex((word) => {
+      // const currentWord = word.word.toLowerCase()[0];
+      return (
+        word.word.toLowerCase()[0] === lastLetterMessage.toLowerCase() &&
+        !this.usedWords.includes(word.word.toLowerCase())
+      );
+    });
+    // const nextWordFromCat = this.words.findIndex(
+    //   (word) =>
+    //     startsWithLetter(word.word.toLowerCase(), lastLetterMessage.toLowerCase()) &&
+    //     isUnused(word.word.toLowerCase()),
+    // );
+
+    let state: 'not_found' | 'used' | 'wrong_letter' | 'ok' | 'out';
+    if (isUsed) {
+      state = 'used';
+    } else if (!isFirstLetterOk) {
+      state = 'wrong_letter';
+    } else if (!isFound) {
+      state = 'not_found';
+    } else if (nextWordFromCat === -1) {
+      state = 'out';
+    } else {
+      state = 'ok';
+    }
+
+    switch (state) {
+      case 'used':
+        this.visibleMessages.push({
+          text: 'citiesGame.sasarikSadUsed',
+          type: 'incomingSad',
+        });
+        break;
+
+      case 'wrong_letter':
+        this.visibleMessages.push({
+          text: 'citiesGame.sasarikSadWrongLetter',
+          type: 'incomingSad',
+        });
+        break;
+
+      case 'ok': {
+        const nextMessageFromCat: Message = {
+          text: this.words[nextWordFromCat].word,
+          type: 'incoming',
+        };
+        // if (this.usedWords.includes(nextMessageFromCat.text.toLowerCase())) {
+        // }
+        this.usedWords.push(message.toLowerCase());
+        this.usedWords.push(nextMessageFromCat.text.toLowerCase());
+        this.visibleMessages.push(nextMessageFromCat);
+        this.lastLatterFromCat = nextMessageFromCat.text[nextMessageFromCat.text.length - 1];
+        break;
+      }
+
+      case 'out':
+        this.visibleMessages.push({
+          text: 'citiesGame.sasarikSadEnd',
+          type: 'incomingSad',
+        });
+        break;
+
+      case 'not_found':
+        this.visibleMessages.push({
+          text: 'citiesGame.sasarikSadNotFound',
+          type: 'incomingSad',
+        });
+        break;
+    }
+  }
   public sendMessege(): void {
     const { message } = this.messageForm.getRawValue();
     if (!message) return;
     const data: Message = { text: message, type: 'outgoing' };
     this.visibleMessages.push(data);
     this.messageForm.reset();
-    console.log(data);
+    this.sasarikScript(message.toLowerCase());
+  }
+  public restart(): void {
+    this.visibleMessages = [];
+    this.usedWords = ['frontend'];
+    this.index = 0;
+    this.isRunning = true;
+    this.lastLatterFromCat = 'd';
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+    this.runMessages();
   }
 }
