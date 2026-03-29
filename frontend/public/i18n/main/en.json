@@ -11,6 +11,21 @@
     "second": "MeowVault is a soft and comfortable way to learn, as soft as a cat's paws which is the symbol of our project. We believe that learning should be enjoyable and stress-free, just like the gentle touch of a cat's paws.",
     "third": "So, get ready to have fun while sharpening your FrontEnd skills with MeowVault!"
   },
-  "game": "Game",
+  "game": {
+    "decrypto": "Decrypto",
+    "hangman": "Hangman",
+    "mergegame": "Merge Game",
+    "wordchain": "Word Chain",
+    "loopgame": "Meowvent Loop",
+    "diaries": "Diaries"
+  },
+  "gameDescription": {
+    "decrypto": "Decrypto Solo is an association game for one person, where you have to solve the transmitted secret messages.",
+    "hangman": "Hangman is a dramatic game where the player have just several tries to guess a word.",
+    "mergegame": "Find the common idea and group the words into sets of four like a true soft-pawed master. A correct match will reveal the category and bonus questions on the topic.",
+    "wordchain": "An engaging vocabulary game where each new word starts with the last letter of the previous one",
+    "loopgame": "Who meows first? Learn Event Loop by placing console output in the correct order",
+    "diaries": "Development is magic. We all wrote our development diaries for many weeks."
+  },
   "play": "Play"
 }

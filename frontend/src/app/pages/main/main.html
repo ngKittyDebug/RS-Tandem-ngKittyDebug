@@ -16,85 +16,112 @@
     <p tuiSubtitle>{{ t('main.description.second') }}</p>
     <p tuiSubtitle>{{ t('main.description.third') }}</p>
   </div>
-
   @if (size$ | async; as size) {
-    <div class="container">
-      <tui-block-status class="card" [card]="true">
-        <img alt="cat inbox" src="assets/images/cat116.svg" tuiSlot="top" class="image" />
+    @if (authService.isLoggedIn()) {
+      <div class="card-container">
+        <div tuiCardLarge tuiSurface="floating">
+          <header tuiHeader>
+            <h2 tuiTitle>{{ t('main.game.decrypto') }}</h2>
+          </header>
+          <section>
+            <img src="assets/images/cat-3.png" alt="detective cat" />
+            <p>{{ t('main.gameDescription.decrypto') }}</p>
+          </section>
+          <footer>
+            <button appearance="gradient" size="m" tuiButton type="button" (click)="goDecrypto()">
+              {{ t('main.play') }}
+            </button>
+          </footer>
+        </div>
+        <div tuiCardLarge tuiSurface="floating">
+          <header tuiHeader>
+            <h2 tuiTitle>{{ t('main.game.hangman') }}</h2>
+          </header>
+          <section>
+            <img src="assets/images/cat-1copy.png" alt="hanged cat" />
+            <p>{{ t('main.gameDescription.hangman') }}</p>
+          </section>
+          <footer>
+            <button appearance="gradient" size="m" tuiButton type="button" (click)="goHangman()">
+              {{ t('main.play') }}
+            </button>
+          </footer>
+        </div>
+        <div tuiCardLarge tuiSurface="floating">
+          <header tuiHeader>
+            <h2 tuiTitle>{{ t('main.game.mergegame') }}</h2>
+          </header>
+          <section>
+            <img src="assets/images/cat-5.png" alt="pirate cat" />
+            <p>{{ t('main.gameDescription.mergegame') }}</p>
+          </section>
+          <footer>
+            <button appearance="gradient" size="m" tuiButton type="button" (click)="goMerge()">
+              {{ t('main.play') }}
+            </button>
+          </footer>
+        </div>
+        <div tuiCardLarge tuiSurface="floating">
+          <header tuiHeader>
+            <h2 tuiTitle>{{ t('main.game.wordchain') }}</h2>
+          </header>
+          <section>
+            <img src="assets/images/cat-11.png" alt="geek cat" />
+            <p>{{ t('main.gameDescription.wordchain') }}</p>
+          </section>
+          <footer>
+            <button appearance="gradient" size="m" tuiButton type="button" (click)="goWordChain()">
+              {{ t('main.play') }}
+            </button>
+          </footer>
+        </div>
+        <div tuiCardLarge tuiSurface="floating">
+          <header tuiHeader>
+            <h2 tuiTitle>{{ t('main.game.loopgame') }}</h2>
+          </header>
+          <section>
+            <img src="assets/images/cat-6.png" alt="gamer cat" />
+            <p>{{ t('main.gameDescription.loopgame') }}</p>
+          </section>
+          <footer>
+            <button appearance="gradient" size="m" tuiButton type="button" (click)="goLoop()">
+              {{ t('main.play') }}
+            </button>
+          </footer>
+        </div>
+        <div tuiCardLarge tuiSurface="floating">
+          <header tuiHeader>
+            <h2 tuiTitle>{{ t('main.game.diaries') }}</h2>
+          </header>
+          <section>
+            <img src="assets/images/cat-4.png" alt="wizard cat" />
+            <p>{{ t('main.gameDescription.diaries') }}</p>
+          </section>
+          <footer>
+            <button appearance="gradient" size="m" tuiButton type="button">
+              {{ t('main.play') }}
+            </button>
+          </footer>
+        </div>
+      </div>
+    } @else {
+      <div class="container">
+        <tui-block-status class="card" [card]="true">
+          <img alt="cat inbox" src="assets/images/cat116.svg" tuiSlot="top" class="image" />
 
-        {{ t('main.register') }}
-        <button appearance="secondary" tuiButton type="button" [size]="size" class="reg-button">
-          {{ t('main.button.start') }}
-        </button>
-      </tui-block-status>
-    </div>
-    <div class="card-container">
-      <div tuiCardLarge tuiSurface="floating">
-        <header tuiHeader>
-          <h2 tuiTitle>{{ t('main.game') }}</h2>
-        </header>
-        <section>Replace me</section>
-        <footer>
-          <button appearance="gradient" size="m" tuiButton type="button">
-            {{ t('main.play') }}
+          {{ t('main.register') }}
+          <button
+            appearance="secondary"
+            tuiButton
+            type="button"
+            [size]="size"
+            class="reg-button"
+            (click)="goReg()"
+          >
+            {{ t('main.button.start') }}
           </button>
-        </footer>
+        </tui-block-status>
       </div>
-      <div tuiCardLarge tuiSurface="floating">
-        <header tuiHeader>
-          <h2 tuiTitle>{{ t('main.game') }}</h2>
-        </header>
-        <section>Replace me</section>
-        <footer>
-          <button appearance="gradient" size="m" tuiButton type="button">
-            {{ t('main.play') }}
-          </button>
-        </footer>
-      </div>
-      <div tuiCardLarge tuiSurface="floating">
-        <header tuiHeader>
-          <h2 tuiTitle>{{ t('main.game') }}</h2>
-        </header>
-        <section>Replace me</section>
-        <footer>
-          <button appearance="gradient" size="m" tuiButton type="button">
-            {{ t('main.play') }}
-          </button>
-        </footer>
-      </div>
-      <div tuiCardLarge tuiSurface="floating">
-        <header tuiHeader>
-          <h2 tuiTitle>{{ t('main.game') }}</h2>
-        </header>
-        <section>Replace me</section>
-        <footer>
-          <button appearance="gradient" size="m" tuiButton type="button">
-            {{ t('main.play') }}
-          </button>
-        </footer>
-      </div>
-      <div tuiCardLarge tuiSurface="floating">
-        <header tuiHeader>
-          <h2 tuiTitle>{{ t('main.game') }}</h2>
-        </header>
-        <section>Replace me</section>
-        <footer>
-          <button appearance="gradient" size="m" tuiButton type="button">
-            {{ t('main.play') }}
-          </button>
-        </footer>
-      </div>
-      <div tuiCardLarge tuiSurface="floating">
-        <header tuiHeader>
-          <h2 tuiTitle>{{ t('main.game') }}</h2>
-        </header>
-        <section>Replace me</section>
-        <footer>
-          <button appearance="gradient" size="m" tuiButton type="button">
-            {{ t('main.play') }}
-          </button>
-        </footer>
-      </div>
-    </div>
+    }
   }
 </div>

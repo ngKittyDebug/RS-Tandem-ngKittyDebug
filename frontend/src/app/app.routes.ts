@@ -15,6 +15,9 @@ export enum AppRoute {
 export enum GameRoute {
   DECRYPTO = 'decrypto',
   MERGE_GAME = 'merge-game',
+  HANGMAN = 'hangman',
+  WORD_CHAIN = 'word-chain',
+  LOOP = 'meowloop',
 }
 
 export enum MergeGameRoute {
@@ -24,7 +27,7 @@ export enum MergeGameRoute {
   THEORY = 'theory',
 }
 
-export const getRoutePath = <T extends AppRoute>(route: T): `/${T}` => {
+export const getRoutePath = <T extends AppRoute | GameRoute>(route: T): `/${T}` => {
   return `/${route}`;
 };
 
@@ -58,6 +61,7 @@ export const routes: Routes = [
     providers: [provideTranslocoScope('decrypto')],
     canActivate: [authGuard],
   },
+
   {
     path: GameRoute.MERGE_GAME,
     loadComponent: () =>

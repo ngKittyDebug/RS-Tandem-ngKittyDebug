@@ -7,6 +7,9 @@ import { TuiBreakpointService, TuiButton, type TuiSizeL } from '@taiga-ui/core';
 import { TuiBlockStatus } from '@taiga-ui/layout';
 import { map, type Observable } from 'rxjs';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { Router } from '@angular/router';
+import { AppRoute, GameRoute, getRoutePath } from '../../app.routes';
+import { AuthService } from '../../core/services/auth/auth-service';
 
 @Component({
   standalone: true,
@@ -30,9 +33,31 @@ import { TranslocoDirective } from '@jsverse/transloco';
   ],
 })
 export class Main {
+  public authService = inject(AuthService);
+
   public breakpointService = inject(TuiBreakpointService);
 
   public size$: Observable<TuiSizeL> = this.breakpointService.pipe(
     map((key) => (key === 'mobile' ? 'm' : 'l')),
   );
+  private readonly router = inject(Router);
+
+  public goReg(): void {
+    this.router.navigate([getRoutePath(AppRoute.REGISTRATION)]);
+  }
+  public goDecrypto(): void {
+    this.router.navigate([getRoutePath(GameRoute.DECRYPTO)]);
+  }
+  public goHangman(): void {
+    this.router.navigate([getRoutePath(GameRoute.HANGMAN)]);
+  }
+  public goMerge(): void {
+    this.router.navigate([getRoutePath(GameRoute.MERGE_GAME)]);
+  }
+  public goWordChain(): void {
+    this.router.navigate([getRoutePath(GameRoute.WORD_CHAIN)]);
+  }
+  public goLoop(): void {
+    this.router.navigate([getRoutePath(GameRoute.LOOP)]);
+  }
 }
