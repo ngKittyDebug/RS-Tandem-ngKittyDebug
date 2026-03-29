@@ -10,6 +10,13 @@
       "maxSize": "Maximum file size is",
       "maxSizeType": "KB",
       "uploadFailed": "Cloudinary upload failed"
+    },
+    "stats": {
+      "gamesPlayed": "Games played",
+      "popupTitle": "Game Statistics",
+      "popupDescription": "Number of sessions played for each game",
+      "popupClose": "Close",
+      "noStats": "Seems like you haven't played any games yet. Play some games to see your statistics here!"
     }
   },
 
@@ -61,13 +68,14 @@
 
   "recentActivity": {
     "title": "Recent Activity",
+    "noActivity": "It's quiet here. Play some games to see recent activity!"
+  },
 
-    "game1Title": "Neon Racing",
-    "game1Description": "Achieved high score",
-    "game1Date": "hours ago",
-
-    "game2Title": "Puzzle Master",
-    "game2Description": "Completed level 50",
-    "game2Date": "hours ago"
+  "game": {
+    "decrypto": "Decrypto",
+    "hangman": "Hangman",
+    "mergegame": "Merge Game",
+    "wordchain": "Word Chain",
+    "loopgame": "Meowvent Loop"
   }
 }
