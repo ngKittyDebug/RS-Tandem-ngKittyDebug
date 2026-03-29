@@ -15,10 +15,14 @@ import { TuiTextfield, TuiButton } from '@taiga-ui/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { KeyStorageService } from '../../../core/services/key-storage/key-storage-service';
+import { TuiIcon } from '@taiga-ui/core';
+import { TuiTooltip } from '@taiga-ui/kit';
+import { interval, map, startWith } from 'rxjs';
 
 interface Message {
   text: string;
   type: 'incoming' | 'outgoing' | 'incomingSad';
+  word?: Word;
 }
 export interface CitiesGameStorage {
   words: Word[];
@@ -53,10 +57,16 @@ export interface CitiesGameVocabularResponse {
     CommonModule,
     EyeCompassDirective,
     ReactiveFormsModule,
+    TuiIcon,
+    TuiTooltip,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CitiesGame implements OnInit {
+  protected isLoading$ = interval(2000).pipe(
+    map((i) => Boolean(i % 2)),
+    startWith(true),
+  );
   protected readonly loadDataServise = inject(KeyStorageService<CitiesGameStorage>);
   protected citiesRouterPath = getRoutePath(AppRoute.CITIES_GAME);
   private translocoService = inject(TranslocoService);
@@ -129,18 +139,11 @@ export class CitiesGame implements OnInit {
 
     const lastLetterMessage = message[message.length - 1];
     const nextWordFromCat: number = this.words.findIndex((word) => {
-      // const currentWord = word.word.toLowerCase()[0];
       return (
         word.word.toLowerCase()[0] === lastLetterMessage.toLowerCase() &&
         !this.usedWords.includes(word.word.toLowerCase())
       );
     });
-    // const nextWordFromCat = this.words.findIndex(
-    //   (word) =>
-    //     startsWithLetter(word.word.toLowerCase(), lastLetterMessage.toLowerCase()) &&
-    //     isUnused(word.word.toLowerCase()),
-    // );
-
     let state: 'not_found' | 'used' | 'wrong_letter' | 'ok' | 'out';
     if (isUsed) {
       state = 'used';
@@ -170,12 +173,12 @@ export class CitiesGame implements OnInit {
         break;
 
       case 'ok': {
+        const word = this.words[nextWordFromCat];
         const nextMessageFromCat: Message = {
           text: this.words[nextWordFromCat].word,
           type: 'incoming',
+          word,
         };
-        // if (this.usedWords.includes(nextMessageFromCat.text.toLowerCase())) {
-        // }
         this.usedWords.push(message.toLowerCase());
         this.usedWords.push(nextMessageFromCat.text.toLowerCase());
         this.visibleMessages.push(nextMessageFromCat);
@@ -201,7 +204,10 @@ export class CitiesGame implements OnInit {
   public sendMessege(): void {
     const { message } = this.messageForm.getRawValue();
     if (!message) return;
-    const data: Message = { text: message, type: 'outgoing' };
+    const word = this.words.find(
+      (w) => w.word.toLowerCase().trim() === message.toLowerCase().trim(),
+    );
+    const data: Message = { text: message, type: 'outgoing', word };
     this.visibleMessages.push(data);
     this.messageForm.reset();
     this.sasarikScript(message.toLowerCase());
@@ -216,5 +222,14 @@ export class CitiesGame implements OnInit {
       clearTimeout(this.timeoutId);
     }
     this.runMessages();
+  }
+  public getTooltip(message: Message): string {
+    if (!message.word?.wordDescription) {
+      return this.translocoService.translate('citiesGame.noTooltip');
+    }
+
+    const lang = this.translocoService.getActiveLang();
+
+    return lang === 'ru' ? message.word.wordDescription.ru : message.word.wordDescription.en;
   }
 }

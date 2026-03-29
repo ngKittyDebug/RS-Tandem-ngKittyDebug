@@ -13,5 +13,6 @@
   "sasarikSadWrongLetter": "The letter got lost. With that level of attention, you’ll be calling APIs “somewhere around there”😼",
   "sasarikSadUsed": "We’ve already heard that. Your memory is like a cache without invalidation",
   "sasarikSadNotFound": "Doesn’t fit — try a frontend-related word",
-  "sasarikSadEnd": "Ой, у меня закончились слова, похоже Ты выиграл!"
+  "sasarikSadEnd": "No words left! You, meow, won!🙀",
+  "noTooltip": "I have no idea what you just wrote🙄"
 }

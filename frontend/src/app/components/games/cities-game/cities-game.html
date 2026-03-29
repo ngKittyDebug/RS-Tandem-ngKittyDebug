@@ -182,12 +182,14 @@
         </span>
         } @else if ((message.type === 'incoming')) {
         <span tuiMessage>
+          <tui-icon tuiHintDirection="right" [tuiTooltip]="getTooltip(message)"/>
           <span class="multiline">
             {{ message.text }}
           </span>
         </span>
         } @else {
         <span appearance="custom" tuiMessage>
+            <tui-icon tuiHintDirection="left" [tuiTooltip]="getTooltip(message)"/>
           <span class="multiline">
             {{ message.text }}
           </span>
