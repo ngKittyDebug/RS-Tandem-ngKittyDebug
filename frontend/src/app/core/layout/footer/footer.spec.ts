@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslocoTestingModule } from '@jsverse/transloco';
+import { provideRouter } from '@angular/router';
 
 import { Footer } from './footer';
 
@@ -19,6 +20,7 @@ describe('Footer', () => {
           },
         }),
       ],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Footer);

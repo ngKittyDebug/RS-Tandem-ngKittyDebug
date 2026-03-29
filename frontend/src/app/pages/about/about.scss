@@ -1,0 +1,125 @@
+:host {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.about-section {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.about-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.about-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
+
+  h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--tui-text-primary);
+    margin: 0;
+  }
+
+  .about-description {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--tui-text-primary);
+    opacity: 0.9;
+    margin: 0;
+  }
+
+  .project-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+
+    .org-link,
+    .repo-link {
+      color: var(--accent-1);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--accent-1);
+      border-radius: 0.5rem;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: color-mix(in oklch, var(--accent-1) 10%, transparent);
+        transform: translateY(-2px);
+      }
+    }
+  }
+}
+
+.team-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  .team-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--tui-text-primary);
+    text-align: center;
+    margin: 0;
+  }
+}
+
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(256px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.ai-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--tui-border-normal);
+
+  .ai-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--tui-text-primary);
+    text-align: center;
+    margin: 0;
+  }
+
+  .ai-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--tui-text-primary);
+    opacity: 0.9;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+}
+
+.ai-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+}
