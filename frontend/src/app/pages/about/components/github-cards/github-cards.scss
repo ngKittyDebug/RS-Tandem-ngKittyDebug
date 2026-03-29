@@ -1,0 +1,120 @@
+.github-card {
+  width: 100%;
+  height: 100%;
+}
+
+.card-link {
+  display: block;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px color-mix(in oklch, var(--tui-text-primary) 15%, transparent);
+  }
+}
+
+.card-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  background: var(--tui-background-base-alt);
+  border: 1px solid var(--tui-border-normal);
+  border-radius: 1rem;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.card-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--tui-text-primary);
+  margin: 0;
+  word-break: break-word;
+}
+
+.card-role {
+  flex-shrink: 0;
+
+  .role-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--accent-1);
+    background: color-mix(in oklch, var(--accent-1) 10%, transparent);
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    display: inline-block;
+  }
+}
+
+.card-components {
+  font-size: 0.8rem;
+  color: var(--tui-text-primary);
+  opacity: 0.8;
+  flex-grow: 1;
+
+  .components-label {
+    font-weight: 600;
+    color: var(--accent-2);
+  }
+
+  .components-list {
+    line-height: 1.6;
+    display: grid;
+    gap: 0.25rem 0.75rem;
+  }
+}
+
+.card-game {
+  font-size: 0.8rem;
+  color: var(--tui-text-primary);
+  opacity: 0.9;
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+
+  .game-label {
+    font-weight: 600;
+    color: var(--accent-1);
+  }
+
+  .game-name {
+    font-weight: 500;
+    color: var(--accent-2);
+  }
+}
+
+.card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.card-link-text {
+  font-size: 0.875rem;
+  color: var(--accent-2);
+  font-weight: 500;
+  text-align: center;
+  padding-top: 0.75rem;
+  margin-top: auto;
+  border-top: 1px solid var(--tui-border-normal);
+  flex-shrink: 0;
+}

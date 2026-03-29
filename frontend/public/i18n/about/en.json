@@ -1,0 +1,48 @@
+{
+  "aboutTitle": "About MeowVault",
+  "teamTitle": "Our Team",
+  "aiTitle": "AI Assistants",
+  "aiDescription": "Our team used various AI tools to help with development, learning, and content generation",
+  "gutHubLinkTitle": "Go to GitHub",
+  "componentsLabel": "Components",
+  "gameLabel": "Game",
+  "organizationLink": "GitHub Organization",
+  "repositoryLink": "Project Repository",
+  "description": {
+    "part1": "MeowVault is a cozy educational catalog with several games that help improve your JavaScript and TypeScript skills and prepare for technical interviews 🐾😸",
+    "part2": "Users learn through practice and small game tasks, without stress or overload 🎮🐱",
+    "part3": "Learning here is as soft and pleasant as a kitty supporting you with its paw before an interview 🐈💛"
+  },
+  "roles": {
+    "alex": "Backend & DevOps Lead",
+    "maria": "Team Lead & Frontend Developer",
+    "pavel": "Frontend Developer",
+    "oksana": "Frontend Developer",
+    "alena": "Frontend Developer",
+    "nadezhda": "Frontend Developer",
+    "mentor": "Mentor"
+  },
+  "games": {
+    "maria": "Event Loop Game",
+    "pavel": "Decrypto",
+    "oksana": "Word Chain",
+    "alena": "Merge Game",
+    "nadezhda": "Hangman"
+  },
+  "components": {
+    "alex": "Backend API, JWT Auth, CORS, CI/CD, Prisma ORM, Supabase, GitHub Actions, Role Guards, Swagger, key-storages, GitHub OAuth, Merge Game CRUD, User CRUD API",
+    "maria": "Loader, User Profile, Account Settings, Change avatar, User Store, User Service",
+    "pavel": "Timer, Achievements, KeyStorage, Header, Footer, Language Switcher, Theme Switcher, Toast, Popup",
+    "oksana": "Registration page, EyeCompass directive, Project mascots",
+    "alena": "Login page, Groq AI, GitHub OAuth button, AuthService, Guards, Interceptors",
+    "nadezhda": "404, Main, Games cards template",
+    "mentor": "Code review, architectural decisions, exploring AI capabilities in the project, deployed manual minion Claudya on the entire project"
+  },
+  "aiDescriptions": {
+    "chatgpt": "Image generation (Alena1409 — characters, kozochkina82 — cats for Hangman), code review, test help, diary formatting",
+    "claude": "Created word lists for games (Alena1409), diary error fixing",
+    "groq": "AI integration for answer checking in Merge Game (Alena1409 + AlexGorSer on backend)",
+    "qwen": "Generated 'smart thoughts day/night' for dev diaries, refactored Swagger decorators, documentation filling (AlexGorSer), vibe-coding about page",
+    "codeQualityBot": "Automatic PR review, code problem highlighting, project status composition"
+  }
+}
