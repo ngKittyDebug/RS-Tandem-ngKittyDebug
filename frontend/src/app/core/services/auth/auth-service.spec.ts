@@ -14,6 +14,11 @@ describe('AuthService', () => {
     });
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
+
+    const refreshReq = httpMock.expectOne(
+      (req) => req.method === 'POST' && req.url.includes('refresh'),
+    );
+    refreshReq.flush(null, { status: 401, statusText: 'Unauthorized' });
   });
   afterEach(() => httpMock.verify());
 

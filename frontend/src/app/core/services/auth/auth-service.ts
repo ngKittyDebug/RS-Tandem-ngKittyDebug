@@ -13,9 +13,20 @@ export class AuthService {
   private readonly document = inject(DOCUMENT);
   private accessToken = signal<string | null>(null);
 
+  private initialized = signal(false);
+
   public isLoggedIn = computed(() => this.accessToken() !== null);
   public isRefreshing = false;
   public refreshSubject = new BehaviorSubject<string | null>(null);
+
+  constructor() {
+    this.refresh().subscribe({
+      next: () => this.initialized.set(true),
+      error: () => this.initialized.set(true),
+    });
+  }
+
+  public isInitialized = computed(() => this.initialized());
 
   private getUrl(path: string): string {
     return `${API_BASE_URL}${AUTH_ENDPOINT}${path}`;
