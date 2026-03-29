@@ -1,0 +1,57 @@
+{
+  "start": {
+    "title": "Welcome to",
+    "subtitle": "Learn JavaScript Event Loop by playing",
+    "description": "Can you predict how JavaScript executes code? Drag and arrange the output in the correct order.",
+    "rules": {
+      "title": "How to play",
+      "rule1Start": "Look",
+      "rule1End": "at the code",
+      "rule2Start": "Drag",
+      "rule2End": "the output lines to the correct order",
+      "rule3Start": "Check",
+      "rule3End": "your answer",
+      "rule4": "Enjoy!",
+      "tipHint": "You have hints — press the lightbulb if you get stuck",
+      "tipLives": "You have 3 lives — each mistake takes away one",
+      "tipEnd": "If you run out of lives, the game ends"
+    },
+    "button": "Start playing"
+  },
+  "end": {
+    "win": {
+      "title": "You did it!",
+      "description": "You completed all tasks and mastered the correct execution order of JavaScript Event Loop.",
+      "tasksCompleted": "tasks completed",
+      "livesLeft": "lives left",
+      "buttonRestart": "Play again",
+      "buttonBack": "Back to start"
+    },
+    "lose": {
+      "title": "Almost there!",
+      "description": "You ran out of lives, but the Event Loop gets easier with practice.",
+      "reachedTask1": "Reached task",
+      "reachedTask2": "of",
+      "buttonRestart": "Try again",
+      "buttonBack": "Back to start"
+    }
+  },
+  "game": {
+    "task1": "Task",
+    "task2": "of",
+    "buttonCheck": "Check answer",
+    "buttonNext": "Next task",
+    "dragHint": "Drag to reorder",
+    "dropPlaceholder": "Drop it"
+  },
+  "navigation": {
+    "main": "All games",
+    "start": "To start"
+  },
+  "exitConfirm": {
+    "label": "Exit the game?",
+    "content": "Your progress will be lost",
+    "yes": "Exit",
+    "no": "Stay"
+  }
+}

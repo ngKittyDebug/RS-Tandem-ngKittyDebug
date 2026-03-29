@@ -21,6 +21,7 @@ import { registerLocaleData } from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
 import localeEn from '@angular/common/locales/en';
 import { UserStore } from './core/stores/user-store/user-store';
+import { provideHighlightOptions } from 'ngx-highlightjs';
 
 registerLocaleData(localeRu);
 registerLocaleData(localeEn);
@@ -48,6 +49,13 @@ export const appConfig: ApplicationConfig = {
     provideTranslocoPersistLang({
       storage: {
         useFactory: () => localStorage,
+      },
+    }),
+    provideHighlightOptions({
+      coreLibraryLoader: () => import('highlight.js/lib/core'),
+      lineNumbersLoader: () => import('ngx-highlightjs/line-numbers'),
+      languages: {
+        typescript: () => import('highlight.js/lib/languages/typescript'),
       },
     }),
     provideAppInitializer(() => {

@@ -1,0 +1,190 @@
+@if (game.isLoading()) {
+  <app-loader mode="page"></app-loader>
+} @else {
+  <div class="page page_event-loop" *transloco="let t">
+    <header class="header">
+      <h2 tuiTitle>Meowvent Loop</h2>
+
+      <nav class="nav">
+        <button
+          tuiButton
+          type="button"
+          size="xs"
+          appearance="outline-grayscale"
+          tuiButton
+          (click)="goToStartScreen()"
+        >
+          {{ t('eventLoopGame.navigation.start') }}
+        </button>
+
+        <button
+          tuiButton
+          type="button"
+          size="xs"
+          appearance="outline-grayscale"
+          tuiButton
+          (click)="goToMain()"
+        >
+          {{ t('eventLoopGame.navigation.main') }}
+        </button>
+      </nav>
+    </header>
+
+    @if (game.isStarted()) {
+      <div class="game-wrapper">
+        <header class="game-header" tuiHeader="">
+          <div class="game-header__lives">
+            <tui-icon icon="@tui.cat"></tui-icon>
+            @for (life of game.lifeItems(); track life.id) {
+              <span class="game-header__life" [class.game-header__life_active]="life.isActive">
+                ♥
+              </span>
+            }
+          </div>
+
+          <div class="game-header__meta">
+            <p class="game-header__progress-text">
+              {{ t('eventLoopGame.game.task1') }} {{ game.currentTaskIndex() }}
+              {{ t('eventLoopGame.game.task2') }}
+              {{ game.totalTasks() }}
+            </p>
+
+            <div class="game-header__progress">
+              @for (item of game.progressItems(); track $index) {
+                <span
+                  class="game-header__progress-dot"
+                  [class.game-header__progress-dot_done]="item === 'done'"
+                  [class.game-header__progress-dot_current]="item === 'current'"
+                ></span>
+              }
+            </div>
+          </div>
+
+          <div class="game-header__actions">
+            <button
+              class="game-header__button"
+              tuiButton
+              type="button"
+              size="m"
+              appearance="primary"
+              (click)="toggleHint()"
+            >
+              <tui-icon icon="@tui.lightbulb"></tui-icon>
+            </button>
+
+            <button
+              class="game-header__button game-header__button_action"
+              tuiButton
+              type="button"
+              size="m"
+              [appearance]="game.gameStatus() === 'correct' ? 'gradient-2' : 'gradient'"
+              [class.game-header__button_next]="game.gameStatus() === 'correct'"
+              (click)="game.gameStatus() === 'correct' ? nextTask() : checkAnswer()"
+            >
+              @if (game.gameStatus() === 'correct') {
+                <span>
+                  <tui-icon icon="@tui.play"></tui-icon>
+                  {{ t('eventLoopGame.game.buttonNext') }}
+                </span>
+              } @else {
+                <span>
+                  <tui-icon icon="@tui.check"></tui-icon>
+                  {{ t('eventLoopGame.game.buttonCheck') }}
+                </span>
+              }
+            </button>
+          </div>
+        </header>
+
+        <div class="game-hint-container" [class.game-hint-container_active]="isHintOpen()">
+          <p class="game-hint">
+            <tui-icon icon="@tui.lightbulb" class="game-hint__icon"></tui-icon> {{ game.hint() }}
+          </p>
+        </div>
+
+        <div class="task-container" tuiCardLarge="compact" tuiAppearance="floating" tuiHeader>
+          <section class="task-code">
+            <header tuiHeader="xs" class="task-code__header">
+              <tui-icon
+                class="task-code__icon task-code__icon_accent-2"
+                icon="@tui.code"
+              ></tui-icon>
+              <p class="task-code__title" tuiTitle="s">
+                Code <span class="task-code__badge">{{ game.difficulty() }}</span>
+              </p>
+            </header>
+
+            <pre><code [highlight]="game.codeSnippet()" language="typescript" lineNumbers></code></pre>
+          </section>
+
+          <section class="task-code task-code_output">
+            <header tuiHeader="xs" class="task-code__header">
+              <tui-icon
+                class="task-code__icon task-code__icon_accent-1"
+                icon="@tui.chevron-right"
+              ></tui-icon>
+              <p class="task-code__title" tuiTitle="s">Output Console</p>
+              <aside tuiAccessories>
+                <span tuiSubtitle="s" class="task-code__subtitle">{{
+                  t('eventLoopGame.game.dragHint')
+                }}</span>
+              </aside>
+            </header>
+
+            <div>
+              <div class="sortable-list" cdkDropList (cdkDropListDropped)="drop($event)">
+                @for (answer of game.userAnswer(); track answer.id) {
+                  <div
+                    class="sortable-item"
+                    cdkDrag
+                    [cdkDragDisabled]="game.isDragDisabled()"
+                    [class.sortable-item_correct]="answer.status === 'correct'"
+                    [class.sortable-item_incorrect]="answer.status === 'incorrect'"
+                  >
+                    <div class="sortable-item__placeholder" *cdkDragPlaceholder>
+                      {{ t('eventLoopGame.game.dropPlaceholder') }}
+                    </div>
+
+                    <tui-avatar
+                      class="task-code-icon task-code-icon_accent-1"
+                      src="@tui.grip-vertical"
+                      size="xs"
+                    ></tui-avatar>
+
+                    {{ answer.value }}
+                    @if (answer.status === 'correct') {
+                      <span class="sortable-item__icon">✓</span>
+                    } @else if (answer.status === 'incorrect') {
+                      <span class="sortable-item__icon">✗</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <ng-template
+          *transloco="let t"
+          [tuiDialogOptions]="{
+            size: 'm',
+            closeable: false,
+            dismissible: false,
+          }"
+          [(tuiDialog)]="isEndDialogOpen"
+        >
+          <app-game-end-dialog
+            [mode]="endMode()"
+            [completedTasks]="game.currentTaskIndex()"
+            [totalTasks]="game.totalTasks()"
+            [livesLeft]="game.lives()"
+            (restart)="onRestart()"
+            (exit)="goToStartScreen()"
+          />
+        </ng-template>
+      </div>
+    } @else {
+      <app-game-start-dialog (startGame)="startGame()"></app-game-start-dialog>
+    }
+  </div>
+}

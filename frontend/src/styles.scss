@@ -1,5 +1,13 @@
+@use 'sass:meta';
+
+.hljs-ln-n {
+  padding: 0 0.5rem 0 0;
+}
+
 :root,
 [tuiTheme='light'] {
+  @include meta.load-css('highlight.js/styles/github.css');
+
   --tui-background-base: oklch(98.4% 0.003 247.858);
   --tui-background-base-alt: #ffffff;
 
@@ -22,6 +30,8 @@
 }
 
 [tuiTheme='dark'] {
+  @include meta.load-css('highlight.js/styles/github-dark-dimmed.css');
+
   --tui-background-base: oklch(20.8% 0.042 265.755);
   --tui-background-base-alt: oklch(12.9% 0.042 264.695);
 
