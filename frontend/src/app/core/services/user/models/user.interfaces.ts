@@ -3,6 +3,8 @@ export interface User {
   email: string;
   avatar: string;
   createdAt: string;
+  provider: string;
+  providerId: string | null;
 }
 export interface UpdateUserDto {
   username: string;
