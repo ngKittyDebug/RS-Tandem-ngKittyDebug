@@ -57,7 +57,6 @@ export const routes: Routes = [
     path: AppRoute.ABOUT,
     loadComponent: () => import('./pages/about/about').then((m) => m.About),
     providers: [provideTranslocoScope('about')],
-    canActivate: [guestGuard],
   },
   {
     path: GameRoute.DECRYPTO,
