@@ -350,4 +350,16 @@
       </div>
     </div>
   }
+  @if (isWin) {
+    <div class="modal-backdrop">
+      <div class="modal-window">
+        <h2>YOU WIN!</h2>
+        <p>
+          You guessed the word: <strong>{{ correctAnswer }}</strong>
+        </p>
+        <img src="./assets/images/catWin.png" alt="Winning gamer cat" width="200" />
+        <button appearance="accent" tuiButton type="button" (click)="nextWord()">Continue</button>
+      </div>
+    </div>
+  }
 </div>
