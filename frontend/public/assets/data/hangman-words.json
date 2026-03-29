@@ -83,7 +83,7 @@
     { "word": "microtask", "description": "A queue with higher priority tasks in the event loop." },
     { "word": "macrotask", "description": "A queue with lower priority tasks in the event loop." }
   ],
-  "insane": [
+  "god": [
     {
       "word": "currying",
       "description": "Transforming a function with multiple arguments into a sequence of functions."

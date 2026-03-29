@@ -1,19 +1,29 @@
 <div class="content">
-  <nav class="navigation">
-    <button iconStart="@tui.home" size="m" tuiButton type="button" (click)="back.emit()">
-      Back
-    </button>
-    <button
-      appearance="accent"
-      iconStart="@tui.trophy"
-      size="m"
-      tuiButton
-      type="button"
-      (click)="results.emit()"
-    >
-      Results
-    </button>
-  </nav>
+  <div class="game-header">
+    <nav class="navigation">
+      <button iconStart="@tui.home" size="m" tuiButton type="button" (click)="back.emit()">
+        Back
+      </button>
+      <button
+        appearance="accent"
+        iconStart="@tui.trophy"
+        size="m"
+        tuiButton
+        type="button"
+        (click)="results.emit()"
+      >
+        Results
+      </button>
+    </nav>
+    <div class="level">
+      <h3>Choose level:</h3>
+      <button size="s" tuiButton type="button">easy</button>
+      <button size="s" tuiButton type="button">medium</button>
+      <button size="s" tuiButton type="button">hard</button>
+      <button size="s" tuiButton type="button">expert</button>
+      <button size="s" tuiButton type="button">god</button>
+    </div>
+  </div>
   <div class="main-container">
     <img src="./assets/images/hangcat.png" alt="Hangman" class="hangman-image" width="400" />
     <div class="game-field">
@@ -358,6 +368,16 @@
           You guessed the word: <strong>{{ correctAnswer }}</strong>
         </p>
         <img src="./assets/images/catWin.png" alt="Winning gamer cat" width="200" />
+        <button appearance="accent" tuiButton type="button" (click)="nextWord()">Continue</button>
+      </div>
+    </div>
+  }
+  @if (isLevelCompleted) {
+    <div class="modal-backdrop">
+      <div class="modal-window">
+        <h2>LEVEL COMPLETED!</h2>
+        <p>You can continue to the next level!</p>
+        <img src="./assets/images/catChampion.png" alt="Champion cat" width="200" />
         <button appearance="accent" tuiButton type="button" (click)="nextWord()">Continue</button>
       </div>
     </div>

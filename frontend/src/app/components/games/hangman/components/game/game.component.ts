@@ -14,13 +14,14 @@ interface HangmanWord {
   description: string;
   word: string;
 }
+type Level = 'easy' | 'medium' | 'hard' | 'expert' | 'god';
 
 interface HangmanWordsByLevel {
   easy: HangmanWord[];
   medium: HangmanWord[];
   hard: HangmanWord[];
   expert: HangmanWord[];
-  insane: HangmanWord[];
+  god: HangmanWord[];
 }
 enum HangmanImage {
   MOUSE1 = 'assets/images/mouse11.png',
@@ -56,21 +57,31 @@ export class GameComponent implements OnInit {
   public maxMistakes = 4;
   public isGameOver = false;
   public isWin = false;
+  public isLevelCompleted = false;
   public currentCatImage = HangmanImage.MOUSE1;
 
-  private wordsPool: HangmanWord[] = [];
-  private usedWords: HangmanWord[] = [];
+  public currentLevel: Level = 'easy';
+  private wordsByLevel: HangmanWordsByLevel | null = null;
+  public usedWords: Record<Level, string[]> = {
+    easy: [],
+    medium: [],
+    hard: [],
+    expert: [],
+    god: [],
+  };
+
+  // private wordsPool: HangmanWord[] = [];
 
   public ngOnInit(): void {
-    this.loadWords();
+    this.loadWordsData();
   }
 
   protected addLetter(letter: string): void {
-    if (this.isGameOver || this.isWin) {
+    if (this.isGameOver || this.isWin || this.isLevelCompleted) {
       return;
     }
     const upperLetter = letter.toUpperCase();
-    //const upperAnswer = this.correctAnswer.toUpperCase();
+
     if (this.isLetterUsed(upperLetter)) {
       return;
     }
@@ -78,10 +89,6 @@ export class GameComponent implements OnInit {
       this.guessedLetters.push(upperLetter);
       this.updateDisplayedWord();
       console.log('Correct letter:', upperLetter);
-
-      if (this.displayedWord.replaceAll(' ', '') === this.correctAnswer) {
-        this.isWin = true;
-      }
     } else {
       this.wrongLetters.push(upperLetter);
       this.mistakes++;
@@ -91,6 +98,9 @@ export class GameComponent implements OnInit {
 
     if (this.mistakes > this.maxMistakes) {
       this.isGameOver = true;
+    }
+    if (this.displayedWord.replaceAll(' ', '') === this.correctAnswer) {
+      this.isWin = true;
     }
 
     this.cdr.detectChanges();
@@ -121,50 +131,70 @@ export class GameComponent implements OnInit {
     this.isGameOver = false;
     this.reset();
   }
-
-  protected nextWord(): void {
-    this.loadNextWord();
+  protected selectLevel(level: Level): void {
+    this.currentLevel = level;
+    this.isLevelCompleted = false;
+    this.isWin = false;
+    this.isGameOver = false;
+    this.loadRandomWordForLevel();
   }
 
-  private loadWords(): void {
+  protected nextWord(): void {
+    this.isWin = false;
+    this.isGameOver = false;
+    this.isLevelCompleted = false;
+    this.loadRandomWordForLevel();
+  }
+  protected goToNextLevel(): void {
+    const nextLevelMap: Record<Level, Level | null> = {
+      easy: 'medium',
+      medium: 'hard',
+      hard: 'expert',
+      expert: 'god',
+      god: null,
+    };
+    const nextLevel = nextLevelMap[this.currentLevel];
+    if (nextLevel) {
+      this.currentLevel = nextLevel;
+      this.isLevelCompleted = false;
+      this.loadRandomWordForLevel();
+    } else {
+      this.isLevelCompleted = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  private loadWordsData(): void {
     this.http.get<HangmanWordsByLevel>('assets/data/hangman-words.json').subscribe({
       next: (wordsByLevel) => {
-        // const words = wordsByLevel.easy;
-        this.wordsPool = [...wordsByLevel.easy];
-        this.usedWords = [];
-        this.loadNextWord();
-
-        // const randomIndex = Math.floor(Math.random() * words.length);
-        // const randomWord = words[randomIndex];
-
-        //this.currentQuestion = randomWord.description;
-        //  this.correctAnswer = randomWord.word.toUpperCase();
-
-        //   this.updateDisplayedWord();
-
-        //  console.log('Question loaded:', this.currentQuestion);
-        //  console.log('Answer loaded:', this.correctAnswer);
-
-        // this.cdr.detectChanges();
+        this.wordsByLevel = wordsByLevel;
+        this.loadRandomWordForLevel();
+        //this.loadNextWord();
       },
       error: (error) => {
         console.error('Error loading hangman words:', error);
       },
     });
   }
-
-  private loadNextWord(): void {
-    if (this.wordsPool.length === 0) {
-      console.log('No more words left. Restarting word pool...');
-      this.wordsPool = [...this.usedWords];
-      this.usedWords = [];
+  private loadRandomWordForLevel(): void {
+    if (!this.wordsByLevel) {
+      return;
     }
+    const words = this.wordsByLevel[this.currentLevel];
+    const usedWordsForLevel = this.usedWords[this.currentLevel];
 
-    const randomIndex = Math.floor(Math.random() * this.wordsPool.length);
-    const randomWord = this.wordsPool[randomIndex];
+    const availableWords = words.filter(
+      (word: HangmanWord) => !usedWordsForLevel.includes(word.word),
+    );
+    if (availableWords.length === 0) {
+      this.isLevelCompleted = true;
+      this.cdr.detectChanges();
+      return;
+    }
+    const randomIndex = Math.floor(Math.random() * availableWords.length);
+    const randomWord = availableWords[randomIndex];
 
-    this.wordsPool.splice(randomIndex, 1);
-    this.usedWords.push(randomWord);
+    this.usedWords[this.currentLevel].push(randomWord.word);
 
     this.currentQuestion = randomWord.description;
     this.correctAnswer = randomWord.word.toUpperCase();
@@ -178,6 +208,7 @@ export class GameComponent implements OnInit {
 
     this.updateDisplayedWord();
 
+    console.log('Level:', this.currentLevel);
     console.log('Question loaded:', this.currentQuestion);
     console.log('Answer loaded:', this.correctAnswer);
 

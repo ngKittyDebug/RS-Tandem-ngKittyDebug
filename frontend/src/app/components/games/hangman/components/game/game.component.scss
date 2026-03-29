@@ -145,3 +145,17 @@ button[disabled] {
   font-size: 18px;
   margin-bottom: 20px;
 }
+.game-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.level {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+}
