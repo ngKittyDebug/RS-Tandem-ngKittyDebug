@@ -1,6 +1,4 @@
 {
-  "loginWorks": "Login page works",
-
   "title": "Welcome Back",
   "subtitle": "Login to continue to MeowVault",
 
@@ -22,7 +20,7 @@
 
   "buttons": {
     "login": "Login",
-    "google": "Continue with Google"
+    "loginWithGitHub": "Continue with GitHub"
   },
 
   "divider": "or",
@@ -38,6 +36,7 @@
     "passwordPattern": "Minimum 8 characters, at least one uppercase letter, one lowercase letter, and one number",
     "usernamePattern": "Any 3–20 characters, no spaces required",
     "invalidCredentials": "Invalid credentials",
+    "invalidData": "Invalid request data",
     "serverError": "Server error"
   }
 }

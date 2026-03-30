@@ -26,5 +26,9 @@ export const updateUserAvatarConfig: ApiSwaggerConfig = {
       status: HttpStatus.NOT_FOUND,
       description: 'Пользователь не найден',
     },
+    {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Ошибка сервера при обновлении аватара',
+    },
   ],
 };

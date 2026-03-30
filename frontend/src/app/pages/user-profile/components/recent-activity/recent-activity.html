@@ -3,41 +3,31 @@
     <h2 tuiTitle>{{ t('userProfile.recentActivity.title') }}</h2>
   </header>
 
-  <div class="activity-list">
-    <article class="activity-item" tuiCardLarge="compact" tuiHeader tuiAppearance="neutral">
-      <tui-icon
-        class="activity-item__icon activity-item__icon_accent-1"
-        icon="@tui.cat"
-        size="xl"
-        tuiBadge
-      />
+  @if (isStats()) {
+    <div class="activity-list">
+      @for (game of sortedStats(); track game.gameType; let index = $index) {
+        <article class="activity-item" tuiCardLarge="compact" tuiHeader tuiAppearance="neutral">
+          <tui-icon
+            class="activity-item__icon"
+            [icon]="getListItemVariant(index).icon"
+            size="xl"
+            tuiBadge
+          />
 
-      <div class="activity-item__content">
-        <p class="activity-item__title">{{ t('userProfile.recentActivity.game1Title') }}</p>
-        <p class="activity-item__subtitle">
-          {{ t('userProfile.recentActivity.game1Description') }}
-        </p>
-      </div>
+          <div class="activity-item__content">
+            <p class="activity-item__title">
+              {{ t(`userProfile.${[gameTitleKeys[game.gameType]]}`) }}
+            </p>
+          </div>
 
-      <div class="activity-item__time">2 {{ t('userProfile.recentActivity.game1Date') }}</div>
-    </article>
-
-    <article class="activity-item" tuiCardLarge="compact" tuiHeader tuiAppearance="neutral">
-      <tui-icon
-        class="activity-item__icon activity-item__icon_accent-2"
-        icon="@tui.cat"
-        size="xl"
-        tuiBadge
-      />
-
-      <div class="activity-item__content">
-        <p class="activity-item__title">{{ t('userProfile.recentActivity.game2Title') }}</p>
-        <p class="activity-item__subtitle">
-          {{ t('userProfile.recentActivity.game2Description') }}
-        </p>
-      </div>
-
-      <div class="activity-item__time">5 {{ t('userProfile.recentActivity.game2Date') }}</div>
-    </article>
-  </div>
+          <div class="activity-item__time">
+            {{ game.updatedAt | relativeDate: transloco.getActiveLang() }}
+          </div>
+        </article>
+      }
+    </div>
+  } @else {
+    <p class="no-activity-text">{{ t('userProfile.recentActivity.noActivity') }}</p>
+    <img class="no-activity-image" src="assets/images/cat107.svg" alt="No recent activity" />
+  }
 </div>

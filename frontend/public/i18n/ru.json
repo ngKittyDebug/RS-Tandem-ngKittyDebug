@@ -1,7 +1,9 @@
 {
   "log-out": "Выход",
+  "log-in": "Вход",
   "footer-start": "© 2026 MeowVault. Все права защищены. Сделано с ",
   "footer-end": " котиками, для игроков.",
+  "footer-about": "О нас",
 
   "serverResponse": {
     "getUser": {
@@ -24,6 +26,12 @@
     },
     "keyStorage": {
       "notFound": "Запись с указанным ключом не найдена"
+    },
+    "statistics": {
+      "defaultError": "Ошибка сервера при получении статистики",
+      "wrongGameType": "Некорректный тип игры",
+      "notAuthUser": "Пользователь не авторизован",
+      "statisticsNotFound": "Статистика не найдена"
     },
     "updateAvatar": {
       "success": "Аватар успешно обновлен",
