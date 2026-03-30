@@ -37,7 +37,7 @@ model User {
   avatar    String?   
   provider  Provider @default(local)
   providerId String?  @unique
-
+  refreshToken String?
   stats     GameStatistic[]
 
   @@map("users")

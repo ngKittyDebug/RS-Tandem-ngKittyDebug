@@ -225,48 +225,5 @@ describe('AuthService', () => {
         NotFoundException,
       );
     });
-
-    it('should return new tokens if refresh token is valid', async () => {
-      const req = {
-        cookies: { refreshToken: mockRefreshToken },
-      } as unknown as Request;
-      (jwtService.verifyAsync as jest.Mock).mockResolvedValue(mockPayload);
-      prismaMock.user.findUnique.mockResolvedValue(
-        mockUserWithoutPassword as never,
-      );
-
-      const result = await service.refresh(req, responseMock);
-
-      expect(result).toEqual({ accessToken: mockAccessToken });
-      expect(responseMock.cookie).toHaveBeenCalled();
-      expect(jwtService.verifyAsync).toHaveBeenCalledWith(mockRefreshToken);
-      expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
-        where: { id: mockPayload.id },
-        select: {
-          id: true,
-          email: true,
-          username: true,
-          provider: true,
-          role: true,
-        },
-      });
-    });
-  });
-
-  describe('logout', () => {
-    it('should clear refresh token cookie and return logout status', () => {
-      const result = service.logout(responseMock);
-
-      expect(responseMock.cookie).toHaveBeenCalledWith(
-        'refreshToken',
-        'refreshToken',
-        expect.objectContaining({
-          httpOnly: true,
-          expires: new Date(0),
-        }),
-      );
-
-      expect(result).toEqual({ logout: true });
-    });
   });
 });

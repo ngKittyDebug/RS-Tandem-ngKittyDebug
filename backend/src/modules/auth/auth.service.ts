@@ -23,6 +23,7 @@ import {
   LogoutResponse,
 } from '../interface/auth-module-types';
 import { Profile } from 'passport';
+import { createHash } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -153,8 +154,20 @@ export class AuthService {
     return this.auth(res, payload);
   }
 
-  private auth(res: Response, payload: JwtPayload): AuthResponse {
+  private async auth(
+    res: Response,
+    payload: JwtPayload,
+  ): Promise<AuthResponse> {
     const { accessToken, refreshToken } = this.genJWTtokens(payload);
+
+    await this.prisma.user.update({
+      where: {
+        id: payload.id,
+      },
+      data: {
+        refreshToken: this.getHash(refreshToken),
+      },
+    });
 
     const expiresMs = ms(this.JWT_REFRESH_TOKEN_EXPIRE_TIME as ms.StringValue);
     this.sendCookie(res, refreshToken, new Date(Date.now() + expiresMs));
@@ -206,12 +219,18 @@ export class AuthService {
       throw new UnauthorizedException('Токен больше не действителен');
     }
 
-    const payload: JwtPayload = await this.jwtService.verifyAsync(refresh);
+    let validateCookiesRefresh: JwtPayload;
+    try {
+      validateCookiesRefresh =
+        await this.jwtService.verifyAsync<JwtPayload>(refresh);
+    } catch {
+      throw new UnauthorizedException('Токен больше не действителен');
+    }
 
-    if (payload) {
+    if (validateCookiesRefresh) {
       const user = await this.prisma.user.findUnique({
         where: {
-          id: payload.id,
+          id: validateCookiesRefresh.id,
         },
         select: {
           id: true,
@@ -219,14 +238,31 @@ export class AuthService {
           username: true,
           role: true,
           provider: true,
+          refreshToken: true,
         },
       });
 
       if (!user) {
         throw new NotFoundException('Пользователь не найден');
       }
+      if (!user.refreshToken) {
+        throw new NotFoundException('Токен не найден');
+      }
 
-      return this.auth(res, user);
+      if (this.getHash(refresh) !== user.refreshToken) {
+        await this.logout(res, user);
+        throw new UnauthorizedException(`Токен не валиден`);
+      }
+
+      const payload: JwtPayload = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        provider: user.provider,
+        role: user.role,
+      };
+
+      return this.auth(res, payload);
     }
 
     throw new UnauthorizedException('Токен больше не действителен');
@@ -241,13 +277,24 @@ export class AuthService {
     });
   }
 
-  logout(res: Response): LogoutResponse {
-    this.sendCookie(res, 'refreshToken', new Date(0));
+  async logout(res: Response, user: JwtPayload): Promise<LogoutResponse> {
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: { refreshToken: null },
+    });
+
+    this.sendCookie(res, '', new Date(0));
 
     return { logout: true };
   }
 
   redirect(res: Response) {
     res.redirect(this.REDIRECT_FRONTEND);
+  }
+
+  getHash(token: string) {
+    const hash = createHash('sha256');
+    hash.update(token);
+    return hash.digest('hex');
   }
 }

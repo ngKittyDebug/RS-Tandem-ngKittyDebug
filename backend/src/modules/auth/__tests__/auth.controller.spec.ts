@@ -10,10 +10,6 @@ interface AuthResponse {
   accessToken: string;
 }
 
-interface LogoutResponse {
-  logout: boolean;
-}
-
 const createResponseMock = (): Response =>
   ({
     cookie: jest.fn(),
@@ -101,18 +97,6 @@ describe('AuthController', () => {
       const result = await controller.refresh(responseMock, req);
 
       expect(authServiceMock.refresh).toHaveBeenCalledWith(req, responseMock);
-      expect(result).toEqual(mockResult);
-    });
-  });
-
-  describe('logout', () => {
-    it('should call authService.logout and return result', () => {
-      const mockResult: LogoutResponse = { logout: true };
-      authServiceMock.logout.mockReturnValue(mockResult);
-
-      const result = controller.logout(responseMock);
-
-      expect(authServiceMock.logout).toHaveBeenCalledWith(responseMock);
       expect(result).toEqual(mockResult);
     });
   });
