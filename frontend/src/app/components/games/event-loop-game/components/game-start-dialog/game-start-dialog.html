@@ -1,0 +1,63 @@
+<section class="start-dialog" tuiCardLarge="" tuiAppearance="floating" *transloco="let t">
+  <header tuiHeader="xs" class="start-dialog__header">
+    <h2 class="start-dialog__title" tuiTitle="m">
+      {{ t('eventLoopGame.start.title') }} Meowvent Loop
+    </h2>
+    <p class="start-dialog__subtitle">{{ t('eventLoopGame.start.subtitle') }}</p>
+  </header>
+
+  <div class="start-dialog__description">
+    <p>
+      {{ t('eventLoopGame.start.description') }}
+    </p>
+  </div>
+
+  <div class="start-dialog__rules">
+    <p class="start-dialog__rules-title" tuiTitle>
+      <tui-icon class="start-dialog__rules-icon" icon="@tui.gamepad-2"></tui-icon>
+      {{ t('eventLoopGame.start.rules.title') }}
+    </p>
+    <ol class="start-dialog__rules-list">
+      <li class="start-dialog__rules-item">
+        <span class="start-dialog__rules-item_accent">{{
+          t('eventLoopGame.start.rules.rule1Start')
+        }}</span>
+        {{ t('eventLoopGame.start.rules.rule1End') }}
+      </li>
+      <li class="start-dialog__rules-item">
+        <span class="start-dialog__rules-item_accent">{{
+          t('eventLoopGame.start.rules.rule2Start')
+        }}</span>
+        {{ t('eventLoopGame.start.rules.rule2End') }}
+      </li>
+      <li class="start-dialog__rules-item">
+        <span class="start-dialog__rules-item_accent">{{
+          t('eventLoopGame.start.rules.rule3Start')
+        }}</span>
+        {{ t('eventLoopGame.start.rules.rule3End') }}
+      </li>
+      <li class="start-dialog__rules-item">
+        <span class="start-dialog__rules-item_accent">{{
+          t('eventLoopGame.start.rules.rule4')
+        }}</span>
+      </li>
+    </ol>
+
+    <div class="start-dialog__rules-tips">
+      <p class="start-dialog__rules-tips-item">💡 {{ t('eventLoopGame.start.rules.tipHint') }}</p>
+      <p class="start-dialog__rules-tips-item">❤️ {{ t('eventLoopGame.start.rules.tipLives') }}</p>
+      <p class="start-dialog__rules-tips-item">❌ {{ t('eventLoopGame.start.rules.tipEnd') }}</p>
+    </div>
+  </div>
+
+  <button
+    tuiButton
+    appearance="gradient"
+    type="button"
+    size="m"
+    iconStart="@tui.cat"
+    (click)="startGame.emit()"
+  >
+    {{ t('eventLoopGame.start.button') }}
+  </button>
+</section>

@@ -1,13 +1,21 @@
+import { GameLabels } from '../../../shared/enums/game-labels.enum';
+
 export interface ListItemVariant {
   icon: string;
 }
 
-const LIST_ITEM_VARIANTS: readonly ListItemVariant[] = [
-  { icon: '@tui.cat' },
-  { icon: '@tui.paw-print' },
-  { icon: '@tui.gamepad-2' },
-] as const;
+const DEFAULT_LIST_ITEM_VARIANT: ListItemVariant = {
+  icon: '@tui.gamepad-2',
+};
 
-export function getListItemVariant(index: number): ListItemVariant {
-  return LIST_ITEM_VARIANTS[index % LIST_ITEM_VARIANTS.length];
+const LIST_ITEM_VARIANTS_BY_GAME_TYPE: Readonly<Record<string, ListItemVariant>> = {
+  [GameLabels.Decrypto]: { icon: '@tui.cat' },
+  [GameLabels.MergeGame]: { icon: '@tui.paw-print' },
+  [GameLabels.EventLoop]: { icon: '@tui.repeat' },
+  [GameLabels.Hangman]: { icon: '@tui.whole-word' },
+  [GameLabels.CitiesGame]: { icon: '@tui.building' },
+};
+
+export function getListItemVariant(gameType: string): ListItemVariant {
+  return LIST_ITEM_VARIANTS_BY_GAME_TYPE[gameType] ?? DEFAULT_LIST_ITEM_VARIANT;
 }

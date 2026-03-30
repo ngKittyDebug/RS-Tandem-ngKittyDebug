@@ -69,4 +69,10 @@
   &__actions-button {
     flex: 1;
   }
+
+  @media (max-width: 480px) {
+    &__save {
+      font-size: 0.875rem;
+    }
+  }
 }

@@ -1,0 +1,95 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cat {
+  width: 140px;
+  height: auto;
+  display: block;
+  cursor: grab;
+}
+
+.eye-awake,
+.eye-sleep,
+.cat-zzz {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.eye-sleep,
+.cat-zzz {
+  opacity: 1;
+}
+
+.eye-awake {
+  opacity: 0;
+}
+
+.cat-zzz {
+  animation: zzzFloat 2.2s ease-in-out infinite;
+}
+
+.zzz-2 {
+  animation-delay: 0.35s;
+}
+
+.zzz-3 {
+  animation-delay: 0.7s;
+}
+
+.cat--awake .eye-awake {
+  opacity: 1;
+  animation: look-up 200ms ease-out;
+}
+
+.cat--awake .eye-sleep,
+.cat--awake .cat-zzz {
+  opacity: 0;
+  pointer-events: none;
+}
+.cat--awake .cat-zzz {
+  visibility: hidden;
+}
+
+.cat--sleep .eye-awake,
+.cat:not(.cat--awake) .eye-awake {
+  opacity: 0;
+}
+
+.cat--sleep .eye-sleep,
+.cat--sleep .cat-zzz,
+.cat:not(.cat--awake) .eye-sleep,
+.cat:not(.cat--awake) .cat-zzz {
+  opacity: 1;
+}
+
+.cat--sleep .cat-body,
+.cat:not(.cat--awake) .cat-body {
+  transform-origin: 50% 65%;
+  transform-box: view-box;
+}
+
+@keyframes look-up {
+  from {
+    transform: translateY(4px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes zzzFloat {
+  0% {
+    opacity: 0;
+    transform: translate(0px, 6px) scale(0.92);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(8px, -12px) scale(1.08);
+  }
+}

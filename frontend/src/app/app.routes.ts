@@ -11,6 +11,7 @@ export enum AppRoute {
   USER_PROFILE = 'user-profile',
   ABOUT = 'about',
   MAIN = '',
+  CITIES_GAME = 'cities-game',
 }
 
 export enum GameRoute {
@@ -19,6 +20,8 @@ export enum GameRoute {
   HANGMAN = 'hangman',
   WORD_CHAIN = 'word-chain',
   LOOP = 'meowloop',
+  CITIESGAME = 'cities-game',
+  EVENT_LOOP_GAME = 'event-loop-game',
 }
 
 export enum MergeGameRoute {
@@ -105,6 +108,20 @@ export const routes: Routes = [
           import('./components/games/merge-game/components/theory/theory').then((m) => m.Theory),
       },
     ],
+  },
+  {
+    path: AppRoute.CITIES_GAME,
+    loadComponent: () =>
+      import('./components/games/cities-game/cities-game').then((m) => m.CitiesGame),
+    providers: [provideTranslocoScope('cities-game')],
+    canActivate: [authGuard],
+  },
+  {
+    path: GameRoute.EVENT_LOOP_GAME,
+    loadComponent: () =>
+      import('./components/games/event-loop-game/event-loop-game').then((m) => m.EventLoopGame),
+    providers: [provideTranslocoScope('event-loop-game')],
+    canActivate: [authGuard],
   },
   {
     path: '**',

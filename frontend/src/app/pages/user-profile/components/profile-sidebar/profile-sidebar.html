@@ -78,10 +78,10 @@
 
       @if (isStats()) {
         <ul class="stats-popup__list">
-          @for (game of stats(); track game.gameType; let index = $index) {
+          @for (game of stats(); track game.gameType) {
             <li class="stats-popup__item">
               <tui-icon
-                [icon]="getListItemVarian(index).icon"
+                [icon]="getListItemVarian(game.gameType).icon"
                 class="stats-popup__item-icon stats-popup__item-icon_accent-1"
                 size="xl"
                 tuiBadge
