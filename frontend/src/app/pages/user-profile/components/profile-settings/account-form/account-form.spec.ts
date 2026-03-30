@@ -98,4 +98,36 @@ describe('AccountForm', () => {
 
     expect(mode()).toBe(false);
   });
+
+  it('should disable save when user is missing', () => {
+    userStoreMock.user.set(null);
+
+    expect(component['isSaveDisabled']()).toBe(true);
+  });
+
+  it('should return required error for empty touched control', () => {
+    const control = component['accountForm'].get('username');
+    control?.markAsTouched();
+    control?.setValue('');
+
+    const result = component['getInputError'](component['accountForm'], 'username');
+
+    expect(result).toBe('userProfile.accountSettings.error.required');
+  });
+
+  it('should return pattern error for invalid username', () => {
+    const control = component['accountForm'].get('username');
+    control?.markAsTouched();
+    control?.setValue('@@');
+
+    const result = component['getInputError'](component['accountForm'], 'username');
+
+    expect(result).toBe('userProfile.accountSettings.error.usernamePattern');
+  });
+
+  it('should return null when control is not touched', () => {
+    const result = component['getInputError'](component['accountForm'], 'username');
+
+    expect(result).toBeNull();
+  });
 });

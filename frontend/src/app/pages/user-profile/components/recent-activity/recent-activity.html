@@ -5,11 +5,11 @@
 
   @if (isStats()) {
     <div class="activity-list">
-      @for (game of sortedStats(); track game.gameType; let index = $index) {
+      @for (game of sortedStats(); track game.gameType) {
         <article class="activity-item" tuiCardLarge="compact" tuiHeader tuiAppearance="neutral">
           <tui-icon
             class="activity-item__icon"
-            [icon]="getListItemVariant(index).icon"
+            [icon]="getListItemVariant(game.gameType).icon"
             size="xl"
             tuiBadge
           />
