@@ -10,6 +10,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { Router } from '@angular/router';
 import { AppRoute, GameRoute, getRoutePath } from '../../app.routes';
 import { AuthService } from '../../core/services/auth/auth-service';
+import { EyeCompassDirective } from '../../core/directive/eye-compass.directive';
 
 @Component({
   standalone: true,
@@ -24,6 +25,7 @@ import { AuthService } from '../../core/services/auth/auth-service';
     AsyncPipe,
     TuiBlockStatus,
     TuiButton,
+    EyeCompassDirective,
   ],
   templateUrl: './main.html',
   styleUrls: ['./main.scss'],
