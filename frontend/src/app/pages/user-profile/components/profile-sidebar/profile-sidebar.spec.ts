@@ -177,4 +177,25 @@ describe('ProfileSidebar', () => {
     button.click();
     expect(clickSpy).toHaveBeenCalled();
   });
+
+  it('should show total played games count', () => {
+    fixture.componentRef.setInput('stats', [
+      { gameType: 'decrypto', playedCount: 2, updatedAt: '2026-03-29T00:00:00.000Z' },
+      { gameType: 'mergeGame', playedCount: 3, updatedAt: '2026-03-28T00:00:00.000Z' },
+    ]);
+    fixture.detectChanges();
+
+    const count = fixture.nativeElement.querySelector('.stats-button__count')?.textContent?.trim();
+
+    expect(count).toBe('5');
+  });
+
+  it('should open stats popup on stats button click', () => {
+    const button = fixture.nativeElement.querySelector('.stats-button');
+
+    button.click();
+    fixture.detectChanges();
+
+    expect(component['openDialog']()).toBe(true);
+  });
 });

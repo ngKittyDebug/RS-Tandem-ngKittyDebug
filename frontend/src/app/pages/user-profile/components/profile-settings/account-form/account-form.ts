@@ -30,6 +30,7 @@ import {
 import { USER_PATTERN } from '../../../../../core/patterns/user-pattern';
 import { EMAIL_PATTERN } from '../../../../../core/patterns/email-pattern';
 import { PASSWORD_PATTERN } from '../../../../../core/patterns/password-pattern';
+import { Loader } from '../../../../../core/components/loader/loader';
 
 @Component({
   selector: 'app-account-form',
@@ -48,6 +49,7 @@ import { PASSWORD_PATTERN } from '../../../../../core/patterns/password-pattern'
     TuiTitle,
     TuiDialog,
     TuiAutoFocus,
+    Loader,
   ],
   templateUrl: './account-form.html',
   styleUrl: './account-form.scss',

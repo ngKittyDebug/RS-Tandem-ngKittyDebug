@@ -9,6 +9,8 @@ import { LOADER_MODE, LOADER_SIZES, LoaderModes } from './constants/loader.const
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[style.--app-loader-size]': 'resolvedSize()',
+    '[class.loader_page]': "mode() === 'page'",
+    '[class.loader_inline]': "mode() === 'inline'",
   },
 })
 export class Loader {

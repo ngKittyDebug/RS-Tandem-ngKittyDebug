@@ -5,6 +5,10 @@
   align-items: center;
   justify-content: center;
 }
+:host(.loader_page) {
+  display: flex;
+  flex: 1;
+}
 
 .loader {
   display: inline-flex;

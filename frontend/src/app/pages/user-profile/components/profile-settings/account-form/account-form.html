@@ -99,8 +99,12 @@
           type="submit"
           [disabled]="passwordConfirmForm.invalid || userStore.isUpdatingUser()"
         >
-          <tui-icon icon="@tui.save"></tui-icon>
-          {{ t('userProfile.accountSettings.passwordModalButtonConfirm') }}
+          @if (userStore.isUpdatingUser()) {
+            <app-loader mode="inline"></app-loader>
+          } @else {
+            <tui-icon icon="@tui.save"></tui-icon>
+            {{ t('userProfile.accountSettings.passwordModalButtonConfirm') }}
+          }
         </button>
         <button
           class="settings-card__actions-button"

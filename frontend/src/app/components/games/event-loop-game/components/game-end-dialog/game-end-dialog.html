@@ -1,0 +1,34 @@
+<div class="end-dialog" [class.game-end-dialog_win]="isWin()">
+  <h3 class="end-dialog__title" tuiTitle="m">
+    @if (isWin()) {
+      <div class="end-dialog__icon">🏆</div>
+    } @else {
+      <div class="end-dialog__icon">💔</div>
+    }
+    {{ transloco.translate('eventLoopGame.end.' + mode() + '.title') }}
+  </h3>
+
+  <p class="end-dialog__description">
+    {{ transloco.translate('eventLoopGame.end.' + mode() + '.description') }}
+  </p>
+
+  <p class="end-dialog__stats">
+    @if (isWin()) {
+      ✅ {{ completedTasks() }} {{ transloco.translate('eventLoopGame.end.win.tasksCompleted') }} ·
+      ❤️ {{ livesLeft() }} {{ transloco.translate('eventLoopGame.end.win.livesLeft') }}
+    } @else {
+      {{ transloco.translate('eventLoopGame.end.lose.reachedTask1') }} {{ completedTasks() }}
+      {{ transloco.translate('eventLoopGame.end.lose.reachedTask2') }} {{ totalTasks() }}
+    }
+  </p>
+
+  <div class="end-dialog__actions">
+    <button tuiButton type="button" appearance="gradient" size="m" (click)="onRestart()">
+      {{ transloco.translate('eventLoopGame.end.' + mode() + '.buttonRestart') }}
+    </button>
+
+    <button tuiButton type="button" appearance="outline" size="m" (click)="onExit()">
+      {{ transloco.translate('eventLoopGame.end.' + mode() + '.buttonBack') }}
+    </button>
+  </div>
+</div>

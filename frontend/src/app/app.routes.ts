@@ -16,6 +16,7 @@ export enum AppRoute {
 export enum GameRoute {
   DECRYPTO = 'decrypto',
   MERGE_GAME = 'merge-game',
+  EVENT_LOOP_GAME = 'event-loop-game',
 }
 
 export enum MergeGameRoute {
@@ -101,6 +102,13 @@ export const routes: Routes = [
           import('./components/games/merge-game/components/theory/theory').then((m) => m.Theory),
       },
     ],
+  },
+  {
+    path: GameRoute.EVENT_LOOP_GAME,
+    loadComponent: () =>
+      import('./components/games/event-loop-game/event-loop-game').then((m) => m.EventLoopGame),
+    providers: [provideTranslocoScope('event-loop-game')],
+    canActivate: [authGuard],
   },
   {
     path: '**',

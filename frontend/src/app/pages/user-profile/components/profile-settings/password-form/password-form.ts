@@ -15,6 +15,7 @@ import { UserStore } from '../../../../../core/stores/user-store/user-store';
 import { PASSWORD_PATTERN } from '../../../../../core/patterns/password-pattern';
 import { PasswordForm as IPasswordForm, PasswordField } from '../models/user-form.interface';
 import { passwordsRulesValidator } from './validators/validators';
+import { Loader } from '../../../../../core/components/loader/loader';
 
 @Component({
   selector: 'app-password-form',
@@ -31,6 +32,7 @@ import { passwordsRulesValidator } from './validators/validators';
     TuiError,
     TuiHeader,
     TuiTitle,
+    Loader,
   ],
   templateUrl: './password-form.html',
   styleUrl: './password-form.scss',
