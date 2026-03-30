@@ -250,7 +250,7 @@
     </button>
   </div>
   <div class="cities__chat">
-    <div class="cities__chat-area">
+    <div class="cities__chat-area" >
       @for (message of visibleMessages; track $index) {
         <span
           class="cities__chat-container"
@@ -282,6 +282,7 @@
           }
         </span>
       }
+      <div #bottom></div>
     </div>
     <form class="cities__chat-form" [formGroup]="messageForm">
       <tui-textfield class="cities__chat-input" tuiTextfieldSize="m">

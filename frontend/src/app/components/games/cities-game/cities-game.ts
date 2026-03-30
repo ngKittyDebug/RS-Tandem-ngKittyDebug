@@ -8,6 +8,8 @@ import {
   OnInit,
   signal,
   viewChild,
+  ElementRef,
+  ViewChild,
 } from '@angular/core';
 import { AppRoute, getRoutePath } from '../../../app.routes';
 import { RouterModule } from '@angular/router';
@@ -119,6 +121,14 @@ export class CitiesGame implements OnInit {
   protected readonly isAvatarImageLoading = signal(false);
   protected userStore = inject(UserStore);
   public userName = '';
+  @ViewChild('bottom')
+  private bottom?: ElementRef;
+
+  private scrollToBottom(): void {
+    this.bottom?.nativeElement?.scrollIntoView?.({
+      behavior: 'smooth',
+    });
+  }
 
   public runMessages(): void {
     this.timer()?.start();
@@ -130,6 +140,10 @@ export class CitiesGame implements OnInit {
     this.timeoutId = setTimeout(() => {
       this.zone.run(() => {
         this.visibleMessages.push(this.messages[this.index]);
+        this.cdr.markForCheck();
+        setTimeout(() => {
+          this.scrollToBottom();
+        });
         this.index++;
         this.cdr.markForCheck();
         this.runMessages();
@@ -195,9 +209,12 @@ export class CitiesGame implements OnInit {
               text: 'citiesGame.sasarikSadUsed',
               type: 'incomingSad',
             });
+            this.cdr.markForCheck();
+            setTimeout(() => {
+              this.scrollToBottom();
+            });
           });
         }, 1000);
-
         break;
 
       case 'wrong_letter':
@@ -206,6 +223,10 @@ export class CitiesGame implements OnInit {
             this.visibleMessages.push({
               text: 'citiesGame.sasarikSadWrongLetter',
               type: 'incomingSad',
+            });
+            this.cdr.markForCheck();
+            setTimeout(() => {
+              this.scrollToBottom();
             });
           });
         }, 1000);
@@ -221,6 +242,10 @@ export class CitiesGame implements OnInit {
         this.timeoutId = setTimeout(() => {
           this.zone.run(() => {
             this.visibleMessages.push(nextMessageFromCat);
+            this.cdr.markForCheck();
+            setTimeout(() => {
+              this.scrollToBottom();
+            });
           });
         }, 1000);
         this.usedWords.push(message.toLowerCase());
@@ -236,6 +261,10 @@ export class CitiesGame implements OnInit {
               text: 'citiesGame.sasarikSadEnd',
               type: 'incomingSad',
             });
+            this.cdr.markForCheck();
+            setTimeout(() => {
+              this.scrollToBottom();
+            });
           });
         }, 1000);
         break;
@@ -246,6 +275,10 @@ export class CitiesGame implements OnInit {
             this.visibleMessages.push({
               text: 'citiesGame.sasarikSadNotFound',
               type: 'incomingSad',
+            });
+            this.cdr.markForCheck();
+            setTimeout(() => {
+              this.scrollToBottom();
             });
           });
         }, 1000);
@@ -260,6 +293,9 @@ export class CitiesGame implements OnInit {
     );
     const data: Message = { text: message, type: 'outgoing', word };
     this.visibleMessages.push(data);
+    setTimeout(() => {
+      this.scrollToBottom();
+    });
     this.messageForm.reset();
     this.sasarikScript(message.toLowerCase());
   }
