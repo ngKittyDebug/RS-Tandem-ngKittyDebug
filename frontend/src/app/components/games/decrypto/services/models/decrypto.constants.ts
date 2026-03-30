@@ -6,7 +6,7 @@ export const CONFIG = {
   startCards: 0,
   startRound: 1,
   attempts: 3,
-  gameTime: 90,
+  gameTime: 180,
 };
 
 export const BaseAchievements: AchievementList = {
@@ -18,9 +18,9 @@ export const BaseAchievements: AchievementList = {
 };
 
 export const AchievementsConditions: AchievementConditionList = {
-  1: { iconName: '@tui.tally-5', time: 20, mistakes: 0 },
-  2: { iconName: '@tui.tally-4', time: 30, mistakes: 0 },
-  3: { iconName: '@tui.tally-3', time: 40, mistakes: 0 },
-  4: { iconName: '@tui.tally-2', time: 50, mistakes: 0 },
-  5: { iconName: '@tui.tally-1', time: 60, mistakes: 0 },
+  1: { iconName: '@tui.tally-5', time: 40, mistakes: 0 },
+  2: { iconName: '@tui.tally-4', time: 60, mistakes: 0 },
+  3: { iconName: '@tui.tally-3', time: 80, mistakes: 0 },
+  4: { iconName: '@tui.tally-2', time: 100, mistakes: 0 },
+  5: { iconName: '@tui.tally-1', time: 120, mistakes: 0 },
 };

@@ -24,6 +24,7 @@ import { Loader } from '../../../core/components/loader/loader';
 import { UserService } from '../../../core/services/user/user-service';
 import { GameLabels } from '../../../shared/enums/game-labels.enum';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DecryptoAiService } from './services/decrypto-ai-service';
 
 export interface DecryptoGameData {
   gameCards: Card[];
@@ -51,6 +52,7 @@ const dataToServer = {
 })
 export class Decrypto implements OnInit {
   protected readonly gameService = inject(DecryptoGameService);
+  protected readonly gameAiService = inject(DecryptoAiService);
   protected readonly loadDataServerService = inject(KeyStorageService<DecryptoGameData>);
   protected readonly transloco = inject(TranslocoService);
   protected readonly tosterService = inject(AppTosterService);
@@ -62,8 +64,11 @@ export class Decrypto implements OnInit {
   protected isLoaded = signal<boolean>(false);
   protected gameStarted = signal<boolean>(false);
   private timer = viewChild(Timer);
-  public timerMode = TIMER_MODE.DOWN;
-  public initialTime = CONFIG.gameTime;
+  protected timerMode = TIMER_MODE.DOWN;
+  protected initialTime = CONFIG.gameTime;
+
+  private readonly inputsCount = 3;
+  protected readonly inputsIndices = Array.from({ length: this.inputsCount }, (_, i) => i + 1);
 
   public ngOnInit(): void {
     this.loadDataServerService
@@ -167,6 +172,7 @@ export class Decrypto implements OnInit {
     this.gameService.generateGameHints();
     this.updateGameHintsInputs();
     this.enableGameCodeInputs();
+    this.timer()?.start();
   }
 
   protected newPeriod(): void {
@@ -217,6 +223,7 @@ export class Decrypto implements OnInit {
         this.transloco.translate('decrypto.decryptoWinRoundMsg'),
         this.transloco.translate('decrypto.decryptoWinRoundMsgLabel'),
       );
+      this.timer()?.stop();
     } else if (this.gameService.roundResult() === false && this.gameService.gameResult() !== true) {
       this.tosterService.showWarningToster(
         this.transloco.translate('decrypto.decryptoWarningMsg'),
