@@ -324,5 +324,16 @@
       </tui-avatar>
     </div>
     <h3 class="cities__user-name">{{ userName }}</h3>
+    <button
+      class="cities__main-btn"
+      (click)="main()"
+      tuiButton
+      appearance="gradient"
+      type="button"
+      size="s"
+      iconEnd="@tui.home"
+    >
+      {{ t('citiesGame.main') }}
+    </button>
   </div>
 </div>

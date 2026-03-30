@@ -20,7 +20,9 @@
   gap: 20px;
   border-radius: 30px;
   overflow: hidden;
-
+  &__main-btn {
+    margin-top: 15px;
+  }
   &__cat {
     display: flex;
     flex: 15%;

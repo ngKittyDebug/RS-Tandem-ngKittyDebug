@@ -2,6 +2,7 @@
   "input": "Enter a word",
   "placeholder": "developer",
   "restart": "Restart game",
+  "main": "Home",
   "messageFromCat1": "Meow",
   "messageFromCat2": "I’m your senior cat. And yes, I can already see where you’ll mess up",
   "messageFromCat3": "I won’t even explain the rules properly, but fine: we play like ‘Cities’, but with frontend words",
@@ -13,6 +14,7 @@
   "sasarikSadWrongLetter": "The letter got lost. With that level of attention, you’ll be calling APIs “somewhere around there”😼",
   "sasarikSadUsed": "We’ve already heard that. Your memory is like a cache without invalidation",
   "sasarikSadNotFound": "Doesn’t fit — try a frontend-related word",
-  "sasarikSadEnd": "No words left! You, meow, won!🙀",
+  "sasarikSadEnd": "No words left… you won. Meow… 🙀",
+  "sasarikSadWin": "Are you kitten me? You actually won. Meow😻",
   "noTooltip": "I have no idea what you just wrote🙄"
 }

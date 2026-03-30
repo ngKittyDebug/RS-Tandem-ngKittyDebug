@@ -9,26 +9,23 @@ import {
   signal,
   viewChild,
   ElementRef,
-  ViewChild,
 } from '@angular/core';
 import { AppRoute, getRoutePath } from '../../../app.routes';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { TranslocoService, TranslocoModule } from '@jsverse/transloco';
 import { EyeCompassDirective } from '../../../core/directive/eye-compass.directive';
 import {
   TuiMessage,
-  TuiDataListWrapper,
   TuiTextarea,
   TuiAvatar,
   TuiAvatarOutline,
   TuiSkeleton,
+  TuiTooltip,
 } from '@taiga-ui/kit';
-import { TuiTextfield, TuiButton } from '@taiga-ui/core';
+import { TuiTextfield, TuiButton, TuiIcon } from '@taiga-ui/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { KeyStorageService } from '../../../core/services/key-storage/key-storage-service';
-import { TuiIcon } from '@taiga-ui/core';
-import { TuiTooltip } from '@taiga-ui/kit';
 import { interval, map, startWith } from 'rxjs';
 import { Timer } from '../../timer/timer';
 import { TIMER_MODE } from '../../timer/models/timer-mode.enum';
@@ -67,7 +64,6 @@ export interface CitiesGameVocabularResponse {
     RouterModule,
     TranslocoModule,
     TuiMessage,
-    TuiDataListWrapper,
     TuiTextfield,
     TuiTextarea,
     TuiButton,
@@ -122,13 +118,11 @@ export class CitiesGame implements OnInit {
   protected readonly isAvatarImageLoading = signal(false);
   protected userStore = inject(UserStore);
   public userName = '';
-  @ViewChild('bottom')
-  private bottom?: ElementRef;
+  private bottom = viewChild<ElementRef>('bottom');
+  private readonly router = inject(Router);
 
   private scrollToBottom(): void {
-    this.bottom?.nativeElement?.scrollIntoView?.({
-      behavior: 'smooth',
-    });
+    this.bottom()?.nativeElement?.scrollIntoView?.({ behavior: 'smooth' });
   }
 
   public runMessages(): void {
@@ -189,8 +183,10 @@ export class CitiesGame implements OnInit {
         !this.usedWords.includes(word.word.toLowerCase())
       );
     });
-    let state: 'not_found' | 'used' | 'wrong_letter' | 'ok' | 'out';
-    if (isUsed) {
+    let state: 'win' | 'not_found' | 'used' | 'wrong_letter' | 'ok' | 'out';
+    if (this.usedWords.length >= 14) {
+      state = 'win';
+    } else if (isUsed) {
       state = 'used';
     } else if (!isFirstLetterOk) {
       state = 'wrong_letter';
@@ -203,6 +199,20 @@ export class CitiesGame implements OnInit {
     }
 
     switch (state) {
+      case 'win':
+        this.timeoutId = setTimeout(() => {
+          this.zone.run(() => {
+            this.visibleMessages.push({
+              text: 'citiesGame.sasarikSadWin',
+              type: 'incomingSad',
+            });
+            this.cdr.markForCheck();
+            setTimeout(() => {
+              this.scrollToBottom();
+            });
+          });
+        }, 1000);
+        break;
       case 'used':
         this.timeoutId = setTimeout(() => {
           this.zone.run(() => {
@@ -313,6 +323,17 @@ export class CitiesGame implements OnInit {
     }
     this.runMessages();
   }
+  public main(): void {
+    this.timer()?.reset();
+    this.timer()?.stop();
+    this.visibleMessages = [];
+    this.usedWords = ['frontend'];
+    this.index = 0;
+    this.isRunning = true;
+    this.lastLatterFromCat = 'd';
+    this.router.navigate([getRoutePath(AppRoute.MAIN)]);
+  }
+
   public getTooltip(message: Message): string {
     if (!message.word?.wordDescription) {
       return this.translocoService.translate('citiesGame.noTooltip');
