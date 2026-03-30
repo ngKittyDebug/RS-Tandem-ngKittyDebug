@@ -3,8 +3,10 @@ import {
   ChangeDetectorRef,
   Component,
   inject,
+  input,
   NgZone,
   OnInit,
+  viewChild,
 } from '@angular/core';
 import { AppRoute, getRoutePath } from '../../../app.routes';
 import { RouterModule } from '@angular/router';
@@ -18,6 +20,8 @@ import { KeyStorageService } from '../../../core/services/key-storage/key-storag
 import { TuiIcon } from '@taiga-ui/core';
 import { TuiTooltip } from '@taiga-ui/kit';
 import { interval, map, startWith } from 'rxjs';
+import { Timer } from '../../timer/timer';
+import { TIMER_MODE } from '../../timer/models/timer-mode.enum';
 
 interface Message {
   text: string;
@@ -59,6 +63,7 @@ export interface CitiesGameVocabularResponse {
     ReactiveFormsModule,
     TuiIcon,
     TuiTooltip,
+    Timer,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -93,8 +98,12 @@ export class CitiesGame implements OnInit {
   private timeoutId?: ReturnType<typeof setTimeout>;
   public words: Word[] = [];
   public usedWords: string[] = ['frontend'];
+  private timer = viewChild(Timer);
+  public timerMode = TIMER_MODE.UP;
+  public autoStart = input<boolean>(true);
 
   public runMessages(): void {
+    this.timer()?.start();
     if (this.index >= this.messages.length) {
       this.isRunning = false;
       return;
@@ -107,7 +116,7 @@ export class CitiesGame implements OnInit {
         this.cdr.markForCheck();
         this.runMessages();
       });
-    }, 500);
+    }, 1000);
   }
 
   public ngOnInit(): void {
@@ -159,17 +168,26 @@ export class CitiesGame implements OnInit {
 
     switch (state) {
       case 'used':
-        this.visibleMessages.push({
-          text: 'citiesGame.sasarikSadUsed',
-          type: 'incomingSad',
-        });
+        this.timeoutId = setTimeout(() => {
+          this.zone.run(() => {
+            this.visibleMessages.push({
+              text: 'citiesGame.sasarikSadUsed',
+              type: 'incomingSad',
+            });
+          });
+        }, 1000);
+
         break;
 
       case 'wrong_letter':
-        this.visibleMessages.push({
-          text: 'citiesGame.sasarikSadWrongLetter',
-          type: 'incomingSad',
-        });
+        this.timeoutId = setTimeout(() => {
+          this.zone.run(() => {
+            this.visibleMessages.push({
+              text: 'citiesGame.sasarikSadWrongLetter',
+              type: 'incomingSad',
+            });
+          });
+        }, 1000);
         break;
 
       case 'ok': {
@@ -179,25 +197,37 @@ export class CitiesGame implements OnInit {
           type: 'incoming',
           word,
         };
+        this.timeoutId = setTimeout(() => {
+          this.zone.run(() => {
+            this.visibleMessages.push(nextMessageFromCat);
+          });
+        }, 1000);
         this.usedWords.push(message.toLowerCase());
         this.usedWords.push(nextMessageFromCat.text.toLowerCase());
-        this.visibleMessages.push(nextMessageFromCat);
         this.lastLatterFromCat = nextMessageFromCat.text[nextMessageFromCat.text.length - 1];
         break;
       }
 
       case 'out':
-        this.visibleMessages.push({
-          text: 'citiesGame.sasarikSadEnd',
-          type: 'incomingSad',
-        });
+        this.timeoutId = setTimeout(() => {
+          this.zone.run(() => {
+            this.visibleMessages.push({
+              text: 'citiesGame.sasarikSadEnd',
+              type: 'incomingSad',
+            });
+          });
+        }, 1000);
         break;
 
       case 'not_found':
-        this.visibleMessages.push({
-          text: 'citiesGame.sasarikSadNotFound',
-          type: 'incomingSad',
-        });
+        this.timeoutId = setTimeout(() => {
+          this.zone.run(() => {
+            this.visibleMessages.push({
+              text: 'citiesGame.sasarikSadNotFound',
+              type: 'incomingSad',
+            });
+          });
+        }, 1000);
         break;
     }
   }
@@ -213,6 +243,7 @@ export class CitiesGame implements OnInit {
     this.sasarikScript(message.toLowerCase());
   }
   public restart(): void {
+    this.timer()?.reset();
     this.visibleMessages = [];
     this.usedWords = ['frontend'];
     this.index = 0;

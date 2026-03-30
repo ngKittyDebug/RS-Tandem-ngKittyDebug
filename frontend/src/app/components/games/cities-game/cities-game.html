@@ -161,7 +161,11 @@
         d="M165.048 101.742C164.849 99.7809 165.167 95.8594 168.024 95.8594C170.405 95.8594 171 99.3888 171 101.153C171 102.722 170.405 105.859 168.024 105.859C165.643 105.859 165.048 103.114 165.048 101.742Z"
         fill="black" stroke="black" stroke-linecap="round" />
     </svg>
-    <div class="cities__cat-timer">00:00</div>
+    <div class="cities__cat-timer">
+      <app-timer
+          [timerMode]="timerMode"
+        ></app-timer>
+    </div>
     <button class="cities__restart-btn" (click)="restart()" tuiButton appearance="gradient" type="button" size="s"
       iconEnd="@tui.rotate-ccw">
       {{ t('citiesGame.restart') }}
