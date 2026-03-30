@@ -34,6 +34,7 @@ import { Timer } from '../../timer/timer';
 import { TIMER_MODE } from '../../timer/models/timer-mode.enum';
 import { UserStore } from '../../../core/stores/user-store/user-store';
 import { UserService } from '../../../core/services/user/user-service';
+import { GameLabels } from '../../../shared/enums/game-labels.enum';
 
 interface Message {
   text: string;
@@ -233,6 +234,7 @@ export class CitiesGame implements OnInit {
         break;
 
       case 'ok': {
+        this.userService.statsUpdate(GameLabels.CitiesGame).subscribe({});
         const word = this.words[nextWordFromCat];
         const nextMessageFromCat: Message = {
           text: this.words[nextWordFromCat].word,
