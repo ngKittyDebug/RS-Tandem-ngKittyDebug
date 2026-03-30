@@ -28,5 +28,9 @@ export const registerConfig: ApiSwaggerConfig = {
       status: HttpStatus.CONFLICT,
       description: 'Пользователь с таким email или username уже существует',
     },
+    {
+      status: HttpStatus.INTERNAL_SERVER_ERROR,
+      description: 'Ошибка сервера при создании пользователя',
+    },
   ],
 };

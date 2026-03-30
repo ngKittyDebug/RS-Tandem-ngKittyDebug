@@ -1,7 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { TuiAvatar, TuiAvatarOutline, TuiBadge, TuiSkeleton } from '@taiga-ui/kit';
-import { TuiAppearance, TuiButton, TuiIcon } from '@taiga-ui/core';
+import { TuiAppearance, TuiButton, TuiDialog, TuiIcon, TuiTitle } from '@taiga-ui/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { TuiCardLarge, TuiHeader } from '@taiga-ui/layout';
 import { UserStore } from '../../../../core/stores/user-store/user-store';
@@ -9,6 +9,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { finalize, startWith, switchMap } from 'rxjs';
 import { CloudinaryService } from '../../../../core/services/cloudinary/cloudinary-service';
 import { AppTosterService } from '../../../../core/services/app-toster-service';
+import { StatsResponseData } from '../../../../core/services/user/models/user.interfaces';
+import { GAME_LABEL_TRANSLATION_KEYS } from '../../../../shared/constants/game.constants';
+import { getListItemVariant } from '../../utils/list-item-variant.util';
 
 const MAX_FILE_SIZE_KB = 500;
 
@@ -26,6 +29,9 @@ const MAX_FILE_SIZE_KB = 500;
     DatePipe,
     TuiAvatarOutline,
     TuiSkeleton,
+    TuiDialog,
+    TuiTitle,
+    TuiHeader,
   ],
   templateUrl: './profile-sidebar.html',
   styleUrl: './profile-sidebar.scss',
@@ -35,9 +41,19 @@ export class ProfileSidebar {
   private translocoService = inject(TranslocoService);
   private toster = inject(AppTosterService);
   protected userStore = inject(UserStore);
+  protected readonly gameTitleKeys = GAME_LABEL_TRANSLATION_KEYS;
+  protected readonly getListItemVarian = getListItemVariant;
+  public readonly stats = input<StatsResponseData[] | []>([]);
+  protected readonly openDialog = signal(false);
 
   protected readonly isAvatarUpdating = signal(false);
   protected readonly isAvatarImageLoading = signal(false);
+
+  protected readonly gamePlayed = computed(() => {
+    return this.stats().reduce((acc, stat) => acc + stat.playedCount, 0);
+  });
+
+  protected readonly isStats = computed(() => this.stats().length > 0);
 
   protected readonly activeLang = toSignal(
     this.translocoService.langChanges$.pipe(startWith(this.translocoService.getActiveLang())),

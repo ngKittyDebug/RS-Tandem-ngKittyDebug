@@ -1,0 +1,18 @@
+<section *transloco="let t" class="ai-card">
+  <div class="card-content">
+    <div class="card-header">
+      <tui-avatar [src]="aiSignal().imageLink" size="m" />
+      <div class="card-info">
+        <h3 class="card-name">{{ aiSignal().name }}</h3>
+      </div>
+    </div>
+
+    <p class="card-description">{{ t(aiSignal().descriptionTranslationKey) }}</p>
+
+    <div class="card-badges">
+      @for (badge of aiSignal().badges; track $index) {
+        <tui-badge appearance="primary" size="s">{{ badge }}</tui-badge>
+      }
+    </div>
+  </div>
+</section>

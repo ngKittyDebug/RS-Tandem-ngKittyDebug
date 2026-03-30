@@ -3,6 +3,7 @@
   "log-in": "Вход",
   "footer-start": "© 2026 MeowVault. Все права защищены. Сделано с ",
   "footer-end": " котиками, для игроков.",
+  "footer-about": "О нас",
 
   "serverResponse": {
     "getUser": {
