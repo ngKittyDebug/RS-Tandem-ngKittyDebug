@@ -1,0 +1,12 @@
+<div class="hangman-container">
+  @if (currentScreen === 'menu') {
+    <app-menu (playGame)="startGame()" (back)="goToMenu()" (results)="goToResults()" />
+  }
+  @if (currentScreen === 'game') {
+    <app-game (back)="goToMenu()" (results)="goToResults()" />
+  }
+
+  @if (currentScreen === 'results') {
+    <app-results (menu)="goToMenu()" />
+  }
+</div>

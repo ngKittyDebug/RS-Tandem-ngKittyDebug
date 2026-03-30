@@ -16,6 +16,7 @@ export enum AppRoute {
 
 export enum GameRoute {
   DECRYPTO = 'decrypto',
+  HANGMAN = 'hangman',
   MERGE_GAME = 'merge-game',
   CITIESGAME = 'cities-game',
   EVENT_LOOP_GAME = 'event-loop-game',
@@ -55,6 +56,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/user-profile/user-profile').then((m) => m.UserProfile),
     providers: [provideTranslocoScope('user-profile')],
     canActivate: [authGuard],
+  },
+  {
+    path: GameRoute.HANGMAN,
+    loadComponent: () => import('./components/games/hangman/hangman').then((m) => m.Hangman),
+    providers: [provideTranslocoScope('hangman')],
   },
   {
     path: AppRoute.ABOUT,

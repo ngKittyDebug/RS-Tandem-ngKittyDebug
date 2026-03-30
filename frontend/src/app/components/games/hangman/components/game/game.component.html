@@ -1,0 +1,387 @@
+<div class="content">
+  <div class="game-header">
+    <nav class="navigation">
+      <button iconStart="@tui.home" size="m" tuiButton type="button" (click)="back.emit()">
+        Back
+      </button>
+      <button
+        appearance="accent"
+        iconStart="@tui.trophy"
+        size="m"
+        tuiButton
+        type="button"
+        (click)="results.emit()"
+      >
+        Results
+      </button>
+    </nav>
+    <div class="level">
+      <h3>Choose level:</h3>
+      <button size="s" tuiButton type="button" (click)="selectLevel('easy')">easy</button>
+      <button size="s" tuiButton type="button" (click)="selectLevel('medium')">medium</button>
+      <button size="s" tuiButton type="button" (click)="selectLevel('hard')">hard</button>
+      <button size="s" tuiButton type="button" (click)="selectLevel('expert')">expert</button>
+      <button size="s" tuiButton type="button" (click)="selectLevel('god')">god</button>
+    </div>
+  </div>
+  <div class="main-container">
+    <img src="./assets/images/hangcat.png" alt="Hangman" class="hangman-image" width="400" />
+    <div class="game-field">
+      <p class="game-instruction">
+        Guess the word and write them in the field down! Every answer is a single word. Be careful:
+        if you make 5 mistakes, the game will be over! Good luck and have fun!
+      </p>
+      <p>
+        <span class="question">A QUESTION: </span
+        ><span class="question-text">{{ currentQuestion }}</span>
+      </p>
+      <p class="mistakes-counter">Mistakes: {{ mistakes }} / {{ maxMistakes }}</p>
+      <div class="user-field">
+        <div class="user-form">
+          <div class="container">
+            <div class="editable">{{ displayedWord || 'your answer' }}</div>
+          </div>
+          <div class="keyboard">
+            <div class="row">
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('Q')"
+                [disabled]="isLetterUsed('Q')"
+                [class.correct-key]="isCorrectLetter('Q')"
+                [class.wrong-key]="isWrongLetter('Q')"
+              >
+                Q
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('W')"
+                [disabled]="isLetterUsed('W')"
+                [class.correct-key]="isCorrectLetter('W')"
+                [class.wrong-key]="isWrongLetter('W')"
+              >
+                W
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('E')"
+                [disabled]="isLetterUsed('E')"
+                [class.correct-key]="isCorrectLetter('E')"
+                [class.wrong-key]="isWrongLetter('E')"
+              >
+                E
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('R')"
+                [disabled]="isLetterUsed('R')"
+                [class.correct-key]="isCorrectLetter('R')"
+                [class.wrong-key]="isWrongLetter('R')"
+              >
+                R
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('T')"
+                [disabled]="isLetterUsed('T')"
+                [class.correct-key]="isCorrectLetter('T')"
+                [class.wrong-key]="isWrongLetter('T')"
+              >
+                T
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('Y')"
+                [disabled]="isLetterUsed('Y')"
+                [class.correct-key]="isCorrectLetter('Y')"
+                [class.wrong-key]="isWrongLetter('Y')"
+              >
+                Y
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('U')"
+                [disabled]="isLetterUsed('U')"
+                [class.correct-key]="isCorrectLetter('U')"
+                [class.wrong-key]="isWrongLetter('U')"
+              >
+                U
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('I')"
+                [disabled]="isLetterUsed('I')"
+                [class.correct-key]="isCorrectLetter('I')"
+                [class.wrong-key]="isWrongLetter('I')"
+              >
+                I
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('O')"
+                [disabled]="isLetterUsed('O')"
+                [class.correct-key]="isCorrectLetter('O')"
+                [class.wrong-key]="isWrongLetter('O')"
+              >
+                O
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('P')"
+                [disabled]="isLetterUsed('P')"
+                [class.correct-key]="isCorrectLetter('P')"
+                [class.wrong-key]="isWrongLetter('P')"
+              >
+                P
+              </button>
+            </div>
+
+            <div class="row">
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('A')"
+                [disabled]="isLetterUsed('A')"
+                [class.correct-key]="isCorrectLetter('A')"
+                [class.wrong-key]="isWrongLetter('A')"
+              >
+                A
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('S')"
+                [disabled]="isLetterUsed('S')"
+                [class.correct-key]="isCorrectLetter('S')"
+                [class.wrong-key]="isWrongLetter('S')"
+              >
+                S
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('D')"
+                [disabled]="isLetterUsed('D')"
+                [class.correct-key]="isCorrectLetter('D')"
+                [class.wrong-key]="isWrongLetter('D')"
+              >
+                D
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('F')"
+                [disabled]="isLetterUsed('F')"
+                [class.correct-key]="isCorrectLetter('F')"
+                [class.wrong-key]="isWrongLetter('F')"
+              >
+                F
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('G')"
+                [disabled]="isLetterUsed('G')"
+                [class.correct-key]="isCorrectLetter('G')"
+                [class.wrong-key]="isWrongLetter('G')"
+              >
+                G
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('H')"
+                [disabled]="isLetterUsed('H')"
+                [class.correct-key]="isCorrectLetter('H')"
+                [class.wrong-key]="isWrongLetter('H')"
+              >
+                H
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('J')"
+                [disabled]="isLetterUsed('J')"
+                [class.correct-key]="isCorrectLetter('J')"
+                [class.wrong-key]="isWrongLetter('J')"
+              >
+                J
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('K')"
+                [disabled]="isLetterUsed('K')"
+                [class.correct-key]="isCorrectLetter('K')"
+                [class.wrong-key]="isWrongLetter('K')"
+              >
+                K
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('L')"
+                [disabled]="isLetterUsed('L')"
+                [class.correct-key]="isCorrectLetter('L')"
+                [class.wrong-key]="isWrongLetter('L')"
+              >
+                L
+              </button>
+            </div>
+
+            <div class="row">
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('Z')"
+                [disabled]="isLetterUsed('Z')"
+                [class.correct-key]="isCorrectLetter('Z')"
+                [class.wrong-key]="isWrongLetter('Z')"
+              >
+                Z
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('X')"
+                [disabled]="isLetterUsed('X')"
+                [class.correct-key]="isCorrectLetter('X')"
+                [class.wrong-key]="isWrongLetter('X')"
+              >
+                X
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('C')"
+                [disabled]="isLetterUsed('C')"
+                [class.correct-key]="isCorrectLetter('C')"
+                [class.wrong-key]="isWrongLetter('C')"
+              >
+                C
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('V')"
+                [disabled]="isLetterUsed('V')"
+                [class.correct-key]="isCorrectLetter('V')"
+                [class.wrong-key]="isWrongLetter('V')"
+              >
+                V
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('B')"
+                [disabled]="isLetterUsed('B')"
+                [class.correct-key]="isCorrectLetter('B')"
+                [class.wrong-key]="isWrongLetter('B')"
+              >
+                B
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('N')"
+                [disabled]="isLetterUsed('N')"
+                [class.correct-key]="isCorrectLetter('N')"
+                [class.wrong-key]="isWrongLetter('N')"
+              >
+                N
+              </button>
+              <button
+                size="s"
+                tuiButton
+                type="button"
+                (click)="addLetter('M')"
+                [disabled]="isLetterUsed('M')"
+                [class.correct-key]="isCorrectLetter('M')"
+                [class.wrong-key]="isWrongLetter('M')"
+              >
+                M
+              </button>
+            </div>
+
+            <button appearance="accent" size="m" tuiButton type="button" (click)="reset()">
+              reset
+            </button>
+          </div>
+        </div>
+        <img [src]="currentCatImage" alt="cat" width="150" class="cat-image" />
+      </div>
+    </div>
+  </div>
+  @if (isGameOver) {
+    <div class="modal-backdrop">
+      <div class="modal-window">
+        <h2>YOU DIED</h2>
+        <p>
+          The correct word was: <strong>{{ correctAnswer }}</strong>
+        </p>
+        <img src="./assets/images/died.png" alt="Skeleton cat" width="200" />
+        <button appearance="accent" tuiButton type="button" (click)="closeModal()">
+          Try again
+        </button>
+      </div>
+    </div>
+  }
+  @if (isWin) {
+    <div class="modal-backdrop">
+      <div class="modal-window">
+        <h2>YOU WIN!</h2>
+        <p>
+          You guessed the word: <strong>{{ correctAnswer }}</strong>
+        </p>
+        <img src="./assets/images/catWin.png" alt="Winning gamer cat" width="200" />
+        <button appearance="accent" tuiButton type="button" (click)="nextWord()">Continue</button>
+      </div>
+    </div>
+  }
+  @if (isLevelCompleted) {
+    <div class="modal-backdrop">
+      <div class="modal-window">
+        <h2>LEVEL COMPLETED!</h2>
+        <p>You can continue to the next level!</p>
+        <img src="./assets/images/catChampion.png" alt="Champion cat" width="200" />
+        <button appearance="accent" tuiButton type="button" (click)="goToNextLevel()">
+          Continue
+        </button>
+      </div>
+    </div>
+  }
+</div>

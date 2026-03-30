@@ -1,0 +1,34 @@
+<div class="results">
+  <h2>Results</h2>
+
+  <p class="score">Your score: {{ stats.total }}</p>
+
+  <button iconStart="@tui.home" size="m" tuiButton type="button" (click)="menu.emit()">Back</button>
+
+  <table class="table">
+    <tr>
+      <th>Level</th>
+      <th>Completed</th>
+    </tr>
+    <tr>
+      <td>Easy</td>
+      <td>{{ stats.easy }}/{{ totalWords.easy }}</td>
+    </tr>
+    <tr>
+      <td>Medium</td>
+      <td>{{ stats.medium }}/{{ totalWords.medium }}</td>
+    </tr>
+    <tr>
+      <td>Hard</td>
+      <td>{{ stats.hard }}/{{ totalWords.hard }}</td>
+    </tr>
+    <tr>
+      <td>Expert</td>
+      <td>{{ stats.expert }}/{{ totalWords.expert }}</td>
+    </tr>
+    <tr>
+      <td>God</td>
+      <td>{{ stats.god }}/{{ totalWords.god }}</td>
+    </tr>
+  </table>
+</div>
