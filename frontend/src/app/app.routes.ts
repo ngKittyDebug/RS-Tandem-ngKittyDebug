@@ -57,6 +57,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: GameRoute.HANGMAN,
+    loadComponent: () => import('./components/games/hangman/hangman').then((m) => m.Hangman),
+    providers: [provideTranslocoScope('hangman')],
+  },
+  {
     path: AppRoute.ABOUT,
     loadComponent: () => import('./pages/about/about').then((m) => m.About),
     providers: [provideTranslocoScope('about')],

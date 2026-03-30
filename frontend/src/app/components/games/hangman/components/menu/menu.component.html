@@ -1,0 +1,25 @@
+<header class="header" *transloco="let t">
+  <div class="logo">
+    <h2 tuiTitle>{{ t('hangman.title') }}</h2>
+    <p tuiSubtitle>Test your skills!</p>
+  </div>
+  <nav class="navigation">
+    <button iconStart="@tui.rocket" size="m" tuiButton type="button" (click)="playGame.emit()">
+      Play
+    </button>
+    <button iconStart="@tui.home" size="m" tuiButton type="button" (click)="back.emit()">
+      Back
+    </button>
+    <button
+      appearance="accent"
+      iconStart="@tui.trophy"
+      size="m"
+      tuiButton
+      type="button"
+      (click)="results.emit()"
+    >
+      Results
+    </button>
+  </nav>
+  <img src="./assets/images/hangcat.png" width="400" alt="hangcat" />
+</header>

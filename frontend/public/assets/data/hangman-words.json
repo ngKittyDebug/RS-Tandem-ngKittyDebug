@@ -1,0 +1,116 @@
+{
+  "easy": [
+    {
+      "word": "variable",
+      "description": "A container for storing data values that can be changed."
+    },
+    { "word": "string", "description": "A sequence of characters enclosed in quotes." },
+    { "word": "number", "description": "A numeric value such as 42 or 3.14." },
+    { "word": "boolean", "description": "A data type with two possible values: true or false." },
+    { "word": "array", "description": "An ordered list of values stored in square brackets." },
+    { "word": "object", "description": "A collection of key-value pairs." },
+    { "word": "function", "description": "A block of code designed to perform a task." },
+    { "word": "console", "description": "A tool used for logging and debugging output." },
+    { "word": "let", "description": "A keyword used to declare a block-scoped variable." },
+    { "word": "const", "description": "A keyword used to declare a constant variable." }
+  ],
+  "medium": [
+    { "word": "loop", "description": "A structure used to repeat code multiple times." },
+    {
+      "word": "if",
+      "description": "A conditional statement that runs code if a condition is true."
+    },
+    { "word": "else", "description": "A block that runs when the condition is false." },
+    { "word": "return", "description": "A statement that outputs a value from a function." },
+    {
+      "word": "undefined",
+      "description": "A variable that has been declared but not assigned a value."
+    },
+    {
+      "word": "null",
+      "description": "A value that represents intentional absence of any object value."
+    },
+    { "word": "NaN", "description": "A value representing an invalid number result." },
+    { "word": "typeof", "description": "An operator used to determine the type of a value." },
+    { "word": "length", "description": "A property that returns the size of a string or array." },
+    { "word": "push", "description": "A method that adds an element to the end of an array." }
+  ],
+  "hard": [
+    {
+      "word": "closure",
+      "description": "A function that remembers variables from its outer scope."
+    },
+    {
+      "word": "callback",
+      "description": "A function passed into another function and executed later."
+    },
+    {
+      "word": "promise",
+      "description": "An object representing the eventual completion of an async operation."
+    },
+    { "word": "async", "description": "A keyword used to define an asynchronous function." },
+    { "word": "await", "description": "Pauses execution until a promise is resolved." },
+    { "word": "event", "description": "An action or occurrence detected by the program." },
+    { "word": "listener", "description": "A function that waits for and responds to events." },
+    {
+      "word": "map",
+      "description": "A method that creates a new array by applying a function to each element."
+    },
+    {
+      "word": "filter",
+      "description": "A method that creates a new array with elements that pass a test."
+    },
+    { "word": "reduce", "description": "A method that reduces an array to a single value." }
+  ],
+  "expert": [
+    {
+      "word": "prototype",
+      "description": "A mechanism by which JavaScript objects inherit features from one another."
+    },
+    { "word": "this", "description": "A reference to the current execution context." },
+    { "word": "bind", "description": "A method that sets the value of this in a function." },
+    { "word": "call", "description": "A method that invokes a function with a given this value." },
+    { "word": "apply", "description": "Similar to call but takes arguments as an array." },
+    {
+      "word": "hoisting",
+      "description": "JavaScript behavior of moving declarations to the top of scope."
+    },
+    {
+      "word": "scope",
+      "description": "The current context of execution where variables are accessible."
+    },
+    { "word": "eventloop", "description": "A mechanism that handles asynchronous operations." },
+    { "word": "microtask", "description": "A queue with higher priority tasks in the event loop." },
+    { "word": "macrotask", "description": "A queue with lower priority tasks in the event loop." }
+  ],
+  "god": [
+    {
+      "word": "currying",
+      "description": "Transforming a function with multiple arguments into a sequence of functions."
+    },
+    { "word": "debounce", "description": "A technique to limit how often a function is executed." },
+    {
+      "word": "throttle",
+      "description": "A technique to ensure a function is executed at most once in a given time interval."
+    },
+    {
+      "word": "memoization",
+      "description": "An optimization technique that caches function results."
+    },
+    { "word": "generator", "description": "A function that can pause and resume execution." },
+    {
+      "word": "iterator",
+      "description": "An object that enables iteration over a sequence of values."
+    },
+    { "word": "symbol", "description": "A unique and immutable primitive data type." },
+    {
+      "word": "weakmap",
+      "description": "A collection of key-value pairs where keys are objects held weakly."
+    },
+    { "word": "proxy", "description": "An object that intercepts operations on another object." },
+    {
+      "word": "reflect",
+      "description": "A built-in object that provides methods for object manipulation."
+    }
+  ]
+}
