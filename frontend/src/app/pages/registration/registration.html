@@ -60,7 +60,11 @@
         size="m"
         [disabled]="!registrationForm.valid"
       >
-        {{ t('registration.form.button') }}
+        @if (isLoading()) {
+          <app-loader mode="inline"></app-loader>
+        } @else {
+          {{ t('registration.form.button') }}
+        }
       </button>
       <svg
         class="registration__img"
@@ -128,12 +132,12 @@
           fill="black"
         />
         <path
-          #pupil
+          appDataPupil
           d="M65.4871 83.6016C65.3813 93.3393 59.9389 101.175 53.3312 101.103C46.7235 101.031 41.4527 93.0793 41.5585 83.3416C41.6643 73.6039 47.1067 65.7682 53.7144 65.84C60.3221 65.9118 65.593 73.8639 65.4871 83.6016Z"
           fill="black"
         />
         <path
-          #pupil
+          appDataPupil
           d="M124.01 87.8588C123.904 97.5965 114.062 104.597 107.455 104.525C100.847 104.454 92.7408 96.628 92.8466 86.8904C92.9524 77.1527 99.3523 67.7529 108.955 67.8573C119.03 67.9668 124.116 78.1211 124.01 87.8588Z"
           fill="black"
         />

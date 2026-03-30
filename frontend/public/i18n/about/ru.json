@@ -1,0 +1,48 @@
+{
+  "aboutTitle": "О проекте MeowVault",
+  "teamTitle": "Наша команда",
+  "aiTitle": "AI Ассистенты",
+  "aiDescription": "Наша команда использовала различные AI-инструменты для помощи в разработке, обучении и генерации контента",
+  "gutHubLinkTitle": "Перейти на GitHub",
+  "componentsLabel": "Компоненты",
+  "gameLabel": "Игра",
+  "organizationLink": "Организация GitHub",
+  "repositoryLink": "Репозиторий проекта",
+  "description": {
+    "part1": "MeowVault — это уютный учебный каталог с несколькими играми, которые помогают прокачать знания JavaScript, TypeScript и подготовиться к техническому интервью 🐾😸",
+    "part2": "Пользователь учится через практику и небольшие игровые задания, без стресса и перегруза 🎮🐱",
+    "part3": "Обучение здесь такое же мягкое и приятное, как котик, который поддерживает тебя лапкой перед собеседованием 🐈💛"
+  },
+  "roles": {
+    "alex": "Backend & DevOps Lead",
+    "maria": "Team Lead & Frontend Developer",
+    "pavel": "Frontend Developer",
+    "oksana": "Frontend Developer",
+    "alena": "Frontend Developer",
+    "nadezhda": "Frontend Developer",
+    "mentor": "Mentor"
+  },
+  "games": {
+    "maria": "Event Loop Game",
+    "pavel": "Decrypto",
+    "oksana": "Word Chain",
+    "alena": "Merge Game",
+    "nadezhda": "Hangman"
+  },
+  "components": {
+    "alex": "Backend API, JWT Auth, CORS, CI/CD, Prisma ORM, Supabase, GitHub Actions, Role Guards, Swagger, key-storages, GitHub OAuth, Merge Game CRUD, User CRUD API",
+    "maria": "Loader, User Profile, Account Settings, Change avatar, User Store, User Service",
+    "pavel": "Timer, Achievements, KeyStorage, Header, Footer, Language Switcher, Theme Switcher, Toast, Popup",
+    "oksana": "Registration страница, EyeCompass директива, Набор масКОТов для проекта",
+    "alena": "Login страница, Groq AI, GitHub OAuth кнопка, AuthService, Guards, Interceptors",
+    "nadezhda": "404, Main, Games cards template",
+    "mentor": "Код-ревью, архитектурные решения, изучение возможностей AI в проекте, натравил ручного миньона Claudя на весь проект"
+  },
+  "aiDescriptions": {
+    "chatgpt": "Генерация изображений (Alena1409 — персонажи, kozochkina82 — котики для Hangman), ревью кода, помощь с тестами, оформление дневников",
+    "claude": "Создание списка слов для игр (Alena1409), исправление ошибок в дневниках",
+    "groq": "Интеграция AI для проверки ответов в Merge Game (Alena1409 + AlexGorSer на бэкенде)",
+    "qwen": "Генерация 'умных мыслей дня/ночи' для дневников, рефакторинг Swagger декораторов, заполнения документации (AlexGorSer), вайб-код about страницы",
+    "codeQualityBot": "Автоматическое ревью PR, подсветка проблем в коде, составление статуса проекта"
+  }
+}

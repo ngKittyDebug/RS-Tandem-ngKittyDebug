@@ -2,12 +2,36 @@
   <div tuiCardLarge tuiAppearance="floating">
     <header tuiHeader>
       <div class="avatar">
-        <tui-avatar size="xxl" tuiAvatarOutline="var(--tui-background-accent-2)">
-          <img alt="cat-1" src="assets/images/cat-1.png" />
+        <tui-avatar
+          size="xxl"
+          tuiAvatarOutline="var(--tui-background-accent-2)"
+          [tuiSkeleton]="isAvatarUpdating() || isAvatarImageLoading()"
+        >
+          <img
+            alt="cat-1"
+            [src]="userStore.user()?.avatar || 'assets/images/cat-1.png'"
+            (load)="isAvatarImageLoading.set(false)"
+            (error)="isAvatarImageLoading.set(false)"
+          />
         </tui-avatar>
-        <button class="avatar__button" tuiButton type="button" size="s" appearance="gradient">
+        <button
+          class="avatar__button"
+          tuiButton
+          type="button"
+          size="s"
+          appearance="gradient"
+          (click)="fileInput.click()"
+          [disabled]="isAvatarUpdating() || isAvatarImageLoading()"
+        >
           <tui-icon icon="@tui.camera" />
         </button>
+        <input
+          #fileInput
+          type="file"
+          accept="image/png,image/jpeg,image/jpg,image/webp"
+          hidden
+          (change)="onFileSelected(fileInput)"
+        />
       </div>
 
       <h2 tuiTitle>{{ userStore.user()?.username || '' }}</h2>
@@ -20,11 +44,74 @@
         {{ userStore.user()?.createdAt | date: 'MMMM yyyy' : undefined : activeLang() || '' }}
       </p>
 
-      <h3 tuiTitle class="profile-sidebar__title">{{ t('userProfile.userInfo.genresTitle') }}</h3>
-      <div class="profile-sidebar__content-genres">
-        <tui-badge appearance="primary">Racing</tui-badge>
-        <tui-badge appearance="accent">Puzzle</tui-badge>
-      </div>
+      <button type="button" class="stats-button" (click)="openDialog.set(true)">
+        <tui-icon
+          class="stats-button__icon stats-button__icon_accent-1"
+          icon="@tui.trophy"
+          size="xl"
+          tuiBadge
+        />
+        <div class="stats-button__content">
+          <p class="stats-button__count stats-button__count_accent-1">
+            {{ gamePlayed() }}
+          </p>
+          <p class="stats-button__description">
+            {{ t('userProfile.userInfo.stats.gamesPlayed') }}
+          </p>
+        </div>
+
+        <tui-icon class="stats-button__arrow" icon="@tui.chevron-right"></tui-icon>
+      </button>
     </section>
+
+    <ng-template
+      [tuiDialogOptions]="{ size: 's' }"
+      [(tuiDialog)]="openDialog"
+      (tuiDialogChange)="openDialog.set($event)"
+    >
+      <header tuiHeader class="stats-popup__header">
+        <h3 tuiTitle="m">
+          {{ t('userProfile.userInfo.stats.popupTitle') }}
+        </h3>
+        <p>{{ t('userProfile.userInfo.stats.popupDescription') }}</p>
+      </header>
+
+      @if (isStats()) {
+        <ul class="stats-popup__list">
+          @for (game of stats(); track game.gameType; let index = $index) {
+            <li class="stats-popup__item">
+              <tui-icon
+                [icon]="getListItemVarian(index).icon"
+                class="stats-popup__item-icon stats-popup__item-icon_accent-1"
+                size="xl"
+                tuiBadge
+              />
+              <p class="stats-popup__item-title">
+                {{ t(`userProfile.${[gameTitleKeys[game.gameType]]}`) }}
+              </p>
+              <p class="stats-popup__item-count">{{ game.playedCount }}</p>
+            </li>
+          }
+        </ul>
+      } @else {
+        <img
+          class="stats-popup__no-activity-image"
+          src="assets/images/cat107.svg"
+          alt="No recent activity"
+        />
+        <p class="stats-popup__no-activity-text">{{ t('userProfile.userInfo.stats.noStats') }}</p>
+      }
+
+      <button
+        class="stats-popup__button"
+        size="m"
+        tuiButton
+        appearance="primary"
+        type="button"
+        (pointerdown)="openDialog.set(false)"
+      >
+        {{ t('userProfile.userInfo.stats.popupClose') }}
+      </button>
+    </ng-template>
   </div>
 </aside>

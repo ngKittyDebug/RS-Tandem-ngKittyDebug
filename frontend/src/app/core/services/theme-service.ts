@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { DOCUMENT, inject, Injectable, signal } from '@angular/core';
 import { STORAGE_KEYS } from '../../shared/constants/storage-constants';
 import { ThemeNames } from '../../shared/enums/theme-names.enum';
 
@@ -6,7 +6,8 @@ import { ThemeNames } from '../../shared/enums/theme-names.enum';
   providedIn: 'root',
 })
 export class ThemeService {
-  private baseTheme = localStorage.getItem(STORAGE_KEYS.THEME) || ThemeNames.Light;
+  private baseTheme =
+    inject(DOCUMENT).defaultView?.localStorage.getItem(STORAGE_KEYS.THEME) || ThemeNames.Light;
   public readonly theme = signal(this.baseTheme);
 
   public changeTheme(): void {

@@ -5,6 +5,8 @@ import { Header } from './header';
 import { AuthService } from '../../services/auth/auth-service';
 import { AppRoute, getRoutePath } from '../../../app.routes';
 import { of } from 'rxjs';
+import { UserStore } from '../../stores/user-store/user-store';
+import { signal } from '@angular/core';
 
 describe('Header', () => {
   let component: Header;
@@ -16,6 +18,15 @@ describe('Header', () => {
 
   const mockRouter = {
     navigate: vi.fn(),
+  };
+
+  const mockUserStore = {
+    user: signal({
+      username: 'user',
+      email: 'user@test.com',
+      avatar: '',
+      createdAt: '2026-03-14T00:00:00Z',
+    }),
   };
 
   beforeEach(async () => {
@@ -33,6 +44,7 @@ describe('Header', () => {
       providers: [
         { provide: AuthService, useValue: mockAuthService },
         { provide: Router, useValue: mockRouter },
+        { provide: UserStore, useValue: mockUserStore },
       ],
     }).compileComponents();
 

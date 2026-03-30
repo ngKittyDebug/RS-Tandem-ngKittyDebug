@@ -8,6 +8,7 @@ import { TuiAvatar } from '@taiga-ui/kit';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { AuthService } from '../../services/auth/auth-service';
 import { AppRoute, getRoutePath } from '../../../app.routes';
+import { UserStore } from '../../stores/user-store/user-store';
 
 @Component({
   selector: 'app-header',
@@ -25,8 +26,9 @@ import { AppRoute, getRoutePath } from '../../../app.routes';
   styleUrl: './header.scss',
 })
 export class Header {
-  private authService = inject(AuthService);
+  protected readonly authService = inject(AuthService);
   private router = inject(Router);
+  protected readonly userStore = inject(UserStore);
 
   protected avatarClick(): void {
     this.router.navigate([getRoutePath(AppRoute.USER_PROFILE)]);
@@ -38,8 +40,12 @@ export class Header {
         this.router.navigate([getRoutePath(AppRoute.MAIN)]);
       },
       error: (error) => {
-        console.log(error);
+        console.error(error);
       },
     });
+  }
+
+  protected logInClick(): void {
+    this.router.navigate([getRoutePath(AppRoute.LOGIN)]);
   }
 }
