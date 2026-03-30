@@ -24,6 +24,7 @@ import { Loader } from '../../../core/components/loader/loader';
 import { UserService } from '../../../core/services/user/user-service';
 import { GameLabels } from '../../../shared/enums/game-labels.enum';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DecryptoAiService } from './services/decrypto-ai-service';
 
 export interface DecryptoGameData {
   gameCards: Card[];
@@ -51,6 +52,7 @@ const dataToServer = {
 })
 export class Decrypto implements OnInit {
   protected readonly gameService = inject(DecryptoGameService);
+  protected readonly gameAiService = inject(DecryptoAiService);
   protected readonly loadDataServerService = inject(KeyStorageService<DecryptoGameData>);
   protected readonly transloco = inject(TranslocoService);
   protected readonly tosterService = inject(AppTosterService);
