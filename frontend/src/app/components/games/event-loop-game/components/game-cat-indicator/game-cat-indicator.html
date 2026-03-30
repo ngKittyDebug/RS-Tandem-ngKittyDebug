@@ -5,6 +5,7 @@
   class="cat cat--sleep"
   [class.cat--awake]="isChecking()"
   [class.cat--sleep]="!isChecking()"
+  (click)="toggle()"
   aria-hidden="true"
 >
   <g class="cat-body">
