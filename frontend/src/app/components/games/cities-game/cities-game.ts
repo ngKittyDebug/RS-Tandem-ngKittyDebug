@@ -234,7 +234,6 @@ export class CitiesGame implements OnInit {
         break;
 
       case 'ok': {
-        this.userService.statsUpdate(GameLabels.CitiesGame).subscribe({});
         const word = this.words[nextWordFromCat];
         const nextMessageFromCat: Message = {
           text: this.words[nextWordFromCat].word,
@@ -257,6 +256,7 @@ export class CitiesGame implements OnInit {
       }
 
       case 'out':
+        this.userService.statsUpdate(GameLabels.CitiesGame).subscribe({});
         this.timeoutId = setTimeout(() => {
           this.zone.run(() => {
             this.visibleMessages.push({
