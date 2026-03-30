@@ -67,7 +67,6 @@ export class GameComponent implements OnInit {
   public isWin = false;
   public isLevelCompleted = false;
   public currentCatImage = HangmanImage.MOUSE1;
-  //public completedWords = 0;
 
   public currentLevel: Level = 'easy';
   private wordsByLevel: HangmanWordsByLevel | null = null;
@@ -122,12 +121,10 @@ export class GameComponent implements OnInit {
     if (this.correctAnswer.includes(upperLetter)) {
       this.guessedLetters.push(upperLetter);
       this.updateDisplayedWord();
-      console.log('Correct letter:', upperLetter);
     } else {
       this.wrongLetters.push(upperLetter);
       this.mistakes++;
       this.updateCatImage();
-      console.log('error');
     }
 
     if (this.mistakes > this.maxMistakes) {
@@ -204,7 +201,6 @@ export class GameComponent implements OnInit {
       next: (wordsByLevel) => {
         this.wordsByLevel = wordsByLevel;
         this.loadRandomWordForLevel();
-        //this.loadNextWord();
       },
       error: (error) => {
         console.error('Error loading hangman words:', error);
@@ -242,11 +238,6 @@ export class GameComponent implements OnInit {
     this.currentCatImage = HangmanImage.MOUSE1;
 
     this.updateDisplayedWord();
-
-    console.log('Level:', this.currentLevel);
-    console.log('Question loaded:', this.currentQuestion);
-    console.log('Answer loaded:', this.correctAnswer);
-
     this.cdr.detectChanges();
   }
 
