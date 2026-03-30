@@ -109,6 +109,7 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./components/games/cities-game/cities-game').then((m) => m.CitiesGame),
     providers: [provideTranslocoScope('cities-game')],
+    canActivate: [authGuard],
   },
   {
     path: '**',
