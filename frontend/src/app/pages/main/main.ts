@@ -57,9 +57,9 @@ export class Main {
     this.router.navigate([getRoutePath(GameRoute.MERGE_GAME)]);
   }
   public goWordChain(): void {
-    this.router.navigate([getRoutePath(GameRoute.WORD_CHAIN)]);
+    this.router.navigate([getRoutePath(GameRoute.CITIES_GAME)]);
   }
   public goLoop(): void {
-    this.router.navigate([getRoutePath(GameRoute.LOOP)]);
+    this.router.navigate([getRoutePath(GameRoute.EVENT_LOOP_GAME)]);
   }
 }

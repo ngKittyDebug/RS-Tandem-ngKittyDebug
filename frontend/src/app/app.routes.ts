@@ -11,16 +11,13 @@ export enum AppRoute {
   USER_PROFILE = 'user-profile',
   ABOUT = 'about',
   MAIN = '',
-  CITIES_GAME = 'cities-game',
 }
 
 export enum GameRoute {
   DECRYPTO = 'decrypto',
   MERGE_GAME = 'merge-game',
   HANGMAN = 'hangman',
-  WORD_CHAIN = 'word-chain',
-  LOOP = 'meowloop',
-  CITIESGAME = 'cities-game',
+  CITIES_GAME = 'cities-game',
   EVENT_LOOP_GAME = 'event-loop-game',
 }
 
@@ -110,7 +107,7 @@ export const routes: Routes = [
     ],
   },
   {
-    path: AppRoute.CITIES_GAME,
+    path: GameRoute.CITIES_GAME,
     loadComponent: () =>
       import('./components/games/cities-game/cities-game').then((m) => m.CitiesGame),
     providers: [provideTranslocoScope('cities-game')],

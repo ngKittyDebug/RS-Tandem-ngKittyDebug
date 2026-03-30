@@ -9,7 +9,7 @@ import {
   viewChild,
   ElementRef,
 } from '@angular/core';
-import { AppRoute, getRoutePath } from '../../../app.routes';
+import { AppRoute, getRoutePath, GameRoute } from '../../../app.routes';
 import { Router } from '@angular/router';
 import { TranslocoService, TranslocoModule } from '@jsverse/transloco';
 import { EyeCompassDirective } from '../../../core/directive/eye-compass.directive';
@@ -84,7 +84,7 @@ export class CitiesGame implements OnInit {
   );
   protected readonly loadDataServise = inject(KeyStorageService<CitiesGameStorage>);
   private readonly userService = inject(UserService);
-  protected citiesRouterPath = getRoutePath(AppRoute.CITIES_GAME);
+  protected citiesRouterPath = getRoutePath(GameRoute.CITIES_GAME);
   private translocoService = inject(TranslocoService);
   private zone = inject(NgZone);
   private cdr = inject(ChangeDetectorRef);
