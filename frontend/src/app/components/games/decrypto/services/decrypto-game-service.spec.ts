@@ -55,7 +55,6 @@ describe('DecryptoGameService', () => {
     });
 
     it('should fill gameCardsForGame using data from gameCardsFromServer', () => {
-      // Mocking server cards data
       const mockCard: Card = { id: '1', cardName: 'name', cardHints: ['test', 'test2', 'test3'] };
       service.gameCardsFromServer = Array(20).fill(mockCard);
 
@@ -123,7 +122,6 @@ describe('DecryptoGameService', () => {
 
   describe('Card and Hint Mapping', () => {
     beforeEach(() => {
-      // Подготовка моковых данных
       const mockCards: Card[] = [
         { id: '1', cardName: 'name', cardHints: ['hint1_A', 'hint1_B'] },
         { id: '2', cardName: 'name', cardHints: ['hint2_A', 'hint2_B'] },
@@ -135,21 +133,18 @@ describe('DecryptoGameService', () => {
     });
 
     it('should extract the correct subset of cards for the current period (generateCards)', () => {
-      // CONFIG.defaultCards обычно равен 4
-      service.gamePeriod.set(1); // offset = 0
+      service.gamePeriod.set(1);
       service.generateCards();
       expect(service.gameCards.length).toBe(CONFIG.defaultCards);
       expect(service.gameCards[0].id).toBe('1');
 
-      service.gamePeriod.set(2); // offset = 4 (для второго раунда)
-      // Добавим еще карт для теста второго раунда
+      service.gamePeriod.set(2);
       service.gameCardsForGame = Array(8).fill({ id: 99, cardHints: [] });
       service.generateCards();
       expect(service.gameCards.length).toBe(CONFIG.defaultCards);
     });
 
     it('should generate hints based on gameWrightCode and gameCards (generateGameHints)', () => {
-      // Допустим код: [1, 3] -> должны взяться подсказки от 1-й и 3-й карты
       service.gameWrightCode = [1, 3];
       service.gameCards = [
         { id: '1', cardName: 'name', cardHints: ['hint1'] },
@@ -158,10 +153,7 @@ describe('DecryptoGameService', () => {
       ];
 
       service.generateGameHints();
-
-      // Проверяем количество групп подсказок
       expect(service.gameHints.length).toBe(2);
-      // Проверяем, что подсказки соответствуют выбранным картам (с учетом item - 1)
       expect(service.gameHints[0]).toContain('hint1');
       expect(service.gameHints[1]).toContain('hint3');
     });
@@ -172,8 +164,6 @@ describe('DecryptoGameService', () => {
       service.gameCards = [{ id: '1', cardName: 'name', cardHints: originalHints }];
 
       service.generateGameHints();
-
-      // Изменение в сгенерированных подсказках не должно влиять на исходную карту
       service.gameHints[0][0] = 'MUTATED';
       expect(service.gameCards[0].cardHints[0]).not.toBe('MUTATED');
     });
