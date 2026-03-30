@@ -30,6 +30,14 @@ enum HangmanImage {
   MOUSE4 = 'assets/images/mouse44.png',
   MOUSE5 = 'assets/images/mouse55.png',
 }
+export interface GameStats {
+  total: number;
+  easy: number;
+  medium: number;
+  hard: number;
+  expert: number;
+  god: number;
+}
 
 @Component({
   selector: 'app-game',
@@ -59,9 +67,11 @@ export class GameComponent implements OnInit {
   public isWin = false;
   public isLevelCompleted = false;
   public currentCatImage = HangmanImage.MOUSE1;
+  //public completedWords = 0;
 
   public currentLevel: Level = 'easy';
   private wordsByLevel: HangmanWordsByLevel | null = null;
+  private readonly statsStorageKey = 'hangman_game_stats';
   public usedWords: Record<Level, string[]> = {
     easy: [],
     medium: [],
@@ -70,12 +80,36 @@ export class GameComponent implements OnInit {
     god: [],
   };
 
-  // private wordsPool: HangmanWord[] = [];
+  public stats: GameStats = {
+    total: 0,
+    easy: 0,
+    medium: 0,
+    hard: 0,
+    expert: 0,
+    god: 0,
+  };
 
   public ngOnInit(): void {
+    this.loadStats();
     this.loadWordsData();
   }
+  private loadStats(): void {
+    const savedStats = localStorage.getItem(this.statsStorageKey);
 
+    if (savedStats) {
+      this.stats = JSON.parse(savedStats);
+    }
+  }
+
+  private saveStats(): void {
+    localStorage.setItem(this.statsStorageKey, JSON.stringify(this.stats));
+  }
+
+  private updateStats(): void {
+    this.stats.total++;
+    this.stats[this.currentLevel]++;
+    this.saveStats();
+  }
   protected addLetter(letter: string): void {
     if (this.isGameOver || this.isWin || this.isLevelCompleted) {
       return;
@@ -101,6 +135,7 @@ export class GameComponent implements OnInit {
     }
     if (this.displayedWord.replaceAll(' ', '') === this.correctAnswer) {
       this.isWin = true;
+      this.updateStats();
     }
 
     this.cdr.detectChanges();
