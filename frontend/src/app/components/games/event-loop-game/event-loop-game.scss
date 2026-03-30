@@ -37,10 +37,18 @@
 }
 
 .game-wrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   flex: 1;
   margin-top: 1rem;
+
+  &__cat-indicator {
+    position: absolute;
+    bottom: -1.5rem;
+    right: -0.9rem;
+    z-index: 1;
+  }
 }
 
 .game-header {
@@ -123,11 +131,12 @@
     }
 
     &_action {
-      min-width: 10rem;
+      min-width: 10.5rem;
     }
 
-    &_next {
-      animation: pulse-in 1s ease;
+    &_next[tuiAppearance][data-appearance='gradient'] {
+      background: linear-gradient(90deg, var(--accent-2), var(--accent-1));
+      animation: pulse-in 0.4s ease;
     }
   }
 
@@ -155,16 +164,6 @@
       flex: 1;
     }
   }
-}
-
-[tuiAppearance][data-appearance='gradient-2'] {
-  background: linear-gradient(90deg, var(--accent-2), var(--accent-1)) !important;
-  color: var(--tui-background-base-alt);
-}
-
-[tuiAppearance][data-appearance='gradient-2']:hover,
-[tuiAppearance][data-appearance='gradient-2']:active {
-  background: linear-gradient(90deg, var(--accent-2), var(--accent-1)) !important;
 }
 
 .game-hint-container {
@@ -218,6 +217,7 @@
   &_output {
     align-self: stretch;
     padding-left: 1rem;
+    padding-bottom: 3rem;
     border-left: 1px solid var(--accent-1);
 
     @media (max-width: 768px) {
@@ -379,13 +379,13 @@
 
 @keyframes pulse-in {
   0% {
-    transform: scale(0.8);
+    transform: scale(0.9);
     box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent-2) 30%, transparent);
   }
 
   60% {
     transform: scale(1.1);
-    box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent-2) 30%, transparent);
+    box-shadow: 0 0 8px 0px color-mix(in srgb, var(--accent-2) 30%, transparent);
   }
 
   100% {

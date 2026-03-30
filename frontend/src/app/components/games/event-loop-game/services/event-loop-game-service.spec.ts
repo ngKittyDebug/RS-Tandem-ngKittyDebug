@@ -48,6 +48,8 @@ describe('EventLoopGameService', () => {
   };
 
   beforeEach(() => {
+    vi.useFakeTimers();
+
     TestBed.configureTestingModule({
       providers: [
         EventLoopGameService,
@@ -58,6 +60,11 @@ describe('EventLoopGameService', () => {
       ],
     });
     service = TestBed.inject(EventLoopGameService);
+    vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('should be created', () => {
@@ -112,6 +119,44 @@ describe('EventLoopGameService', () => {
     expect(service.gameStatus()).toBe(GameStatus.Idle);
   });
 
+  it('should mark answer as correct when user answer matches expected output', () => {
+    service.loadGame();
+    service.start();
+
+    const correct = tasks[0].output.map((value, index) => ({
+      id: String(index),
+      value,
+      status: 'idle' as const,
+    }));
+    service.userAnswer.set(correct);
+
+    service.checkAnswer();
+    vi.runAllTimers();
+
+    expect(service.isChecking()).toBe(false);
+    expect(service.gameStatus()).toBe(GameStatus.Correct);
+    expect(service.lives()).toBe(3);
+    expect(service.userAnswer().every((item) => item.status === 'correct')).toBe(true);
+  });
+
+  it('should lose one life and mark gameStatus incorrect for wrong answer', () => {
+    service.loadGame();
+    service.start();
+
+    service.userAnswer.set([
+      { id: '1', value: 'wrong', status: 'idle' },
+      { id: '2', value: 'order', status: 'idle' },
+    ]);
+
+    service.checkAnswer();
+    vi.runAllTimers();
+
+    expect(service.isChecking()).toBe(false);
+    expect(service.gameStatus()).toBe(GameStatus.Incorrect);
+    expect(service.lives()).toBe(2);
+    expect(service.userAnswer().some((item) => item.status === 'incorrect')).toBe(true);
+  });
+
   it('should move to next task', () => {
     service.loadGame();
     service.start();
@@ -121,5 +166,30 @@ describe('EventLoopGameService', () => {
     expect(service.currentTaskIndex()).toBe(2);
     expect(service.gameStatus()).toBe(GameStatus.Idle);
     expect(service.difficulty()).toBe(tasks[1].difficulty);
+  });
+
+  it('should set failed status when lives run out', () => {
+    service.loadGame();
+    service.start();
+
+    const wrong = [
+      { id: '1', value: 'wrong', status: 'idle' as const },
+      { id: '2', value: 'answer', status: 'idle' as const },
+    ];
+
+    service.userAnswer.set(wrong);
+    service.checkAnswer();
+    vi.runAllTimers();
+
+    service.userAnswer.set(wrong);
+    service.checkAnswer();
+    vi.runAllTimers();
+
+    service.userAnswer.set(wrong);
+    service.checkAnswer();
+    vi.runAllTimers();
+
+    expect(service.lives()).toBe(0);
+    expect(service.gameStatus()).toBe(GameStatus.Failed);
   });
 });

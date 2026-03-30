@@ -40,6 +40,7 @@
     "task1": "Task",
     "task2": "of",
     "buttonCheck": "Check answer",
+    "buttonChecking": "Checking...",
     "buttonNext": "Next task",
     "dragHint": "Drag to reorder",
     "dropPlaceholder": "Drop it"

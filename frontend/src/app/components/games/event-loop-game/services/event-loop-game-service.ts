@@ -3,7 +3,19 @@ import { EventLoopSessionService } from './event-loop-session-service';
 import { AnswerItem, Task } from '../models/task.interface';
 import { shuffle, toHintLang } from '../utils/utils';
 import { EventLoopGameApiService } from './event-loop-game-api-service';
-import { catchError, EMPTY, finalize, tap } from 'rxjs';
+import {
+  catchError,
+  concat,
+  concatMap,
+  EMPTY,
+  finalize,
+  from,
+  of,
+  Subject,
+  takeUntil,
+  tap,
+  timer,
+} from 'rxjs';
 import { TranslocoService } from '@jsverse/transloco';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { GameStatus } from '../models/task.const';
@@ -12,6 +24,7 @@ import { UserService } from '../../../../core/services/user/user-service';
 import { GameLabels } from '../../../../shared/enums/game-labels.enum';
 
 const MAX_LIVES = 3;
+const CHECKING_TIMER = 300;
 
 @Injectable({
   providedIn: 'root',
@@ -32,6 +45,11 @@ export class EventLoopGameService {
   public readonly isStarted = signal(false);
   public readonly isLoading = signal(false);
   public readonly loadError = signal<string | null>(null);
+
+  public readonly isChecking = signal(false);
+  private isCheckCancelled = false;
+  private readonly checkingIndex = signal<number | null>(null);
+  private readonly destroyCheching$ = new Subject<void>();
 
   protected readonly session = signal<Task[]>([]);
   protected readonly level = signal(0);
@@ -77,6 +95,7 @@ export class EventLoopGameService {
     return (
       this.gameStatus() === GameStatus.Correct ||
       this.gameStatus() === GameStatus.Finished ||
+      this.isChecking() ||
       this.isGameOver()
     );
   });
@@ -96,7 +115,9 @@ export class EventLoopGameService {
           this.allTasks = tasks;
         }),
         catchError((error) => {
-          this.loadError.set(error);
+          const message = error instanceof Error ? error.message : 'Failed to load tasks';
+
+          this.loadError.set(message);
           return EMPTY;
         }),
         finalize(() => this.isLoading.set(false)),
@@ -109,11 +130,14 @@ export class EventLoopGameService {
       return;
     }
 
+    this.stopChecking();
+
     this.isStarted.set(true);
     this.startNewSession();
   }
 
   public reset(): void {
+    this.stopChecking();
     this.isStarted.set(false);
     this.gameStatus.set(GameStatus.Idle);
 
@@ -142,33 +166,84 @@ export class EventLoopGameService {
   }
 
   public checkAnswer(): void {
-    const checkedAnswers: AnswerItem[] = this.userAnswer().map((item, index) => ({
+    if (this.isChecking()) {
+      return;
+    }
+
+    this.isCheckCancelled = false;
+
+    const answers: AnswerItem[] = [...this.userAnswer()].map((item) => ({
       ...item,
-      status: item.value === this.correctAnswer()[index] ? 'correct' : 'incorrect',
+      status: 'idle',
     }));
+    const correctAnswer = this.correctAnswer();
 
-    this.userAnswer.set(checkedAnswers);
+    this.userAnswer.set(answers);
+    this.isChecking.set(true);
+    this.gameStatus.set(GameStatus.Idle);
 
-    const isAllCorrect = checkedAnswers.every((item) => item.status === 'correct');
+    from(answers.map((_, index) => index))
+      .pipe(
+        concatMap((index) =>
+          concat(
+            of(index).pipe(
+              tap(() => {
+                this.checkingIndex.set(index);
 
-    if (isAllCorrect) {
-      if (this.isLastTask()) {
-        this.gameStatus.set(GameStatus.Finished);
-        return;
-      }
+                answers[index] = {
+                  ...answers[index],
+                  status: 'checking',
+                };
 
-      this.gameStatus.set(GameStatus.Correct);
-      return;
-    }
+                this.userAnswer.set([...answers]);
+              }),
+            ),
+            timer(CHECKING_TIMER).pipe(
+              tap(() => {
+                const isCorrect = answers[index].value === correctAnswer[index];
 
-    this.loseLife();
+                answers[index] = {
+                  ...answers[index],
+                  status: isCorrect ? 'correct' : 'incorrect',
+                };
 
-    if (this.isGameOver()) {
-      this.gameStatus.set(GameStatus.Failed);
-      return;
-    }
+                this.userAnswer.set([...answers]);
+              }),
+            ),
+          ),
+        ),
+        finalize(() => {
+          this.checkingIndex.set(null);
+          this.isChecking.set(false);
 
-    this.gameStatus.set(GameStatus.Incorrect);
+          if (this.isCheckCancelled) {
+            return;
+          }
+
+          const isAllCorrect = answers.every((item) => item.status === 'correct');
+
+          if (isAllCorrect) {
+            if (this.isLastTask()) {
+              this.gameStatus.set(GameStatus.Finished);
+              return;
+            }
+
+            this.gameStatus.set(GameStatus.Correct);
+            return;
+          }
+
+          this.loseLife();
+
+          if (this.isGameOver()) {
+            this.gameStatus.set(GameStatus.Failed);
+            return;
+          }
+
+          this.gameStatus.set(GameStatus.Incorrect);
+        }),
+        takeUntil(this.destroyCheching$),
+      )
+      .subscribe();
   }
 
   public nextTask(): void {
@@ -181,6 +256,13 @@ export class EventLoopGameService {
     this.level.set(nextLevel);
     this.userAnswer.set(this.createAnswerItems(this.session()[nextLevel].output));
     this.gameStatus.set(GameStatus.Idle);
+  }
+
+  public stopChecking(): void {
+    this.isCheckCancelled = true;
+    this.destroyCheching$.next();
+    this.isChecking.set(false);
+    this.checkingIndex.set(null);
   }
 
   private initSession(): void {

@@ -1,4 +1,12 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import {
   TuiAppearance,
@@ -22,6 +30,8 @@ import { Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { AppRoute, getRoutePath } from '../../../app.routes';
 import { AnswerItem } from './models/task.interface';
+import { GameCatIndicator } from './components/game-cat-indicator/game-cat-indicator';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-event-loop-game',
@@ -43,21 +53,25 @@ import { AnswerItem } from './models/task.interface';
     GameEndDialog,
     Loader,
     TuiDialog,
+    GameCatIndicator,
   ],
   templateUrl: './event-loop-game.html',
   styleUrl: './event-loop-game.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EventLoopGame implements OnInit {
   private readonly router = inject(Router);
   private readonly dialogs = inject(TuiDialogService);
   protected readonly game = inject(EventLoopGameService);
   protected readonly transloco = inject(TranslocoService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly isHintOpen = signal(false);
   protected readonly isEndDialogOpen = signal(false);
   protected readonly endMode = signal<GameEndDialogMode>('lose');
 
   public ngOnInit(): void {
+    this.game.reset();
     this.game.loadGame();
   }
 
@@ -113,6 +127,10 @@ export class EventLoopGame implements OnInit {
   }
 
   protected goToMain(): void {
+    if (this.game.isChecking()) {
+      this.game.stopChecking();
+    }
+
     this.navigateWithConfirm(getRoutePath(AppRoute.MAIN));
   }
 
@@ -131,7 +149,7 @@ export class EventLoopGame implements OnInit {
           no: this.transloco.translate('eventLoopGame.exitConfirm.no'),
         },
       })
-      .pipe(filter(Boolean))
+      .pipe(filter(Boolean), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.game.reset();
         this.router.navigate([path]);

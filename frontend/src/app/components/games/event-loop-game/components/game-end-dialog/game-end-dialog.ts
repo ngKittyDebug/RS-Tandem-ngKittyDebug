@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
 import { TuiAppearance, TuiButton, TuiTitle } from '@taiga-ui/core';
 
@@ -9,6 +9,7 @@ export type GameEndDialogMode = 'win' | 'lose';
   imports: [TuiButton, TuiAppearance, TuiTitle],
   templateUrl: './game-end-dialog.html',
   styleUrl: './game-end-dialog.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameEndDialog {
   protected readonly transloco = inject(TranslocoService);

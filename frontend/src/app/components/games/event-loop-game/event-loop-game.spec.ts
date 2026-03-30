@@ -128,4 +128,13 @@ describe('EventLoopGame', () => {
     expect(fixture.nativeElement.querySelector('app-game-start-dialog')).toBeTruthy();
     expect(fixture.nativeElement.querySelector('.game-wrapper')).toBeNull();
   });
+
+  it('should stop checking before navigating to main', () => {
+    gameMock.isChecking.set(true);
+    gameMock.isStarted.set(false);
+
+    component['goToMain']();
+
+    expect(gameMock.stopChecking).toHaveBeenCalled();
+  });
 });

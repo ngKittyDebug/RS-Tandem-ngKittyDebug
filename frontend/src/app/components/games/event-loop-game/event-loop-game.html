@@ -11,7 +11,6 @@
           type="button"
           size="xs"
           appearance="outline-grayscale"
-          tuiButton
           (click)="goToStartScreen()"
         >
           {{ t('eventLoopGame.navigation.start') }}
@@ -22,7 +21,6 @@
           type="button"
           size="xs"
           appearance="outline-grayscale"
-          tuiButton
           (click)="goToMain()"
         >
           {{ t('eventLoopGame.navigation.main') }}
@@ -77,11 +75,15 @@
               tuiButton
               type="button"
               size="m"
-              [appearance]="game.gameStatus() === 'correct' ? 'gradient-2' : 'gradient'"
+              appearance="gradient"
               [class.game-header__button_next]="game.gameStatus() === 'correct'"
+              [disabled]="game.isChecking()"
               (click)="game.gameStatus() === 'correct' ? nextTask() : checkAnswer()"
             >
-              @if (game.gameStatus() === 'correct') {
+              @if (game.isChecking()) {
+                <tui-icon icon="@tui.paw-print"></tui-icon>
+                {{ t('eventLoopGame.game.buttonChecking') }}
+              } @else if (game.gameStatus() === 'correct') {
                 <span>
                   <tui-icon icon="@tui.play"></tui-icon>
                   {{ t('eventLoopGame.game.buttonNext') }}
@@ -163,6 +165,11 @@
             </div>
           </section>
         </div>
+
+        <app-game-cat-indicator
+          class="game-wrapper__cat-indicator"
+          [isChecking]="game.isChecking()"
+        ></app-game-cat-indicator>
 
         <ng-template
           *transloco="let t"
