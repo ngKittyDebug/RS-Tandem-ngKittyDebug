@@ -28,16 +28,13 @@ import {
 } from 'src/swagger-api-configs/auth';
 import { Throttle } from '@nestjs/throttler';
 import { ThrottlerConfigRefresh } from 'src/config/throttler.config';
-import { JwtAuthGuard } from 'src/guards/auth.guard';
-import { User } from 'src/decorators/user.decorator';
-import { JwtPayload } from '../interface/jwt-payload';
 
+@Public()
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Public()
   @ApiSwagger(registerConfig)
   @Post('register')
   create(
@@ -47,7 +44,6 @@ export class AuthController {
     return this.authService.registration(res, createAuthDto);
   }
 
-  @Public()
   @ApiSwagger(loginConfig)
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -59,35 +55,25 @@ export class AuthController {
   }
 
   @ApiSwagger(refreshConfig)
-  @Public()
   @Post('refresh')
   @Throttle({ default: ThrottlerConfigRefresh })
   @HttpCode(HttpStatus.OK)
-  refresh(
-    @Res({ passthrough: true }) res: Response,
-    @Req() req: Request,
-  ): Promise<AuthResponse> {
+  refresh(@Res({ passthrough: true }) res: Response, @Req() req: Request) {
     return this.authService.refresh(req, res);
   }
 
   @ApiSwagger(logoutConfig)
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(JwtAuthGuard)
-  logout(
-    @User() user: JwtPayload,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<LogoutResponse> {
-    return this.authService.logout(res, user);
+  logout(@Res({ passthrough: true }) res: Response): LogoutResponse {
+    return this.authService.logout(res);
   }
 
-  @Public()
   @ApiExcludeEndpoint()
   @Get('github')
   @UseGuards(AuthGuard('github'))
   async githubLogin() {}
 
-  @Public()
   @ApiExcludeEndpoint()
   @Get('github/callback')
   @UseGuards(AuthGuard('github'))

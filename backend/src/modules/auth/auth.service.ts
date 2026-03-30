@@ -250,7 +250,7 @@ export class AuthService {
       }
 
       if (this.getHash(refresh) !== user.refreshToken) {
-        await this.logout(res, user);
+        this.logout(res);
         throw new UnauthorizedException(`Токен не валиден`);
       }
 
@@ -277,12 +277,7 @@ export class AuthService {
     });
   }
 
-  async logout(res: Response, user: JwtPayload): Promise<LogoutResponse> {
-    await this.prisma.user.update({
-      where: { id: user.id },
-      data: { refreshToken: null },
-    });
-
+  logout(res: Response): LogoutResponse {
     this.sendCookie(res, '', new Date(0));
 
     return { logout: true };
