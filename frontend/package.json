@@ -38,6 +38,7 @@
     "@angular/forms": "^21.1.0",
     "@angular/platform-browser": "^21.1.0",
     "@angular/router": "^21.1.0",
+    "@huggingface/inference": "^4.13.15",
     "@jsverse/transloco-persist-lang": "^8.2.1",
     "@taiga-ui/cdk": "^4.71.1",
     "@taiga-ui/core": "^4.71.1",

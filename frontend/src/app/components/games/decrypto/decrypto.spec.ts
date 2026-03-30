@@ -60,4 +60,10 @@ describe('Decrypto Component - newGame', () => {
     expect(gameService.gameCardsFromServer).toEqual(mockServerData.storage.gameCards);
     expect(component.decryptoForm.pristine).toBe(true);
   });
+
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(Decrypto);
+    const decrypto = fixture.componentInstance;
+    expect(decrypto).toBeTruthy();
+  });
 });
