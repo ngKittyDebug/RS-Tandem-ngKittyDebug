@@ -26,6 +26,8 @@ import {
   refreshConfig,
   logoutConfig,
 } from 'src/swagger-api-configs/auth';
+import { Throttle } from '@nestjs/throttler';
+import { ThrottlerConfigRefresh } from 'src/config/throttler.config';
 
 @ApiTags('Auth')
 @Public()
@@ -54,6 +56,7 @@ export class AuthController {
 
   @ApiSwagger(refreshConfig)
   @Post('refresh')
+  @Throttle({ default: ThrottlerConfigRefresh })
   @HttpCode(HttpStatus.OK)
   refresh(
     @Res({ passthrough: true }) res: Response,
