@@ -6,13 +6,21 @@ import {
   input,
   NgZone,
   OnInit,
+  signal,
   viewChild,
 } from '@angular/core';
 import { AppRoute, getRoutePath } from '../../../app.routes';
 import { RouterModule } from '@angular/router';
 import { TranslocoService, TranslocoModule } from '@jsverse/transloco';
 import { EyeCompassDirective } from '../../../core/directive/eye-compass.directive';
-import { TuiMessage, TuiDataListWrapper, TuiTextarea } from '@taiga-ui/kit';
+import {
+  TuiMessage,
+  TuiDataListWrapper,
+  TuiTextarea,
+  TuiAvatar,
+  TuiAvatarOutline,
+  TuiSkeleton,
+} from '@taiga-ui/kit';
 import { TuiTextfield, TuiButton } from '@taiga-ui/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
@@ -22,6 +30,8 @@ import { TuiTooltip } from '@taiga-ui/kit';
 import { interval, map, startWith } from 'rxjs';
 import { Timer } from '../../timer/timer';
 import { TIMER_MODE } from '../../timer/models/timer-mode.enum';
+import { UserStore } from '../../../core/stores/user-store/user-store';
+import { UserService } from '../../../core/services/user/user-service';
 
 interface Message {
   text: string;
@@ -64,6 +74,9 @@ export interface CitiesGameVocabularResponse {
     TuiIcon,
     TuiTooltip,
     Timer,
+    TuiAvatar,
+    TuiAvatarOutline,
+    TuiSkeleton,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -73,6 +86,7 @@ export class CitiesGame implements OnInit {
     startWith(true),
   );
   protected readonly loadDataServise = inject(KeyStorageService<CitiesGameStorage>);
+  private readonly userService = inject(UserService);
   protected citiesRouterPath = getRoutePath(AppRoute.CITIES_GAME);
   private translocoService = inject(TranslocoService);
   private zone = inject(NgZone);
@@ -101,6 +115,10 @@ export class CitiesGame implements OnInit {
   private timer = viewChild(Timer);
   public timerMode = TIMER_MODE.UP;
   public autoStart = input<boolean>(true);
+  protected readonly isAvatarUpdating = signal(false);
+  protected readonly isAvatarImageLoading = signal(false);
+  protected userStore = inject(UserStore);
+  public userName = '';
 
   public runMessages(): void {
     this.timer()?.start();
@@ -128,6 +146,9 @@ export class CitiesGame implements OnInit {
         this.words = response.storage.words;
         this.cdr.markForCheck();
       });
+    this.userService.getUser().subscribe((user) => {
+      this.userName = user.username;
+    });
     this.runMessages();
   }
 
