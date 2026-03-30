@@ -51,18 +51,25 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideAppInitializer(() => {
+      console.log('[OAuth-Debug] APP_INITIALIZER: starting refresh()');
       const authService = inject(AuthService);
 
       const userStore = inject(UserStore);
       return authService.refresh().pipe(
         switchMap(() => {
-          if (!authService.isLoggedIn()) {
+          const loggedIn = authService.isLoggedIn();
+          console.log('[OAuth-Debug] APP_INITIALIZER: refresh done, isLoggedIn =', loggedIn);
+
+          if (!loggedIn) {
             return of(void 0);
           }
 
           return userStore.loadUser();
         }),
-        catchError(() => of(void 0)),
+        catchError((err) => {
+          console.warn('[OAuth-Debug] APP_INITIALIZER: refresh failed:', err.status ?? err.message);
+          return of(void 0);
+        }),
       );
     }),
   ],

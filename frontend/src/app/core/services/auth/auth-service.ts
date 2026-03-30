@@ -52,14 +52,20 @@ export class AuthService {
   }
 
   public refresh(): Observable<void> {
+    console.log('[OAuth-Debug] refresh() called, current isLoggedIn:', this.isLoggedIn());
+
     return this.http
       .post<LoginResponse>(this.getUrl(AUTH_PATHS.REFRESH), null, {
         withCredentials: true,
       })
       .pipe(
-        tap((res) => this.accessToken.set(res.accessToken)),
+        tap((res) => {
+          console.log('[OAuth-Debug] refresh() success, got accessToken:', !!res.accessToken);
+          this.accessToken.set(res.accessToken);
+        }),
         map(() => void 0),
         catchError((err) => {
+          console.warn('[OAuth-Debug] refresh() failed:', err.status, err.message);
           this.accessToken.set(null);
           return throwError(() => err);
         }),
@@ -78,7 +84,10 @@ export class AuthService {
   }
 
   public loginWithGitHub(): void {
-    this.document.defaultView!.location.href = this.getUrl(AUTH_PATHS.GITHUB);
+    console.log(
+      '[OAuth-Debug] loginWithGitHub() — using location.replace() to remove /login from history',
+    );
+    this.document.defaultView!.location.replace(this.getUrl(AUTH_PATHS.GITHUB));
   }
 
   public getAccessToken(): string | null {

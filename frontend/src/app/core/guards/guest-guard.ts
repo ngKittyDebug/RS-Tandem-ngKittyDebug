@@ -7,10 +7,14 @@ export const guestGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
   const mainRouterPath = getRoutePath(AppRoute.MAIN);
+  const loggedIn = authService.isLoggedIn();
 
-  if (!authService.isLoggedIn()) {
+  console.log('[OAuth-Debug] guestGuard check: isLoggedIn =', loggedIn);
+
+  if (!loggedIn) {
     return true;
   }
 
+  console.log('[OAuth-Debug] guestGuard: redirecting to', mainRouterPath);
   return router.createUrlTree([mainRouterPath]);
 };
