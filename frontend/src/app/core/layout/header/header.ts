@@ -5,10 +5,11 @@ import { TuiAppearance, TuiButton } from '@taiga-ui/core';
 import { Router, RouterLink } from '@angular/router';
 import { LaguageSwitcher } from '../../components/language-switcher/language-switcher';
 import { TuiAvatar } from '@taiga-ui/kit';
-import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDirective, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../services/auth/auth-service';
 import { AppRoute, getRoutePath } from '../../../app.routes';
 import { UserStore } from '../../stores/user-store/user-store';
+import { AppTosterService } from '../../services/app-toster-service';
 
 @Component({
   selector: 'app-header',
@@ -27,6 +28,8 @@ import { UserStore } from '../../stores/user-store/user-store';
 })
 export class Header {
   protected readonly authService = inject(AuthService);
+  protected readonly tosterService = inject(AppTosterService);
+  protected readonly translocoService = inject(TranslocoService);
   private router = inject(Router);
   protected readonly userStore = inject(UserStore);
 
@@ -39,8 +42,9 @@ export class Header {
       next: () => {
         this.router.navigate([getRoutePath(AppRoute.MAIN)]);
       },
-      error: (error) => {
-        console.error(error);
+      error: () => {
+        const message = this.translocoService.translate('serverResponse.statistics.defaultError');
+        this.tosterService.showErrorToster(message);
       },
     });
   }
