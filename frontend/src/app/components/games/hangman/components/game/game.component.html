@@ -17,11 +17,11 @@
     </nav>
     <div class="level">
       <h3>Choose level:</h3>
-      <button size="s" tuiButton type="button">easy</button>
-      <button size="s" tuiButton type="button">medium</button>
-      <button size="s" tuiButton type="button">hard</button>
-      <button size="s" tuiButton type="button">expert</button>
-      <button size="s" tuiButton type="button">god</button>
+      <button size="s" tuiButton type="button" (click)="selectLevel('easy')">easy</button>
+      <button size="s" tuiButton type="button" (click)="selectLevel('medium')">medium</button>
+      <button size="s" tuiButton type="button" (click)="selectLevel('hard')">hard</button>
+      <button size="s" tuiButton type="button" (click)="selectLevel('expert')">expert</button>
+      <button size="s" tuiButton type="button" (click)="selectLevel('god')">god</button>
     </div>
   </div>
   <div class="main-container">
