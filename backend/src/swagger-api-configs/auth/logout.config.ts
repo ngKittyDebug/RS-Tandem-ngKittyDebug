@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common';
 import type { ApiSwaggerConfig } from '../../decorators/swagger.decorator';
 
 export const logoutConfig: ApiSwaggerConfig = {
@@ -13,4 +14,10 @@ export const logoutConfig: ApiSwaggerConfig = {
       },
     },
   },
+  responses: [
+    {
+      status: HttpStatus.BAD_REQUEST,
+      description: 'Ошибка при выходе из системы',
+    },
+  ],
 };

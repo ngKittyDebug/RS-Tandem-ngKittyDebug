@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProfileStats } from './profile-stats';
+import { Settings } from './settings';
 import { TranslocoTestingModule } from '@jsverse/transloco';
 
-describe('ProfileStats', () => {
-  let component: ProfileStats;
-  let fixture: ComponentFixture<ProfileStats>;
+describe('Settings', () => {
+  let component: Settings;
+  let fixture: ComponentFixture<Settings>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        ProfileStats,
+        Settings,
         TranslocoTestingModule.forRoot({
           langs: { en: {}, ru: {} },
           translocoConfig: {
@@ -21,7 +21,7 @@ describe('ProfileStats', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ProfileStats);
+    fixture = TestBed.createComponent(Settings);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

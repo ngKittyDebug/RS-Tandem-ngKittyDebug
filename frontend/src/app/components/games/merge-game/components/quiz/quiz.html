@@ -1,0 +1,64 @@
+<div class="quiz" *transloco="let t">
+  <div class="quiz__header">
+    <div class="quiz__progress">{{ currentIndex() + 1 }} / {{ wordCount() }}</div>
+
+    <p class="quiz__question">
+      {{ currentQuestion()?.question }}
+    </p>
+  </div>
+
+  @if (!showAnswer()) {
+    <textarea
+      class="quiz__input"
+      tuiTextfield
+      [ngModel]="userAnswer()"
+      (ngModelChange)="userAnswer.set($event)"
+      [placeholder]="t('mergeGame.gameQuiz.placeholder')"
+      rows="3"
+    ></textarea>
+
+    <div class="quiz__footer">
+      <app-cat class="quiz__cat"></app-cat>
+      <button
+        tuiButton
+        appearance="gradient"
+        size="m"
+        [disabled]="!userAnswer().trim()"
+        type="submit"
+        (click)="onSubmit()"
+      >
+        {{ t('mergeGame.gameQuiz.check') }}
+      </button>
+    </div>
+  } @else {
+    <div
+      class="quiz__result"
+      [class.quiz__result--correct]="result() === 'correct'"
+      [class.quiz__result--wrong]="result() === 'wrong'"
+    >
+      {{ result() === 'correct' ? t('mergeGame.gameQuiz.right') : t('mergeGame.gameQuiz.wrong') }}
+    </div>
+
+    <div class="quiz__answer">
+      <span class="quiz__answer-label">{{ t('mergeGame.gameQuiz.correctAnswer') }}</span>
+      <p class="quiz__answer-text">
+        @if (gameService.gameMode() === 'withAI') {
+          {{ aiFeedback() }}
+        } @else {
+          {{ currentQuestion()!.answer }}
+        }
+      </p>
+    </div>
+
+    <div class="quiz__footer">
+      <app-cat class="quiz__cat"></app-cat>
+      <button tuiButton appearance="gradient" size="m" (click)="onNext()">
+        {{
+          currentIndex() === wordCount() - 1
+            ? t('mergeGame.gameQuiz.backToBoard')
+            : t('mergeGame.gameQuiz.NextQuestion')
+        }}
+      </button>
+    </div>
+  }
+</div>

@@ -1,0 +1,140 @@
+:host {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.quiz {
+  width: 100%;
+  max-width: 32rem;
+  min-height: 22rem;
+  padding: 1rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 1.25rem;
+
+  background: var(--tui-background-elevation-1);
+  border-radius: 1rem;
+
+  border: 1px solid color-mix(in srgb, var(--accent-3) 10%, transparent);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__progress {
+    font-size: 0.8rem;
+    color: #888;
+  }
+
+  &__question {
+    font-weight: 700;
+
+    padding: 0.7rem 0.9rem;
+    border-radius: 0.7rem;
+
+    border: 1px solid color-mix(in srgb, var(--accent-3) 35%, transparent);
+  }
+
+  &__input {
+    box-sizing: border-box;
+    width: 100%;
+
+    border: 1px solid color-mix(in srgb, var(--accent-3) 35%, transparent);
+    background: transparent;
+
+    padding: 0.65rem 0.75rem;
+    border-radius: 0.75rem;
+
+    font-size: 0.9rem;
+    line-height: 1.4;
+
+    transition:
+      border 0.15s ease,
+      box-shadow 0.15s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--accent-3);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-3) 25%, transparent);
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__result {
+    padding: 0.8rem;
+    border-radius: 0.7rem;
+
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    border: 1px solid;
+
+    &--correct {
+      color: var(--accent-2);
+      border-color: color-mix(in srgb, var(--accent-2) 60%, transparent);
+      background: transparent;
+    }
+
+    &--wrong {
+      color: var(--accent-3);
+      border-color: color-mix(in srgb, var(--accent-3) 60%, transparent);
+      background: transparent;
+    }
+  }
+
+  &__answer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    padding: 0.9rem;
+    border-radius: 0.8rem;
+
+    border: 1px solid color-mix(in srgb, var(--accent-3) 12%, transparent);
+
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--accent-1) 14%, transparent),
+      color-mix(in srgb, var(--accent-3) 14%, transparent)
+    );
+  }
+
+  &__answer-label {
+    font-size: 0.72rem;
+    color: #888;
+  }
+
+  &__answer-text {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+
+  &__footer {
+    position: relative;
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid color-mix(in srgb, var(--accent-3) 35%, transparent);
+  }
+
+  &__cat {
+    position: absolute;
+    top: -49px;
+    left: 15px;
+    z-index: 3;
+  }
+}

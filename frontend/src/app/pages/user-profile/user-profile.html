@@ -1,16 +1,21 @@
-<div class="page page_user-profile" *transloco="let t">
-  <header tuiHeader class="page-header">
-    <h1 tuiTitle class="page-title">{{ t('userProfile.title') }}</h1>
-    <p tuiSubtitle class="page-subtitle">{{ t('userProfile.subtitle') }}</p>
-  </header>
+@if (isStatsLoading()) {
+  <app-loader mode="page"></app-loader>
+} @else {
+  <div class="page page_user-profile" *transloco="let t">
+    <header tuiHeader class="page-header">
+      <h1 tuiTitle class="page-title">{{ t('userProfile.title') }}</h1>
+      <p tuiSubtitle class="page-subtitle">{{ t('userProfile.subtitle') }}</p>
+    </header>
 
-  <div class="user-profile-layout">
-    <app-profile-sidebar></app-profile-sidebar>
+    <div class="user-profile-layout">
+      <app-profile-sidebar [stats]="stats()"></app-profile-sidebar>
 
-    <section class="user-settings">
-      <app-profile-stats></app-profile-stats>
-      <app-profile-settings></app-profile-settings>
-      <app-recent-activity></app-recent-activity>
-    </section>
+      <section class="user-settings">
+        @if (userStore.user()?.provider === 'local' && userStore.user()?.providerId === null) {
+          <app-profile-settings></app-profile-settings>
+        }
+        <app-recent-activity [stats]="stats()"></app-recent-activity>
+      </section>
+    </div>
   </div>
-</div>
+}

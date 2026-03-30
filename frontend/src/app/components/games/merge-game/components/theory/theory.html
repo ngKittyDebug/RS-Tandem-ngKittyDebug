@@ -1,0 +1,33 @@
+<div class="nav">
+  <tui-textfield tuiChevron [tuiTextfieldCleaner]="false">
+    <input
+      tuiSelect
+      [ngModel]="selectedCategory()"
+      (ngModelChange)="selectedCategory.set($event)"
+    />
+    <tui-data-list-wrapper *tuiTextfieldDropdown new [items]="categories()" />
+  </tui-textfield>
+</div>
+<div role="tree" class="tree-container" [tuiTreeController]="false">
+  @for (item of filteredWords(); track item.word) {
+    <tui-tree-item class="word-node">
+      <div class="node-content">
+        <span class="node-text word-title">{{ item.word }}</span>
+      </div>
+
+      @for (q of item.questions; track q.question) {
+        <tui-tree-item class="question-node">
+          <div class="node-content">
+            <span class="node-text">{{ q.question }}</span>
+          </div>
+
+          <tui-tree-item class="answer-node">
+            <div class="answer-card">
+              <p>{{ q.answer }}</p>
+            </div>
+          </tui-tree-item>
+        </tui-tree-item>
+      }
+    </tui-tree-item>
+  }
+</div>
