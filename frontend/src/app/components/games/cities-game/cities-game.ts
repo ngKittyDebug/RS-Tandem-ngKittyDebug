@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   inject,
-  input,
   NgZone,
   OnInit,
   signal,
@@ -11,7 +10,7 @@ import {
   ElementRef,
 } from '@angular/core';
 import { AppRoute, getRoutePath } from '../../../app.routes';
-import { RouterModule, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { TranslocoService, TranslocoModule } from '@jsverse/transloco';
 import { EyeCompassDirective } from '../../../core/directive/eye-compass.directive';
 import {
@@ -61,7 +60,6 @@ export interface CitiesGameVocabularResponse {
   templateUrl: './cities-game.html',
   styleUrls: ['./cities-game.scss'],
   imports: [
-    RouterModule,
     TranslocoModule,
     TuiMessage,
     TuiTextfield,
@@ -91,9 +89,6 @@ export class CitiesGame implements OnInit {
   private zone = inject(NgZone);
   private cdr = inject(ChangeDetectorRef);
   private fb = inject(FormBuilder);
-  public t(key: string): string {
-    return this.translocoService.translate(key);
-  }
   public messages: Message[] = [
     { text: 'citiesGame.messageFromCat1', type: 'incomingSad' },
     { text: 'citiesGame.messageFromCat2', type: 'incomingSad' },
@@ -113,7 +108,6 @@ export class CitiesGame implements OnInit {
   public usedWords: string[] = ['frontend'];
   private timer = viewChild(Timer);
   public timerMode = TIMER_MODE.UP;
-  public autoStart = input<boolean>(true);
   protected readonly isAvatarUpdating = signal(false);
   protected readonly isAvatarImageLoading = signal(false);
   protected userStore = inject(UserStore);
@@ -124,7 +118,6 @@ export class CitiesGame implements OnInit {
   private scrollToBottom(): void {
     this.bottom()?.nativeElement?.scrollIntoView?.({ behavior: 'smooth' });
   }
-
   public runMessages(): void {
     this.timer()?.start();
     if (this.index >= this.messages.length) {
