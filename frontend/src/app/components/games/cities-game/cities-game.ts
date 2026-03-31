@@ -31,6 +31,7 @@ import { TIMER_MODE } from '../../timer/models/timer-mode.enum';
 import { UserStore } from '../../../core/stores/user-store/user-store';
 import { UserService } from '../../../core/services/user/user-service';
 import { GameLabels } from '../../../shared/enums/game-labels.enum';
+import { forkJoin } from 'rxjs';
 
 interface Message {
   text: string;
@@ -82,7 +83,7 @@ export class CitiesGame implements OnInit {
     map((i) => Boolean(i % 2)),
     startWith(true),
   );
-  protected readonly loadDataServise = inject(KeyStorageService<CitiesGameStorage>);
+  protected readonly loadDataServise = inject(KeyStorageService<CitiesGameVocabularResponse>);
   private readonly userService = inject(UserService);
   protected citiesRouterPath = getRoutePath(GameRoute.CITIES_GAME);
   private translocoService = inject(TranslocoService);
@@ -140,14 +141,18 @@ export class CitiesGame implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.loadDataServise
-      .getData({
-        key: 'citiesGameVocabular',
-      })
-      .subscribe((response) => {
-        this.words = response.storage.words;
-        this.cdr.markForCheck();
+    const response_one = this.loadDataServise.getData({ key: 'citiesGameVocabular_one' });
+    const response_two = this.loadDataServise.getData({ key: 'citiesGameVocabular_two' });
+    forkJoin([response_one, response_two])
+      .pipe(
+        map(([result1, result2]) => {
+          return [...result1.storage.words, ...result2.storage.words];
+        }),
+      )
+      .subscribe((merged) => {
+        this.words = merged;
       });
+
     this.userService.getUser().subscribe((user) => {
       this.userName = user.username;
     });
@@ -165,15 +170,17 @@ export class CitiesGame implements OnInit {
     const index = this.words.findIndex(
       (word) => word.word.toLowerCase().trim() === message.toLowerCase().trim(),
     );
-    const used = this.usedWords.indexOf(message.toLowerCase().trim());
+    const used = this.usedWords.find((msg) => {
+      return msg === message;
+    });
     const isFound = index !== -1;
-    const isUsed = used !== -1;
+    const isUsed = used !== undefined;
 
     const lastLetterMessage = message[message.length - 1];
     const nextWordFromCat: number = this.words.findIndex((word) => {
       return (
         word.word.toLowerCase()[0] === lastLetterMessage.toLowerCase() &&
-        !this.usedWords.includes(word.word.toLowerCase())
+        !this.usedWords.includes(word.word.toLowerCase().trim())
       );
     });
     let state: 'win' | 'not_found' | 'used' | 'wrong_letter' | 'ok' | 'out';
@@ -237,6 +244,7 @@ export class CitiesGame implements OnInit {
         break;
 
       case 'ok': {
+        this.usedWords.push(message.toLowerCase());
         const word = this.words[nextWordFromCat];
         const nextMessageFromCat: Message = {
           text: this.words[nextWordFromCat].word,
@@ -252,7 +260,6 @@ export class CitiesGame implements OnInit {
             });
           });
         }, 1000);
-        this.usedWords.push(message.toLowerCase());
         this.usedWords.push(nextMessageFromCat.text.toLowerCase());
         this.lastLatterFromCat = nextMessageFromCat.text[nextMessageFromCat.text.length - 1];
         break;
