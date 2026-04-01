@@ -17,11 +17,51 @@
     </nav>
     <div class="level">
       <h3>Choose level:</h3>
-      <button size="s" tuiButton type="button" (click)="selectLevel('easy')">easy</button>
-      <button size="s" tuiButton type="button" (click)="selectLevel('medium')">medium</button>
-      <button size="s" tuiButton type="button" (click)="selectLevel('hard')">hard</button>
-      <button size="s" tuiButton type="button" (click)="selectLevel('expert')">expert</button>
-      <button size="s" tuiButton type="button" (click)="selectLevel('god')">god</button>
+      <button
+        size="s"
+        tuiButton
+        type="button"
+        (click)="selectLevel('easy')"
+        [appearance]="isActiveLevel('easy') ? 'accent' : 'secondary'"
+      >
+        easy
+      </button>
+      <button
+        size="s"
+        tuiButton
+        type="button"
+        (click)="selectLevel('medium')"
+        [appearance]="isActiveLevel('medium') ? 'accent' : 'secondary'"
+      >
+        medium
+      </button>
+      <button
+        size="s"
+        tuiButton
+        type="button"
+        (click)="selectLevel('hard')"
+        [appearance]="isActiveLevel('hard') ? 'accent' : 'secondary'"
+      >
+        hard
+      </button>
+      <button
+        size="s"
+        tuiButton
+        type="button"
+        (click)="selectLevel('expert')"
+        [appearance]="isActiveLevel('expert') ? 'accent' : 'secondary'"
+      >
+        expert
+      </button>
+      <button
+        size="s"
+        tuiButton
+        type="button"
+        (click)="selectLevel('god')"
+        [appearance]="isActiveLevel('god') ? 'accent' : 'secondary'"
+      >
+        god
+      </button>
     </div>
   </div>
   <div class="main-container">
@@ -31,7 +71,7 @@
         Guess the word and write them in the field down! Every answer is a single word. Be careful:
         if you make 5 mistakes, the game will be over! Good luck and have fun!
       </p>
-      <p>
+      <p class="question-container">
         <span class="question">A QUESTION: </span
         ><span class="question-text">{{ currentQuestion }}</span>
       </p>

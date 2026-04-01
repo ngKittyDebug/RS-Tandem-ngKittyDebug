@@ -15,6 +15,7 @@ p {
   align-items: flex-start;
   border: 3px solid rgba(236, 72, 153, 0.1);
   border-radius: 2rem;
+  max-height: fit-content;
 }
 .main-container img {
   border-radius: 2em;
@@ -24,8 +25,9 @@ p {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem;
+  gap: 0.5rem;
+  padding: 0 0.5rem;
+  width: 100%;
 }
 .game-instruction {
   width: 60ch;
@@ -37,16 +39,24 @@ p {
     rgba(236, 72, 153, 0.1)
   );
   box-shadow: var(--tui-shadow-small);
-  padding: 1rem;
+  padding: 0.5rem 0.5rem;
   border: 1px solid #e2e8f0;
   border-radius: 1rem;
+}
+.question-container {
+  text-align: left;
+  width: 60ch;
+  height: 15vh;
+  border: 2px solid rgba(236, 72, 153, 0.1);
+  border-radius: 1rem;
+  padding: 1rem;
 }
 .navigation {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  gap: 1rem;
-  padding: 0.5rem 1rem;
+  gap: 0.5rem;
+  padding: 0.5rem;
 }
 .container {
   border: 2px solid var(--tui-text-tertiary);
@@ -76,21 +86,21 @@ p {
 .user-field {
   display: flex;
   flex-direction: row;
-  gap: 2rem;
+  gap: 1rem;
   align-items: flex-start;
 }
 .user-form {
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 0 0.5rem;
   gap: 1rem;
 }
 .navigation {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  gap: 1rem;
-  padding: 0.5rem 1rem;
+  gap: 0.5rem;
+  padding: 0.5rem;
   width: 50ch;
 }
 .correct-key {
@@ -158,4 +168,9 @@ button[disabled] {
   align-items: center;
   gap: 1rem;
   padding: 0.5rem;
+}
+.active-level {
+  background-color: #ff8a00 !important;
+  color: white !important;
+  border-color: #ff8a00 !important;
 }
