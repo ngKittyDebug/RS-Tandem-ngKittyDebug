@@ -12,7 +12,7 @@ export class UpdateUserPassword {
   @Matches(PASSWORD_PATTERN, {
     message: 'Некорректный пароль',
   })
-  oldPassword: string;
+  oldPassword!: string;
 
   @ApiProperty({
     description:
@@ -25,5 +25,5 @@ export class UpdateUserPassword {
   @Matches(PASSWORD_PATTERN, {
     message: 'Некорректный пароль',
   })
-  newPassword: string;
+  newPassword!: string;
 }

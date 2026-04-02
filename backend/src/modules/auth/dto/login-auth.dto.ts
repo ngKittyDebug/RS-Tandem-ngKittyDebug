@@ -18,7 +18,7 @@ export class LoginAuthDto {
   @Matches(EMAIL_PATTERN, {
     message: 'Некорректный формат email',
   })
-  email: string;
+  email?: string;
 
   @ApiProperty({
     description: 'Username (требуется, если не указан email)',
@@ -32,7 +32,7 @@ export class LoginAuthDto {
   @Matches(USER_PATTERN, {
     message: 'Имя должно быть от 3 до 20 символов без пробелов',
   })
-  username: string;
+  username?: string;
 
   @ApiProperty({
     description: 'Пароль',
@@ -44,5 +44,5 @@ export class LoginAuthDto {
     message: 'Некорректный пароль',
   })
   @IsNotEmpty()
-  password: string;
+  password!: string;
 }

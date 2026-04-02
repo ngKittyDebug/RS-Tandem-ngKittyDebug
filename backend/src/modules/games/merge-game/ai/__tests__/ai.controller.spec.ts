@@ -4,6 +4,7 @@ import { AiService } from '../ai.service';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
 import { CheckAnswerDto } from '../dto/check-answer.dto';
 import { Message } from '../models/response-ai.interface';
+import { PersonalityType } from '../models/personality.enum';
 
 describe('AiController', () => {
   let controller: AiController;
@@ -15,7 +16,7 @@ describe('AiController', () => {
     question: 'Что делает метод map с массивом?',
     answer:
       'Метод map проходит по каждому элементу массива, применяет callback-функцию и возвращает новый массив той же длины с преобразованными элементами.',
-    personality: 'kind',
+    personality: PersonalityType.KIND,
   };
 
   const mockMessage: Message = {

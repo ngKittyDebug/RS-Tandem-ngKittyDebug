@@ -10,7 +10,7 @@ export class CheckAnswerDto {
   })
   @IsString()
   @IsNotEmpty()
-  userAnswer: string;
+  userAnswer!: string;
 
   @ApiProperty({
     description: 'Вопрос от игры',
@@ -18,7 +18,7 @@ export class CheckAnswerDto {
   })
   @IsString()
   @IsNotEmpty()
-  question: string;
+  question!: string;
 
   @ApiProperty({
     description: 'Эталонный ответ',
@@ -27,14 +27,14 @@ export class CheckAnswerDto {
   })
   @IsString()
   @IsNotEmpty()
-  answer: string;
+  answer!: string;
 
   @ApiProperty({
     description: 'Стиль ответа ИИ',
     example: 'kind',
+    enum: PersonalityType,
   })
-  @IsString()
-  @IsNotEmpty()
   @IsEnum(PersonalityType)
-  personality: string;
+  @IsNotEmpty()
+  personality!: PersonalityType;
 }

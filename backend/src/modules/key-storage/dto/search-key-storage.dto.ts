@@ -8,5 +8,5 @@ export class SearchKeyStorageDto {
   })
   @IsString()
   @IsNotEmpty()
-  key: string;
+  key!: string;
 }

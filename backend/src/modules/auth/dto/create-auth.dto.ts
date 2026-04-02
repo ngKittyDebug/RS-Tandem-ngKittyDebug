@@ -17,7 +17,7 @@ export class CreateAuthDto {
   @Matches(EMAIL_PATTERN, {
     message: 'Некорректный формат email',
   })
-  email: string;
+  email!: string;
 
   @ApiProperty({
     description: 'Имя пользователя (от 3 до 20 символов, без пробелов)',
@@ -30,7 +30,7 @@ export class CreateAuthDto {
   @Matches(USER_PATTERN, {
     message: 'Имя должно быть от 3 до 20 символов без пробелов',
   })
-  username: string;
+  username!: string;
 
   @ApiProperty({
     description:
@@ -44,5 +44,5 @@ export class CreateAuthDto {
     message:
       'Пароль должен содержать минимум 8 символов, включая заглавные, строчные буквы и цифры',
   })
-  password: string;
+  password!: string;
 }
