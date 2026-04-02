@@ -14,7 +14,7 @@ interface HangmanWord {
   description: string;
   word: string;
 }
-type Level = 'easy' | 'medium' | 'hard' | 'expert' | 'god';
+export type Level = 'easy' | 'medium' | 'hard' | 'expert' | 'god';
 
 interface HangmanWordsByLevel {
   easy: HangmanWord[];

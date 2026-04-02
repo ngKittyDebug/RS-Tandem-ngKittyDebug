@@ -15,7 +15,7 @@ p {
   align-items: flex-start;
   border: 3px solid rgba(236, 72, 153, 0.1);
   border-radius: 2rem;
-  max-height: fit-content;
+  max-height: 90vh;
 }
 .main-container img {
   border-radius: 2em;
@@ -26,8 +26,9 @@ p {
   justify-content: flex-start;
   align-items: center;
   gap: 0.5rem;
-  padding: 0 0.5rem;
+  padding: 0.5rem;
   width: 100%;
+  max-height: 80vh;
 }
 .game-instruction {
   width: 60ch;
@@ -49,7 +50,7 @@ p {
   height: 15vh;
   border: 2px solid rgba(236, 72, 153, 0.1);
   border-radius: 1rem;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 .navigation {
   display: flex;
@@ -87,7 +88,7 @@ p {
   display: flex;
   flex-direction: row;
   gap: 1rem;
-  align-items: flex-start;
+  align-items: center;
 }
 .user-form {
   display: flex;
@@ -123,7 +124,6 @@ button[disabled] {
 .mistakes-counter {
   font-size: 20px;
   font-weight: 700;
-  margin: 12px 0;
 }
 .modal-backdrop {
   position: fixed;
