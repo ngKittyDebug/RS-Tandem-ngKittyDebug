@@ -9,6 +9,7 @@ import { CreateAuthDto } from '../dto/create-auth.dto';
 import { LoginAuthDto } from '../dto/login-auth.dto';
 import { Response, Request } from 'express';
 import * as bcrypt from 'bcrypt-ts';
+import { Prisma } from 'src/generated/prisma/client';
 
 jest.mock('bcrypt-ts', () => ({
   genSalt: jest.fn(),
@@ -121,13 +122,16 @@ describe('AuthService', () => {
 
   describe('signIn', () => {
     it('should throw ConflictException if user already exists', async () => {
-      prismaMock.user.findFirst.mockResolvedValue(mockUser as never);
+      prismaMock.user.create.mockRejectedValue(
+        new Prisma.PrismaClientKnownRequestError('', {
+          code: 'P2002',
+          clientVersion: '5.0.0',
+        }),
+      );
 
       await expect(
         service.registration(responseMock, mockCreateAuthDto),
       ).rejects.toThrow(ConflictException);
-
-      expect(prismaMock.user.create).not.toHaveBeenCalled();
     });
 
     it('should create a new user and return accessToken', async () => {
