@@ -69,7 +69,6 @@ export class DecryptoGameService {
 
   public generateGameHints(): void {
     const hintsArr: string[][] = [];
-    console.log(this.gameWrightCode);
     this.gameWrightCode.forEach((item) => {
       const hints: string[] = this.gameCards[item - 1].cardHints;
       hintsArr.push(hints);
