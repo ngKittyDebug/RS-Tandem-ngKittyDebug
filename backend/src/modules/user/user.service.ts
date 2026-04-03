@@ -59,7 +59,7 @@ export class UserService {
 
     if (user.provider === Provider.Github) {
       throw new ForbiddenException(
-        `Функционал пока не доступен, звоните позже`,
+        'Удаление аккаунта для OAuth-пользователей временно недоступно',
       );
     }
 
@@ -88,6 +88,12 @@ export class UserService {
 
     if (!user) {
       throw new NotFoundException('Пользователь не найден');
+    }
+
+    if (user.provider !== Provider.local) {
+      throw new ForbiddenException(
+        `Пользователь через OAuth не может обновить данные`,
+      );
     }
 
     const validPass = await compare(dto.password, user.password);
@@ -127,11 +133,18 @@ export class UserService {
       select: {
         password: true,
         id: true,
+        provider: true,
       },
     });
 
     if (!user) {
       throw new NotFoundException('Пользователь не найден');
+    }
+
+    if (user.provider !== Provider.local) {
+      throw new ForbiddenException(
+        `Пользователь через OAuth не может обновить данные`,
+      );
     }
 
     const validPass = await compare(dto.oldPassword, user.password);
