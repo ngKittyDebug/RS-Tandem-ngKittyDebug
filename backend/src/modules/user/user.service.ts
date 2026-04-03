@@ -27,7 +27,7 @@ export class UserService {
 
   private readonly logger = new Logger(UserService.name);
 
-  public async gtUserProfile(id: string) {
+  public async getUserProfile(id: string) {
     return await this.prisma.user.findUnique({
       where: {
         id: id,

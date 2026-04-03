@@ -72,11 +72,11 @@ describe('UserService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('gtUserProfile', () => {
+  describe('getUserProfile', () => {
     it('should return user profile without sensitive data', async () => {
       prismaMock.user.findUnique.mockResolvedValue(mockUserProfile as never);
 
-      const result = await service.gtUserProfile(mockUserId);
+      const result = await service.getUserProfile(mockUserId);
 
       expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
         where: { id: mockUserId },

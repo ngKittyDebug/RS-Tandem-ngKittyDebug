@@ -5,10 +5,7 @@ import { CreateAuthDto } from '../dto/create-auth.dto';
 import { LoginAuthDto } from '../dto/login-auth.dto';
 import { Response, Request } from 'express';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
-
-interface AuthResponse {
-  accessToken: string;
-}
+import { AuthResponse } from '../../interface/auth-module-types';
 
 const createResponseMock = (): Response =>
   ({
