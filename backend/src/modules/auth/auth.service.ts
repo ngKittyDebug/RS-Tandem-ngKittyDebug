@@ -24,6 +24,7 @@ import {
 } from '../interface/auth-module-types';
 import { Profile } from 'passport';
 import { createHash } from 'crypto';
+import { Prisma } from 'src/generated/prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -52,37 +53,39 @@ export class AuthService {
   private readonly logger = new Logger(AuthService.name);
 
   async registration(res: Response, dto: CreateAuthDto): Promise<AuthResponse> {
-    const existingUser = await this.findOne(dto);
-
-    if (existingUser) {
-      this.logger.error('Пользователь уже существует');
-      throw new ConflictException(`Пользователь уже существует`);
-    }
-
     const salts = await genSalt(+this.SALT);
 
-    const user = await this.prisma.user.create({
-      data: {
-        email: dto.email,
-        password: await hash(dto.password, salts),
-        username: dto.username,
-      },
-      omit: {
-        password: true,
-      },
-    });
+    try {
+      const user = await this.prisma.user.create({
+        data: {
+          email: dto.email,
+          password: await hash(dto.password, salts),
+          username: dto.username,
+        },
+        omit: {
+          password: true,
+        },
+      });
+      const payload: JwtPayload = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        provider: Provider.local,
+        role: user.role,
+      };
 
-    const payload: JwtPayload = {
-      id: user.id,
-      username: user.username,
-      email: user.email,
-      provider: Provider.local,
-      role: user.role,
-    };
+      this.logger.log(`Пользователь с ${user.id} создан`);
 
-    this.logger.log(`Пользователь с ${user.id} создан`);
-
-    return this.auth(res, payload);
+      return this.auth(res, payload);
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException('Пользователь уже существует');
+      }
+      throw error;
+    }
   }
 
   async githubOauth(res: Response, profile: Profile): Promise<AuthResponse> {
@@ -227,45 +230,41 @@ export class AuthService {
       throw new UnauthorizedException('Токен больше не действителен');
     }
 
-    if (validateCookiesRefresh) {
-      const user = await this.prisma.user.findUnique({
-        where: {
-          id: validateCookiesRefresh.id,
-        },
-        select: {
-          id: true,
-          email: true,
-          username: true,
-          role: true,
-          provider: true,
-          refreshToken: true,
-        },
-      });
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: validateCookiesRefresh.id,
+      },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        role: true,
+        provider: true,
+        refreshToken: true,
+      },
+    });
 
-      if (!user) {
-        throw new NotFoundException('Пользователь не найден');
-      }
-      if (!user.refreshToken) {
-        throw new NotFoundException('Токен не найден');
-      }
-
-      if (this.getHash(refresh) !== user.refreshToken) {
-        this.logout(res);
-        throw new UnauthorizedException(`Токен не валиден`);
-      }
-
-      const payload: JwtPayload = {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        provider: user.provider,
-        role: user.role,
-      };
-
-      return this.auth(res, payload);
+    if (!user) {
+      throw new NotFoundException('Пользователь не найден');
+    }
+    if (!user.refreshToken) {
+      throw new NotFoundException('Токен не найден');
     }
 
-    throw new UnauthorizedException('Токен больше не действителен');
+    if (this.getHash(refresh) !== user.refreshToken) {
+      this.logout(res);
+      throw new UnauthorizedException(`Токен не валиден`);
+    }
+
+    const payload: JwtPayload = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      provider: user.provider,
+      role: user.role,
+    };
+
+    return this.auth(res, payload);
   }
 
   private sendCookie(res: Response, token: string, expires: Date): void {

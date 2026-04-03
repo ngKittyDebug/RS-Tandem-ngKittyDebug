@@ -5,7 +5,6 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { PrismaService } from 'prisma/prisma.service';
 import { UserDto } from './dto/update-user.dto';
 import { compare, genSalt, hash } from 'bcrypt-ts';

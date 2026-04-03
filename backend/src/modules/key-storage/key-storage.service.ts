@@ -1,16 +1,12 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateKeyStorageDto } from './dto/create-key-storage.dto';
-import { ConfigService } from '@nestjs/config';
 import { PrismaService } from 'prisma/prisma.service';
 import { SearchKeyStorageDto } from './dto/search-key-storage.dto';
 import { Prisma } from 'src/generated/prisma/client';
 
 @Injectable()
 export class KeyStorageService {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   private readonly logger = new Logger(KeyStorageService.name);
 
@@ -41,6 +37,10 @@ export class KeyStorageService {
         key,
       },
     });
+
+    if (!storage)
+      throw new NotFoundException(`Запись с ключом '${key}' не найдена`);
+
     return storage;
   }
 

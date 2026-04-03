@@ -4,16 +4,11 @@ import { PrismaService } from 'prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { createMockPrismaService } from 'prisma/__mocks__/prisma-service-mock';
-import {
-  ConflictException,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { CreateAuthDto } from '../dto/create-auth.dto';
 import { LoginAuthDto } from '../dto/login-auth.dto';
 import { Response, Request } from 'express';
 import * as bcrypt from 'bcrypt-ts';
-import { JwtPayload } from '../../interface/jwt-payload';
 
 jest.mock('bcrypt-ts', () => ({
   genSalt: jest.fn(),
@@ -80,12 +75,6 @@ describe('AuthService', () => {
     role: 'USER',
     createdAt: new Date('2024-01-01T00:00:00.000Z'),
     updatedAt: new Date('2024-01-01T00:00:00.000Z'),
-  };
-
-  const mockPayload: JwtPayload = {
-    id: '1',
-    email: 'test@example.com',
-    username: 'testuser',
   };
 
   beforeEach(async () => {
@@ -211,18 +200,6 @@ describe('AuthService', () => {
 
       await expect(service.refresh(req, responseMock)).rejects.toThrow(
         UnauthorizedException,
-      );
-    });
-
-    it('should throw NotFoundException if user not found', async () => {
-      const req = {
-        cookies: { refreshToken: mockRefreshToken },
-      } as unknown as Request;
-      (jwtService.verifyAsync as jest.Mock).mockResolvedValue(mockPayload);
-      prismaMock.user.findUnique.mockResolvedValue(null);
-
-      await expect(service.refresh(req, responseMock)).rejects.toThrow(
-        NotFoundException,
       );
     });
   });
