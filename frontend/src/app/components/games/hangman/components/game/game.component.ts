@@ -169,8 +169,11 @@ export class GameComponent implements OnInit {
     this.isWin = false;
     this.isGameOver = false;
     this.loadRandomWordForLevel();
+    this.cdr.detectChanges();
   }
-
+  protected isActiveLevel(level: Level): boolean {
+    return this.currentLevel === level;
+  }
   protected nextWord(): void {
     this.isWin = false;
     this.isGameOver = false;
@@ -192,6 +195,7 @@ export class GameComponent implements OnInit {
       this.loadRandomWordForLevel();
     } else {
       this.isLevelCompleted = false;
+      this.currentLevel = 'easy';
       this.cdr.detectChanges();
     }
   }
