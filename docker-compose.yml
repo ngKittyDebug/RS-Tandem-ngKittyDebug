@@ -1,0 +1,75 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    container_name: meowvault-postgres
+    image: postgres:17.5-alpine3.22
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - meowvault-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Backend (NestJS API)
+  backend:
+    container_name: meowvault-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - "4000:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - meowvault-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:4000/docs"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    command: npm run migration && node dist/src/main
+
+  # Frontend (Angular SPA)
+  frontend:
+    container_name: meowvault-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NG_APP_API_URL: ${NG_APP_API_URL:-http://localhost:4000}
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - meowvault-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+
+volumes:
+  postgres-data:
+
+networks:
+  meowvault-network:
+    driver: bridge
