@@ -57,9 +57,12 @@ export class AuthService {
         withCredentials: true,
       })
       .pipe(
-        tap((res) => this.accessToken.set(res.accessToken)),
+        tap((res) => {
+          this.accessToken.set(res.accessToken);
+        }),
         map(() => void 0),
         catchError((err) => {
+          console.warn('[OAuth-Debug] refresh() failed:', err.status, err.message);
           this.accessToken.set(null);
           return throwError(() => err);
         }),
@@ -78,7 +81,7 @@ export class AuthService {
   }
 
   public loginWithGitHub(): void {
-    this.document.defaultView!.location.href = this.getUrl(AUTH_PATHS.GITHUB);
+    this.document.defaultView!.location.replace(this.getUrl(AUTH_PATHS.GITHUB));
   }
 
   public getAccessToken(): string | null {

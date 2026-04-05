@@ -64,13 +64,18 @@ export const appConfig: ApplicationConfig = {
       const userStore = inject(UserStore);
       return authService.refresh().pipe(
         switchMap(() => {
-          if (!authService.isLoggedIn()) {
+          const loggedIn = authService.isLoggedIn();
+
+          if (!loggedIn) {
             return of(void 0);
           }
 
           return userStore.loadUser();
         }),
-        catchError(() => of(void 0)),
+        catchError((err) => {
+          console.warn('[OAuth-Debug] APP_INITIALIZER: refresh failed:', err.status ?? err.message);
+          return of(void 0);
+        }),
       );
     }),
   ],
