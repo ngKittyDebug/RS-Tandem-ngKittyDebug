@@ -1,0 +1,53 @@
+{
+  "name": "electron-app",
+  "version": "1.0.0",
+  "description": "Electron app with Angular frontend",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "set ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true&& set WIN_CSC_LINK=&& set WIN_CSC_KEY_PASSWORD=&& electron-builder --win --dir",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "keywords": [
+    "electron",
+    "angular"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^34.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.electron.app",
+    "productName": "ElectronApp",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js"
+    ],
+    "extraResources": [
+      {
+        "from": "../frontend/dist/frontend/browser",
+        "to": "app/frontend/dist/frontend/browser",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "target": "portable",
+      "sign": false,
+      "verifyUpdateCodeSignature": false
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "build/icon.png"
+    }
+  }
+}
