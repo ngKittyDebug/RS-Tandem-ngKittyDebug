@@ -1,4 +1,4 @@
-# Self-Assessment
+# Self-Assessment - Alena Alekseeva (Alena1409)
 
 PR with questions from peers and mentor: [link](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/pull/224)
 
