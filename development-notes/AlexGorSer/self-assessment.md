@@ -1,5 +1,8 @@
 # Self-Assessment — Aleksei Gromov (AlexGorSer)
 
+
+Линка на [PR](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/pull/234)
+
 > **Проект:** MeowVault — каталог мини-игр
 > **Роль:** Бэкенд-разработчик (NestJS + Prisma + Supabase PostgreSQL)
 > **Дата:** 2026-04-05
