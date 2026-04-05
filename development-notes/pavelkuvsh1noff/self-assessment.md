@@ -1,6 +1,6 @@
 # Self-Assessment
 
-PR with questions from peers and mentor: [link](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/pull/224)
+PR with questions from peers and mentor: [link](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/pull/237)
 
 ## Feature Score Table
 
