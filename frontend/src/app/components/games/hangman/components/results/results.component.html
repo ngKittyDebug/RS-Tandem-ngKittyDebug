@@ -1,34 +1,44 @@
 <div class="results">
-  <h2>Results</h2>
+  <h2 class="title">Results</h2>
 
   <p class="score">Your score: {{ stats.total }}</p>
 
-  <button iconStart="@tui.home" size="m" tuiButton type="button" (click)="menu.emit()">Back</button>
+  <div class="overall-card">
+    <div class="progress-header">
+      <span class="level-name">Overall Progress</span>
+      <span class="level-score">{{ overallPercent }}%</span>
+    </div>
 
-  <table class="table">
-    <tr>
-      <th>Level</th>
-      <th>Completed</th>
-    </tr>
-    <tr>
-      <td>Easy</td>
-      <td>{{ stats.easy }}/{{ totalWords.easy }}</td>
-    </tr>
-    <tr>
-      <td>Medium</td>
-      <td>{{ stats.medium }}/{{ totalWords.medium }}</td>
-    </tr>
-    <tr>
-      <td>Hard</td>
-      <td>{{ stats.hard }}/{{ totalWords.hard }}</td>
-    </tr>
-    <tr>
-      <td>Expert</td>
-      <td>{{ stats.expert }}/{{ totalWords.expert }}</td>
-    </tr>
-    <tr>
-      <td>God</td>
-      <td>{{ stats.god }}/{{ totalWords.god }}</td>
-    </tr>
-  </table>
+    <div class="progress-bar overall-bar">
+      <div class="progress-fill god" [style.width.%]="overallPercent"></div>
+    </div>
+  </div>
+
+  <div class="progress-list">
+    @for (level of levels; track level.key) {
+      <div class="progress-card" [class]="level.color">
+        <div class="progress-header">
+          <span class="level-name">{{ level.label }}</span>
+          <span class="level-score">
+            {{ getLevelStat(level.key) }}/{{ totalWords[level.key] }} ({{ getPercent(level.key) }}%)
+          </span>
+        </div>
+
+        <div class="progress-bar">
+          <div
+            class="progress-fill"
+            [class.easy]="level.color === 'easy'"
+            [class.medium]="level.color === 'medium'"
+            [class.hard]="level.color === 'hard'"
+            [class.expert]="level.color === 'expert'"
+            [class.god]="level.color === 'god'"
+            [style.width.%]="getPercent(level.key)"
+          ></div>
+        </div>
+      </div>
+    }
+    <button iconStart="@tui.home" size="m" tuiButton type="button" (click)="menu.emit()">
+      Back
+    </button>
+  </div>
 </div>
