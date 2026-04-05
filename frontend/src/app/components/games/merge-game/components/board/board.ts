@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject } from '@angular/core';
 import { WordCard } from '../../models/data.interface';
 import { BoardService } from '../../services/board-service';
 import { GameService } from '../../services/game-service';
@@ -7,6 +7,9 @@ import { Router } from '@angular/router';
 import { QuizService } from '../../services/quiz-service';
 import { AppTosterService } from '../../../../../core/services/app-toster-service';
 import { TranslocoService } from '@jsverse/transloco';
+import { UserService } from '../../../../../core/services/user/user-service';
+import { GameLabels } from '../../../../../shared/enums/game-labels.enum';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-board',
@@ -20,8 +23,10 @@ export class Board {
   private readonly tosterService = inject(AppTosterService);
   protected gameService = inject(GameService);
   protected quizService = inject(QuizService);
+  private userService = inject(UserService);
   protected readonly rows = this.boardService.rows;
   private translocoService = inject(TranslocoService);
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor() {
     effect(() => {
@@ -39,6 +44,12 @@ export class Board {
           message,
           this.translocoService.translate('mergeGame.gameResult.title'),
         );
+        this.userService
+          .statsUpdate(GameLabels.MergeGame)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            error: (err) => console.error('Failed to update stats', err),
+          });
       }
     });
   }
