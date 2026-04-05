@@ -8,6 +8,7 @@ import {
   viewChild,
   ElementRef,
   OnDestroy,
+  DestroyRef,
 } from '@angular/core';
 import { AppRoute, getRoutePath, GameRoute } from '../../../app.routes';
 import { Router } from '@angular/router';
@@ -32,6 +33,7 @@ import { UserStore } from '../../../core/stores/user-store/user-store';
 import { UserService } from '../../../core/services/user/user-service';
 import { GameLabels } from '../../../shared/enums/game-labels.enum';
 import { forkJoin } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 interface Message {
   text: string;
@@ -79,7 +81,7 @@ export interface CitiesGameVocabularResponse {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CitiesGame implements OnInit, OnDestroy {
-  protected readonly loadDataServise = inject(KeyStorageService<CitiesGameVocabularResponse>);
+  protected readonly loadDataService = inject(KeyStorageService<CitiesGameVocabularResponse>);
   private readonly userService = inject(UserService);
   protected citiesRouterPath = getRoutePath(GameRoute.CITIES_GAME);
   private translocoService = inject(TranslocoService);
@@ -103,7 +105,7 @@ export class CitiesGame implements OnInit, OnDestroy {
   private static readonly INITIAL_WORD = 'frontend';
   public words: Word[] = [];
   public usedWords: string[] = [CitiesGame.INITIAL_WORD];
-  public lastLatterFromCat = CitiesGame.INITIAL_WORD[CitiesGame.INITIAL_WORD.length - 1];
+  public lastLetterFromCat = CitiesGame.INITIAL_WORD[CitiesGame.INITIAL_WORD.length - 1];
   private timer = viewChild(Timer);
   public timerMode = TIMER_MODE.UP;
   protected readonly isAvatarUpdating = signal(false);
@@ -113,6 +115,20 @@ export class CitiesGame implements OnInit, OnDestroy {
   private bottom = viewChild<ElementRef>('bottom');
   private readonly router = inject(Router);
   public timeoutIds: ReturnType<typeof setTimeout>[] = [];
+  private helperMessage(message: Message, delay = 1000): void {
+    const id = setTimeout(() => {
+      this.zone.run(() => {
+        this.visibleMessages.update((msgs) => [...msgs, message]);
+
+        setTimeout(() => {
+          this.scrollToBottom();
+        });
+      });
+    }, delay);
+
+    this.timeoutIds.push(id);
+  }
+  private destroyRef = inject(DestroyRef);
 
   private scrollToBottom(): void {
     this.bottom()?.nativeElement?.scrollIntoView?.({ behavior: 'smooth' });
@@ -134,7 +150,6 @@ export class CitiesGame implements OnInit, OnDestroy {
             this.scrollToBottom();
           });
           this.index++;
-          // this.cdr.markForCheck();
           this.runMessages();
         });
       }, 1000),
@@ -142,8 +157,8 @@ export class CitiesGame implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    const response_one = this.loadDataServise.getData({ key: 'citiesGameVocabular_one' });
-    const response_two = this.loadDataServise.getData({ key: 'citiesGameVocabular_two' });
+    const response_one = this.loadDataService.getData({ key: 'citiesGameVocabular_one' });
+    const response_two = this.loadDataService.getData({ key: 'citiesGameVocabular_two' });
     forkJoin([response_one, response_two])
       .pipe(
         map(([result1, result2]) => {
@@ -165,7 +180,7 @@ export class CitiesGame implements OnInit, OnDestroy {
   });
 
   public sasarikScript(message: string): void {
-    const isFirstLetterOk = message.toLowerCase().trim()[0] === this.lastLatterFromCat;
+    const isFirstLetterOk = message.toLowerCase().trim()[0] === this.lastLetterFromCat;
     const index = this.words.findIndex(
       (word) => word.word.toLowerCase().trim() === message.toLowerCase().trim(),
     );
@@ -199,65 +214,24 @@ export class CitiesGame implements OnInit, OnDestroy {
 
     switch (state) {
       case 'win':
-        this.timeoutIds.push(
-          setTimeout(() => {
-            this.zone.run(() => {
-              this.visibleMessages.update((msgs) => {
-                return [
-                  ...msgs,
-                  {
-                    text: 'citiesGame.sasarikSadWin',
-                    type: 'incomingSad',
-                  },
-                ];
-              });
-              setTimeout(() => {
-                this.scrollToBottom();
-              });
-            });
-          }, 1000),
-        );
+        this.helperMessage({
+          text: 'citiesGame.sasarikSadWin',
+          type: 'incomingSad',
+        });
         break;
+
       case 'used':
-        this.timeoutIds.push(
-          setTimeout(() => {
-            this.zone.run(() => {
-              this.visibleMessages.update((msgs) => {
-                return [
-                  ...msgs,
-                  {
-                    text: 'citiesGame.sasarikSadUsed',
-                    type: 'incomingSad',
-                  },
-                ];
-              });
-              setTimeout(() => {
-                this.scrollToBottom();
-              });
-            });
-          }, 1000),
-        );
+        this.helperMessage({
+          text: 'citiesGame.sasarikSadUsed',
+          type: 'incomingSad',
+        });
         break;
 
       case 'wrong_letter':
-        this.timeoutIds.push(
-          setTimeout(() => {
-            this.zone.run(() => {
-              this.visibleMessages.update((msgs) => {
-                return [
-                  ...msgs,
-                  {
-                    text: 'citiesGame.sasarikSadWrongLetter',
-                    type: 'incomingSad',
-                  },
-                ];
-              });
-              setTimeout(() => {
-                this.scrollToBottom();
-              });
-            });
-          }, 1000),
-        );
+        this.helperMessage({
+          text: 'citiesGame.sasarikSadWrongLetter',
+          type: 'incomingSad',
+        });
         break;
 
       case 'ok': {
@@ -268,66 +242,34 @@ export class CitiesGame implements OnInit, OnDestroy {
           type: 'incoming',
           word,
         };
-        this.timeoutIds.push(
-          setTimeout(() => {
-            this.zone.run(() => {
-              this.visibleMessages.update((msgs) => {
-                return [...msgs, nextMessageFromCat];
-              });
-              setTimeout(() => {
-                this.scrollToBottom();
-              });
-            });
-          }, 1000),
-        );
+        this.helperMessage(nextMessageFromCat);
         this.usedWords.push(nextMessageFromCat.text.toLowerCase());
-        this.lastLatterFromCat = nextMessageFromCat.text[nextMessageFromCat.text.length - 1];
+        this.lastLetterFromCat = nextMessageFromCat.text[nextMessageFromCat.text.length - 1];
         break;
       }
 
       case 'out':
-        this.userService.statsUpdate(GameLabels.CitiesGame).subscribe({});
-        this.timeoutIds.push(
-          setTimeout(() => {
-            this.zone.run(() => {
-              this.visibleMessages.update((msgs) => {
-                return [
-                  ...msgs,
-                  {
-                    text: 'citiesGame.sasarikSadEnd',
-                    type: 'incomingSad',
-                  },
-                ];
-              });
-              setTimeout(() => {
-                this.scrollToBottom();
-              });
-            });
-          }, 1000),
-        );
+        this.userService
+          .statsUpdate(GameLabels.CitiesGame)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            error: (err) => console.error('Failed to update stats', err),
+          });
+        this.helperMessage({
+          text: 'citiesGame.sasarikSadEnd',
+          type: 'incomingSad',
+        });
         break;
 
       case 'not_found':
-        this.timeoutIds.push(
-          setTimeout(() => {
-            this.zone.run(() => {
-              this.visibleMessages.update((msgs) => [
-                ...msgs,
-                {
-                  text: 'citiesGame.sasarikSadNotFound',
-                  type: 'incomingSad',
-                },
-              ]);
-              setTimeout(() => {
-                this.scrollToBottom();
-              });
-            });
-          }, 1000),
-        );
+        this.helperMessage({
+          text: 'citiesGame.sasarikSadNotFound',
+          type: 'incomingSad',
+        });
         break;
     }
   }
-  public sendMessege(): void {
+  public sendMessage(): void {
     const { message } = this.messageForm.getRawValue();
     if (!message) return;
     const word = this.words.find(
@@ -343,6 +285,11 @@ export class CitiesGame implements OnInit, OnDestroy {
     this.messageForm.reset();
     this.sasarikScript(message.toLowerCase());
   }
+  public onEnter(event: Event): void {
+    const keyboardEvent = event as KeyboardEvent;
+    keyboardEvent.preventDefault();
+    this.sendMessage();
+  }
   public restart(): void {
     this.timer()?.reset();
     this.visibleMessages.update(() => {
@@ -351,7 +298,7 @@ export class CitiesGame implements OnInit, OnDestroy {
     this.usedWords = [CitiesGame.INITIAL_WORD];
     this.index = 0;
     this.isRunning = true;
-    this.lastLatterFromCat = CitiesGame.INITIAL_WORD[CitiesGame.INITIAL_WORD.length - 1];
+    this.lastLetterFromCat = CitiesGame.INITIAL_WORD[CitiesGame.INITIAL_WORD.length - 1];
     this.timeoutIds.forEach((id) => clearTimeout(id));
     this.timeoutIds = [];
     this.runMessages();
@@ -367,7 +314,7 @@ export class CitiesGame implements OnInit, OnDestroy {
     this.usedWords = [CitiesGame.INITIAL_WORD];
     this.index = 0;
     this.isRunning = true;
-    this.lastLatterFromCat = CitiesGame.INITIAL_WORD[CitiesGame.INITIAL_WORD.length - 1];
+    this.lastLetterFromCat = CitiesGame.INITIAL_WORD[CitiesGame.INITIAL_WORD.length - 1];
     this.router.navigate([getRoutePath(AppRoute.MAIN)]);
   }
 
