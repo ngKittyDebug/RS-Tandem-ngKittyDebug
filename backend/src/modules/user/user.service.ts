@@ -5,7 +5,6 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { Request } from 'express';
 import { PrismaService } from 'prisma/prisma.service';
 import { UserDto } from './dto/update-user.dto';
 import { compare, genSalt, hash } from 'bcrypt-ts';
@@ -27,7 +26,7 @@ export class UserService {
 
   private readonly logger = new Logger(UserService.name);
 
-  public async gtUserProfile(id: string) {
+  public async getUserProfile(id: string) {
     return await this.prisma.user.findUnique({
       where: {
         id: id,
@@ -59,7 +58,7 @@ export class UserService {
 
     if (user.provider === Provider.Github) {
       throw new ForbiddenException(
-        `Функционал пока не доступен, звоните позже`,
+        'Удаление аккаунта для OAuth-пользователей временно недоступно',
       );
     }
 
@@ -88,6 +87,12 @@ export class UserService {
 
     if (!user) {
       throw new NotFoundException('Пользователь не найден');
+    }
+
+    if (user.provider !== Provider.local) {
+      throw new ForbiddenException(
+        `Пользователь через OAuth не может обновить данные`,
+      );
     }
 
     const validPass = await compare(dto.password, user.password);
@@ -127,11 +132,18 @@ export class UserService {
       select: {
         password: true,
         id: true,
+        provider: true,
       },
     });
 
     if (!user) {
       throw new NotFoundException('Пользователь не найден');
+    }
+
+    if (user.provider !== Provider.local) {
+      throw new ForbiddenException(
+        `Пользователь через OAuth не может обновить данные`,
+      );
     }
 
     const validPass = await compare(dto.oldPassword, user.password);

@@ -38,7 +38,7 @@ export class UserController {
   @ApiSwagger(findUserConfig)
   @Get()
   findOne(@User('id') id: string) {
-    return this.userService.gtUserProfile(id);
+    return this.userService.getUserProfile(id);
   }
 
   @ApiSwagger(updateUserConfig)

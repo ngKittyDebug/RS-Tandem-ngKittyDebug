@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CheckAnswerDto } from './dto/check-answer.dto';
 import { ConfigService } from '@nestjs/config';
 import { PERSONALITIES } from './constants/personality.constants';
@@ -57,8 +61,11 @@ export class AiService {
       const message = JSON.parse(parsed) as Message;
 
       return message;
-    } catch {
-      throw new BadRequestException('Groq API error');
+    } catch (error) {
+      if (error instanceof BadRequestException) throw error;
+      if (error instanceof SyntaxError)
+        throw new InternalServerErrorException('AI response parse error');
+      throw new InternalServerErrorException('Groq API unavailable');
     }
   }
 

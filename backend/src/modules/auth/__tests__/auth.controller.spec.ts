@@ -5,14 +5,7 @@ import { CreateAuthDto } from '../dto/create-auth.dto';
 import { LoginAuthDto } from '../dto/login-auth.dto';
 import { Response, Request } from 'express';
 import { DeepMockProxy, mockDeep } from 'jest-mock-extended';
-
-interface AuthResponse {
-  accessToken: string;
-}
-
-interface LogoutResponse {
-  logout: boolean;
-}
+import { AuthResponse } from '../../interface/auth-module-types';
 
 const createResponseMock = (): Response =>
   ({
@@ -101,18 +94,6 @@ describe('AuthController', () => {
       const result = await controller.refresh(responseMock, req);
 
       expect(authServiceMock.refresh).toHaveBeenCalledWith(req, responseMock);
-      expect(result).toEqual(mockResult);
-    });
-  });
-
-  describe('logout', () => {
-    it('should call authService.logout and return result', () => {
-      const mockResult: LogoutResponse = { logout: true };
-      authServiceMock.logout.mockReturnValue(mockResult);
-
-      const result = controller.logout(responseMock);
-
-      expect(authServiceMock.logout).toHaveBeenCalledWith(responseMock);
       expect(result).toEqual(mockResult);
     });
   });

@@ -13,7 +13,7 @@ export class CreateWordDto {
   @ApiProperty({ description: 'Слово', example: 'кот' })
   @IsNotEmpty()
   @IsString()
-  word: string;
+  word!: string;
 
   @ApiProperty({
     description: 'Массив вопросов для слова',
@@ -25,5 +25,5 @@ export class CreateWordDto {
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => CreateQuestionDto)
-  questions: CreateQuestionDto[];
+  questions!: CreateQuestionDto[];
 }

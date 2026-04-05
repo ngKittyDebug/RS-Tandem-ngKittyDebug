@@ -27,6 +27,7 @@ describe('UserService', () => {
 
   const mockUserId = 'user-123';
   const mockPassword = 'hashedPassword123';
+  const mockProvider = 'local';
 
   const mockUser = {
     id: mockUserId,
@@ -72,11 +73,11 @@ describe('UserService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('gtUserProfile', () => {
+  describe('getUserProfile', () => {
     it('should return user profile without sensitive data', async () => {
       prismaMock.user.findUnique.mockResolvedValue(mockUserProfile as never);
 
-      const result = await service.gtUserProfile(mockUserId);
+      const result = await service.getUserProfile(mockUserId);
 
       expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
         where: { id: mockUserId },
@@ -184,6 +185,7 @@ describe('UserService', () => {
       prismaMock.user.findUnique.mockResolvedValue({
         id: mockUserId,
         password: mockPassword,
+        provider: mockProvider,
       } as never);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
       (bcrypt.genSalt as jest.Mock).mockResolvedValue('salt');

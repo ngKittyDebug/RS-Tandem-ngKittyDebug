@@ -21,6 +21,7 @@ describe('UserController', () => {
     createdAt: new Date('2024-01-01'),
     providerId: null,
     provider: 'local' as const,
+    refreshToken: 'this...is...TOKEN',
   };
 
   const mockUpdateUserDto: UserDto = {
@@ -63,12 +64,12 @@ describe('UserController', () => {
   });
 
   describe('findOne', () => {
-    it('should call userService.gtUserProfile with correct user id', async () => {
-      userServiceMock.gtUserProfile.mockResolvedValue(mockUserProfile);
+    it('should call userService.getUserProfile with correct user id', async () => {
+      userServiceMock.getUserProfile.mockResolvedValue(mockUserProfile);
 
       const result = await controller.findOne(mockUserId);
 
-      expect(userServiceMock.gtUserProfile).toHaveBeenCalledWith(mockUserId);
+      expect(userServiceMock.getUserProfile).toHaveBeenCalledWith(mockUserId);
       expect(result).toEqual(mockUserProfile);
     });
   });

@@ -20,4 +20,5 @@ export const logoutConfig: ApiSwaggerConfig = {
       description: 'Ошибка при выходе из системы',
     },
   ],
+  bearerAuth: true,
 };
