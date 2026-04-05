@@ -21,10 +21,7 @@ export class App implements OnInit, OnDestroy {
   private readonly userStore = inject(UserStore);
   private readonly router = inject(Router);
   private readonly onPageShow = (event: PageTransitionEvent): void => {
-    console.log('[OAuth-Debug] pageshow event, persisted (bfcache):', event.persisted);
-
     if (event.persisted) {
-      console.log('[OAuth-Debug] Page restored from bfcache — revalidating auth');
       this.revalidateAuth();
     }
   };
@@ -41,10 +38,8 @@ export class App implements OnInit, OnDestroy {
     this.authService.refresh().subscribe({
       next: () => {
         const loggedIn = this.authService.isLoggedIn();
-        console.log('[OAuth-Debug] bfcache revalidation: isLoggedIn =', loggedIn);
 
         if (loggedIn) {
-          console.log('[OAuth-Debug] Redirecting to main page after bfcache restore');
           void this.userStore.loadUser();
           this.router.navigateByUrl('/');
         }

@@ -51,14 +51,12 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideAppInitializer(() => {
-      console.log('[OAuth-Debug] APP_INITIALIZER: starting refresh()');
       const authService = inject(AuthService);
 
       const userStore = inject(UserStore);
       return authService.refresh().pipe(
         switchMap(() => {
           const loggedIn = authService.isLoggedIn();
-          console.log('[OAuth-Debug] APP_INITIALIZER: refresh done, isLoggedIn =', loggedIn);
 
           if (!loggedIn) {
             return of(void 0);
