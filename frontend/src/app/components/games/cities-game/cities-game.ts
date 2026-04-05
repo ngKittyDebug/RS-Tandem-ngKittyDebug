@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   inject,
   NgZone,
@@ -8,6 +7,7 @@ import {
   signal,
   viewChild,
   ElementRef,
+  OnDestroy,
 } from '@angular/core';
 import { AppRoute, getRoutePath, GameRoute } from '../../../app.routes';
 import { Router } from '@angular/router';
@@ -25,7 +25,7 @@ import { TuiTextfield, TuiButton, TuiIcon } from '@taiga-ui/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { KeyStorageService } from '../../../core/services/key-storage/key-storage-service';
-import { interval, map, startWith } from 'rxjs';
+import { map } from 'rxjs';
 import { Timer } from '../../timer/timer';
 import { TIMER_MODE } from '../../timer/models/timer-mode.enum';
 import { UserStore } from '../../../core/stores/user-store/user-store';
@@ -78,17 +78,12 @@ export interface CitiesGameVocabularResponse {
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CitiesGame implements OnInit {
-  protected isLoading$ = interval(2000).pipe(
-    map((i) => Boolean(i % 2)),
-    startWith(true),
-  );
+export class CitiesGame implements OnInit, OnDestroy {
   protected readonly loadDataServise = inject(KeyStorageService<CitiesGameVocabularResponse>);
   private readonly userService = inject(UserService);
   protected citiesRouterPath = getRoutePath(GameRoute.CITIES_GAME);
   private translocoService = inject(TranslocoService);
   private zone = inject(NgZone);
-  private cdr = inject(ChangeDetectorRef);
   private fb = inject(FormBuilder);
   public messages: Message[] = [
     { text: 'citiesGame.messageFromCat1', type: 'incomingSad' },
@@ -101,12 +96,14 @@ export class CitiesGame implements OnInit {
     { text: 'citiesGame.messageFromCat8', type: 'incomingSad' },
   ];
 
-  public visibleMessages: Message[] = [];
+  public visibleMessages = signal<Message[]>([]);
   private index = 0;
   public isRunning = true;
   private timeoutId?: ReturnType<typeof setTimeout>;
+  private static readonly INITIAL_WORD = 'frontend';
   public words: Word[] = [];
-  public usedWords: string[] = ['frontend'];
+  public usedWords: string[] = [CitiesGame.INITIAL_WORD];
+  public lastLatterFromCat = CitiesGame.INITIAL_WORD[CitiesGame.INITIAL_WORD.length - 1];
   private timer = viewChild(Timer);
   public timerMode = TIMER_MODE.UP;
   protected readonly isAvatarUpdating = signal(false);
@@ -115,6 +112,7 @@ export class CitiesGame implements OnInit {
   public userName = '';
   private bottom = viewChild<ElementRef>('bottom');
   private readonly router = inject(Router);
+  public timeoutIds: ReturnType<typeof setTimeout>[] = [];
 
   private scrollToBottom(): void {
     this.bottom()?.nativeElement?.scrollIntoView?.({ behavior: 'smooth' });
@@ -126,18 +124,21 @@ export class CitiesGame implements OnInit {
       return;
     }
     if (!this.isRunning) return;
-    this.timeoutId = setTimeout(() => {
-      this.zone.run(() => {
-        this.visibleMessages.push(this.messages[this.index]);
-        this.cdr.markForCheck();
-        setTimeout(() => {
-          this.scrollToBottom();
+    this.timeoutIds.push(
+      setTimeout(() => {
+        this.zone.run(() => {
+          this.visibleMessages.update((msgs) => {
+            return [...msgs, this.messages[this.index]];
+          });
+          setTimeout(() => {
+            this.scrollToBottom();
+          });
+          this.index++;
+          // this.cdr.markForCheck();
+          this.runMessages();
         });
-        this.index++;
-        this.cdr.markForCheck();
-        this.runMessages();
-      });
-    }, 1000);
+      }, 1000),
+    );
   }
 
   public ngOnInit(): void {
@@ -162,8 +163,6 @@ export class CitiesGame implements OnInit {
   public messageForm = this.fb.group({
     message: [''],
   });
-
-  public lastLatterFromCat = 'd';
 
   public sasarikScript(message: string): void {
     const isFirstLetterOk = message.toLowerCase().trim()[0] === this.lastLatterFromCat;
@@ -200,47 +199,65 @@ export class CitiesGame implements OnInit {
 
     switch (state) {
       case 'win':
-        this.timeoutId = setTimeout(() => {
-          this.zone.run(() => {
-            this.visibleMessages.push({
-              text: 'citiesGame.sasarikSadWin',
-              type: 'incomingSad',
+        this.timeoutIds.push(
+          setTimeout(() => {
+            this.zone.run(() => {
+              this.visibleMessages.update((msgs) => {
+                return [
+                  ...msgs,
+                  {
+                    text: 'citiesGame.sasarikSadWin',
+                    type: 'incomingSad',
+                  },
+                ];
+              });
+              setTimeout(() => {
+                this.scrollToBottom();
+              });
             });
-            this.cdr.markForCheck();
-            setTimeout(() => {
-              this.scrollToBottom();
-            });
-          });
-        }, 1000);
+          }, 1000),
+        );
         break;
       case 'used':
-        this.timeoutId = setTimeout(() => {
-          this.zone.run(() => {
-            this.visibleMessages.push({
-              text: 'citiesGame.sasarikSadUsed',
-              type: 'incomingSad',
+        this.timeoutIds.push(
+          setTimeout(() => {
+            this.zone.run(() => {
+              this.visibleMessages.update((msgs) => {
+                return [
+                  ...msgs,
+                  {
+                    text: 'citiesGame.sasarikSadUsed',
+                    type: 'incomingSad',
+                  },
+                ];
+              });
+              setTimeout(() => {
+                this.scrollToBottom();
+              });
             });
-            this.cdr.markForCheck();
-            setTimeout(() => {
-              this.scrollToBottom();
-            });
-          });
-        }, 1000);
+          }, 1000),
+        );
         break;
 
       case 'wrong_letter':
-        this.timeoutId = setTimeout(() => {
-          this.zone.run(() => {
-            this.visibleMessages.push({
-              text: 'citiesGame.sasarikSadWrongLetter',
-              type: 'incomingSad',
+        this.timeoutIds.push(
+          setTimeout(() => {
+            this.zone.run(() => {
+              this.visibleMessages.update((msgs) => {
+                return [
+                  ...msgs,
+                  {
+                    text: 'citiesGame.sasarikSadWrongLetter',
+                    type: 'incomingSad',
+                  },
+                ];
+              });
+              setTimeout(() => {
+                this.scrollToBottom();
+              });
             });
-            this.cdr.markForCheck();
-            setTimeout(() => {
-              this.scrollToBottom();
-            });
-          });
-        }, 1000);
+          }, 1000),
+        );
         break;
 
       case 'ok': {
@@ -251,15 +268,18 @@ export class CitiesGame implements OnInit {
           type: 'incoming',
           word,
         };
-        this.timeoutId = setTimeout(() => {
-          this.zone.run(() => {
-            this.visibleMessages.push(nextMessageFromCat);
-            this.cdr.markForCheck();
-            setTimeout(() => {
-              this.scrollToBottom();
+        this.timeoutIds.push(
+          setTimeout(() => {
+            this.zone.run(() => {
+              this.visibleMessages.update((msgs) => {
+                return [...msgs, nextMessageFromCat];
+              });
+              setTimeout(() => {
+                this.scrollToBottom();
+              });
             });
-          });
-        }, 1000);
+          }, 1000),
+        );
         this.usedWords.push(nextMessageFromCat.text.toLowerCase());
         this.lastLatterFromCat = nextMessageFromCat.text[nextMessageFromCat.text.length - 1];
         break;
@@ -267,33 +287,43 @@ export class CitiesGame implements OnInit {
 
       case 'out':
         this.userService.statsUpdate(GameLabels.CitiesGame).subscribe({});
-        this.timeoutId = setTimeout(() => {
-          this.zone.run(() => {
-            this.visibleMessages.push({
-              text: 'citiesGame.sasarikSadEnd',
-              type: 'incomingSad',
+        this.timeoutIds.push(
+          setTimeout(() => {
+            this.zone.run(() => {
+              this.visibleMessages.update((msgs) => {
+                return [
+                  ...msgs,
+                  {
+                    text: 'citiesGame.sasarikSadEnd',
+                    type: 'incomingSad',
+                  },
+                ];
+              });
+              setTimeout(() => {
+                this.scrollToBottom();
+              });
             });
-            this.cdr.markForCheck();
-            setTimeout(() => {
-              this.scrollToBottom();
-            });
-          });
-        }, 1000);
+          }, 1000),
+        );
         break;
 
       case 'not_found':
-        this.timeoutId = setTimeout(() => {
-          this.zone.run(() => {
-            this.visibleMessages.push({
-              text: 'citiesGame.sasarikSadNotFound',
-              type: 'incomingSad',
+        this.timeoutIds.push(
+          setTimeout(() => {
+            this.zone.run(() => {
+              this.visibleMessages.update((msgs) => [
+                ...msgs,
+                {
+                  text: 'citiesGame.sasarikSadNotFound',
+                  type: 'incomingSad',
+                },
+              ]);
+              setTimeout(() => {
+                this.scrollToBottom();
+              });
             });
-            this.cdr.markForCheck();
-            setTimeout(() => {
-              this.scrollToBottom();
-            });
-          });
-        }, 1000);
+          }, 1000),
+        );
         break;
     }
   }
@@ -304,7 +334,9 @@ export class CitiesGame implements OnInit {
       (w) => w.word.toLowerCase().trim() === message.toLowerCase().trim(),
     );
     const data: Message = { text: message, type: 'outgoing', word };
-    this.visibleMessages.push(data);
+    this.visibleMessages.update((msgs) => {
+      return [...msgs, data];
+    });
     setTimeout(() => {
       this.scrollToBottom();
     });
@@ -313,24 +345,29 @@ export class CitiesGame implements OnInit {
   }
   public restart(): void {
     this.timer()?.reset();
-    this.visibleMessages = [];
-    this.usedWords = ['frontend'];
+    this.visibleMessages.update(() => {
+      return [];
+    });
+    this.usedWords = [CitiesGame.INITIAL_WORD];
     this.index = 0;
     this.isRunning = true;
-    this.lastLatterFromCat = 'd';
-    if (this.timeoutId) {
-      clearTimeout(this.timeoutId);
-    }
+    this.lastLatterFromCat = CitiesGame.INITIAL_WORD[CitiesGame.INITIAL_WORD.length - 1];
+    this.timeoutIds.forEach((id) => clearTimeout(id));
+    this.timeoutIds = [];
     this.runMessages();
   }
   public main(): void {
+    this.timeoutIds.forEach((id) => clearTimeout(id));
+    this.timeoutIds = [];
     this.timer()?.reset();
     this.timer()?.stop();
-    this.visibleMessages = [];
-    this.usedWords = ['frontend'];
+    this.visibleMessages.update(() => {
+      return [];
+    });
+    this.usedWords = [CitiesGame.INITIAL_WORD];
     this.index = 0;
     this.isRunning = true;
-    this.lastLatterFromCat = 'd';
+    this.lastLatterFromCat = CitiesGame.INITIAL_WORD[CitiesGame.INITIAL_WORD.length - 1];
     this.router.navigate([getRoutePath(AppRoute.MAIN)]);
   }
 
@@ -342,5 +379,11 @@ export class CitiesGame implements OnInit {
     const lang = this.translocoService.getActiveLang();
 
     return lang === 'ru' ? message.word.wordDescription.ru : message.word.wordDescription.en;
+  }
+  public ngOnDestroy(): void {
+    this.timeoutIds.forEach((id) => clearTimeout(id));
+    this.timeoutIds = [];
+    this.timer()?.reset();
+    this.timer()?.stop();
   }
 }

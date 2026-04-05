@@ -251,7 +251,7 @@
   </div>
   <div class="cities__chat">
     <div class="cities__chat-area">
-      @for (message of visibleMessages; track $index) {
+      @for (message of visibleMessages(); track $index) {
         <span
           class="cities__chat-container"
           [ngClass]="{
