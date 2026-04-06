@@ -71,16 +71,17 @@
           <div class="decrypto__form_codes_inputs">
             @for (num of this.inputsIndices; track num) {
               <tui-textfield tuiTextfieldSize="s" class="decrypto__form_number_field">
-                <label class="decrypto__form_codes_label" [for]="'code' + num">{{ num }}</label>
                 <input
                   class="decrypto__form_codes_input"
                   [formControlName]="'code' + num"
                   tuiInputNumber
                   [id]="'code' + num"
+                  placeholder=" "
                   [max]="4"
                   [min]="1"
                   [step]="1"
                 />
+                <label class="decrypto__form_codes_label" [for]="'code' + num">{{ num }}</label>
               </tui-textfield>
             }
           </div>
@@ -88,14 +89,15 @@
           <div class="decrypto__form_hints">
             @for (num of this.inputsIndices; track num) {
               <tui-textfield tuiTextfieldSize="s" class="decrypto__form_hints_field">
-                <label class="decrypto__form_hints_label" [for]="'hint' + num">{{ num }}</label>
                 <input
                   class="decrypto__form_hints_input"
                   [readOnly]="true"
                   tuiTextfield
+                  placeholder=" "
                   [formControlName]="'hint' + num"
                   [id]="'hint' + num"
                 />
+                <label class="decrypto__form_hints_label" [for]="'hint' + num">{{ num }}</label>
               </tui-textfield>
             }
           </div>
