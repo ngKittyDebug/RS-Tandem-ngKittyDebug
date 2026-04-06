@@ -179,6 +179,11 @@ section p {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+.game-card-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 @media (max-width: 750px) {
   header {
     flex-direction: column;
