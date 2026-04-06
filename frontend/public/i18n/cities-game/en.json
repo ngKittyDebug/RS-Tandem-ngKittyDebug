@@ -7,14 +7,14 @@
   "messageFromCat2": "I’m your senior cat. And yes, I can already see where you’ll mess up",
   "messageFromCat3": "I won’t even explain the rules properly, but fine: we play like ‘Cities’, but with frontend words",
   "messageFromCat4": "I say div → you respond with a word starting with the last letter, for example variable. Failed? Well… happens. Junior things",
-  "messageFromCat5": "Topics: JS, TS, CSS, HTML... (If you don’t know half of it — I’m not surprised 🙄)",
+  "messageFromCat5": "Topics: JS, TS, CSS, HTML... (If you don’t know half of it — I’m not surprised🙄)",
   "messageFromCat6": "Unknown word? Hover it to see a hint. Yes, I did your thinking for you",
-  "messageFromCat7": "You start. Try to survive more than three moves 😉",
+  "messageFromCat7": "You start. Try to survive more than three moves😉",
   "messageFromCat8": "frontend",
   "sasarikSadWrongLetter": "The letter got lost. With that level of attention, you’ll be calling APIs “somewhere around there”😼",
-  "sasarikSadUsed": "We’ve already heard that. Your memory is like a cache without invalidation",
+  "sasarikSadUsed": "We’ve already heard that. Your memory is like a cache without invalidation🙄",
   "sasarikSadNotFound": "Doesn’t fit — try a frontend-related word",
-  "sasarikSadEnd": "No words left… you won. Meow… 🙀",
+  "sasarikSadEnd": "No words left… you won. Meow…🙀",
   "sasarikSadWin": "Are you kitten me? You actually won. Meow😻",
   "noTooltip": "I have no idea what you just wrote🙄"
 }

@@ -3,6 +3,7 @@ import { TranslocoTestingModule } from '@jsverse/transloco';
 import { KeyStorageService } from '../../../core/services/key-storage/key-storage-service';
 import { UserService } from '../../../core/services/user/user-service';
 import { User } from '../../../core/services/user/models/user.interfaces';
+import { of } from 'rxjs';
 
 import { CitiesGame } from './cities-game';
 const mockUserService = {
@@ -19,14 +20,13 @@ const mockUserService = {
   }),
 };
 const mockKeyStorageService = {
-  getData: vi.fn().mockReturnValue({
-    subscribe: (cb: (value: { storage: { words: unknown[] } }) => void) =>
-      cb({
-        storage: {
-          words: [],
-        },
-      }),
-  }),
+  getData: vi.fn().mockReturnValue(
+    of({
+      storage: {
+        words: [],
+      },
+    }),
+  ),
 };
 describe('CitiesGame', () => {
   let component: CitiesGame;
@@ -58,6 +58,7 @@ describe('CitiesGame', () => {
 
     fixture = TestBed.createComponent(CitiesGame);
     component = fixture.componentInstance;
+    fixture.detectChanges();
     await fixture.whenStable();
   });
 

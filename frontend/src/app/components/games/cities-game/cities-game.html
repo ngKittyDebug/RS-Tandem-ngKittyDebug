@@ -251,7 +251,7 @@
   </div>
   <div class="cities__chat">
     <div class="cities__chat-area">
-      @for (message of visibleMessages; track $index) {
+      @for (message of visibleMessages(); track $index) {
         <span
           class="cities__chat-container"
           [ngClass]="{
@@ -292,6 +292,7 @@
           placeholder="{{ t('citiesGame.plaseholder') }}"
           id="chatInput"
           formControlName="message"
+          (keydown.enter)="onEnter($event)"
         ></textarea>
       </tui-textfield>
 
@@ -299,9 +300,9 @@
         class="cities__chat-btn"
         tuiButton
         appearance="gradient"
-        type="button"
+        type="submit"
         size="m"
-        (click)="sendMessege()"
+        (click)="sendMessage()"
         [disabled]="isRunning"
       >
         send
