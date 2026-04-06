@@ -39,10 +39,10 @@
 }
 header,
 .description,
-.container,
 .card-container {
   width: min(90ch, 100%);
 }
+
 .header-container {
   display: flex;
   flex-direction: row;
@@ -110,6 +110,11 @@ header .image {
 }
 
 .card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
   background-color: var(--tui-background-base-alt);
   block-size: auto;
   box-shadow: var(--tui-shadow-small);
@@ -125,15 +130,13 @@ header .image {
 }
 section {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
   color: var(--tui-text-secondary);
   gap: 1rem;
 }
-section img {
-  width: 30%;
-}
+
 section p {
   padding: 0.5rem;
 }
@@ -150,6 +153,13 @@ section p {
 .reg-button:hover {
   background: linear-gradient(to right, rgba(236, 72, 153, 0.2) rgba(139, 92, 246, 0.2));
   color: #8b5cf6;
+}
+.mini-game {
+  display: none;
+  width: 30%;
+}
+.max-game {
+  width: 100%;
 }
 @media (max-width: 1150px) {
   .main-container {
@@ -169,6 +179,11 @@ section p {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+.game-card-disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 @media (max-width: 750px) {
   header {
     flex-direction: column;
