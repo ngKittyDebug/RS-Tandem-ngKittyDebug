@@ -17,15 +17,15 @@
     gap: 0.5rem;
   }
 
-  &:nth-child(1) .activity-item__icon {
+  &:nth-child(1n) .activity-item__icon {
     background-color: var(--accent-1);
   }
 
-  &:nth-child(2) .activity-item__icon {
+  &:nth-child(2n) .activity-item__icon {
     background-color: var(--accent-2);
   }
 
-  &:nth-child(3) .activity-item__icon {
+  &:nth-child(3n) .activity-item__icon {
     background-color: var(--accent-3);
   }
 
