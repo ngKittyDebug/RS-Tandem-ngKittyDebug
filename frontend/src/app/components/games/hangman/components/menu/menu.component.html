@@ -1,13 +1,13 @@
 <header class="header" *transloco="let t">
   <div class="logo">
     <h2 tuiTitle>{{ t('hangman.title') }}</h2>
-    <p tuiSubtitle>Test your skills!</p>
+    <p tuiSubtitle>{{ t('hangman.subtitle') }}</p>
   </div>
   <nav class="navigation">
     <button iconStart="@tui.rocket" size="m" tuiButton type="button" (click)="playGame.emit()">
       Play
     </button>
-    <button iconStart="@tui.home" size="m" tuiButton type="button" (click)="back.emit()">
+    <button iconStart="@tui.home" size="m" tuiButton type="button" (click)="main.emit()">
       Back
     </button>
     <button
@@ -21,5 +21,5 @@
       Results
     </button>
   </nav>
-  <img src="./assets/images/hangcat.png" width="400" alt="hangcat" />
+  <img class="hang-cat-img" src="./assets/images/hangman3.png" width="400" alt="hangcat" />
 </header>

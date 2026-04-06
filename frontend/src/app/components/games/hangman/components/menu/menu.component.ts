@@ -10,8 +10,9 @@ import { TuiButton, TuiTitle } from '@taiga-ui/core';
   styleUrls: ['./menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Menu {
+export class MenuComponent {
   @Output() public playGame = new EventEmitter<void>();
   @Output() public back = new EventEmitter<void>();
   @Output() public results = new EventEmitter<void>();
+  @Output() public main = new EventEmitter<void>();
 }
