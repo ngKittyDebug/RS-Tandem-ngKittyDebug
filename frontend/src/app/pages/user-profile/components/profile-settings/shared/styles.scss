@@ -68,11 +68,21 @@
 
   &__actions-button {
     flex: 1;
+
+    @media (max-width: 480px) {
+      font-size: 0.875rem;
+      line-height: 1;
+      white-space: normal;
+    }
   }
 
   @media (max-width: 480px) {
     &__save {
       font-size: 0.875rem;
+      line-height: 1;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      text-align: left;
     }
   }
 }
