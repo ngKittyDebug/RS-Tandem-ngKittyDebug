@@ -52,4 +52,4 @@
 | Frameworks  |              | Angular: Использование фреймворка Angular         |       |
 
 
-### TOTAL: 175.
+### TOTAL
