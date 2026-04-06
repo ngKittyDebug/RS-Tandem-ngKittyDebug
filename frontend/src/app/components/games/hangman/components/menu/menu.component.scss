@@ -34,8 +34,13 @@ p {
   justify-content: space-around;
   gap: 1rem;
   padding: 0.5rem 1rem;
+  flex-wrap: wrap;
 }
 
 .header img {
   border-radius: 2rem;
+}
+
+.hang-cat-img {
+  max-width: 100%;
 }
