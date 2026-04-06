@@ -25,7 +25,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    restart: always
+    restart: unless-stopped
     env_file:
       - ./.env
     ports:
@@ -41,7 +41,7 @@ services:
       timeout: 5s
       start_period: 10s
       retries: 3
-    command: npm run migration && node dist/src/main
+    command: sh -c "npx prisma migrate deploy || true && node dist/src/main"
 
   # Frontend (Angular SPA)
   frontend:
