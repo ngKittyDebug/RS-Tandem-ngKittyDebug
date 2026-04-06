@@ -121,9 +121,28 @@
   width: 100%;
 }
 
-.decrypto__form_hints_label,
-.decrypto__form_codes_label {
-  font-size: 10px !important;
+.decrypto__form_codes_label,
+.decrypto__form_hints_label {
+  font-size: 8px !important;
+  position: absolute !important;
+}
+
+.decrypto__form_codes_input + .decrypto__form_codes_label {
+  top: -7px !important;
+  left: 5px !important;
+}
+
+.decrypto__form_codes_input:focus + .decrypto__form_codes_label,
+.decrypto__form_codes_input:not(:placeholder-shown) + .decrypto__form_codes_label,
+.decrypto__form_hints_input:focus + .decrypto__form_hints_label,
+.decrypto__form_hints_input:not(:placeholder-shown) + .decrypto__form_hints_label {
+  top: 4px !important;
+  left: 5px !important;
+}
+
+.decrypto__form_hints_input + .decrypto__form_hints_label {
+  top: 0px !important;
+  left: 5px !important;
 }
 
 .decrypto__form_codes_label {
@@ -152,6 +171,7 @@
 .decrypto__form_number_field {
   align-items: flex-start;
   background-color: var(--tui-background-base);
+  position: relative !important;
 }
 
 .decrypto__form_hints {
@@ -163,6 +183,7 @@
 
 .decrypto__form_hints_field {
   background-color: var(--tui-background-base);
+  position: relative !important;
 }
 
 .decrypto__form_check_button {
