@@ -1,9 +1,9 @@
-#Self-assesment
+# Self-assesment
 
-##**Nadezhda Kozochkina**
+## Nadezhda Kozochkina
 **team: ngKittyDebug**
 
-[self-assesment PR](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/pull/228);
+[self-assesment PR](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/pull/228)
 
 В разработке использовались:
 - TypeScript
@@ -52,4 +52,4 @@
 | Frameworks  |              | Angular: Использование фреймворка Angular         |       |
 
 
-##**TOTAL: 175**
+### TOTAL: 175.
