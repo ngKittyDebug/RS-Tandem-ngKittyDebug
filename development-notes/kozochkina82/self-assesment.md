@@ -1,8 +1,9 @@
 #Self-assesment
-##Nadezhda Kozochkina
+
+##**Nadezhda Kozochkina**
 **team: ngKittyDebug**
 
-[self-assesment PR](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/pull/228)
+[self-assesment PR](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/pull/228);
 
 В разработке использовались:
 - TypeScript
@@ -21,7 +22,7 @@
 ##Features Table
 | Category    | Feature      | Description                                       | Score |
 |-------------|--------------|---------------------------------------------------|-------|
-| MyComponent | Main Page    | Complex Component: Разработка сложного
+| MyComponent | Main Page    | Complex Component: Разработка сложного            |       |
 |             | 404 Page     | интерактивного компонента                         |  +75  |
 |             | Hangman Game |                                                   |       |
 |-------------|--------------|---------------------------------------------------|-------|
@@ -51,4 +52,4 @@
 | Frameworks  |              | Angular: Использование фреймворка Angular         |       |
 
 
-##TOTAL: 175
+##**TOTAL: 175**
