@@ -218,6 +218,12 @@ export class CitiesGame implements OnInit, OnDestroy {
           text: 'citiesGame.sasarikSadWin',
           type: 'incomingSad',
         });
+        this.userService
+          .statsUpdate(GameLabels.CitiesGame)
+          .pipe(takeUntilDestroyed(this.destroyRef))
+          .subscribe({
+            error: (err) => console.error('Failed to update stats', err),
+          });
         break;
 
       case 'used':
