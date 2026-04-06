@@ -4,11 +4,11 @@
 
 **MeowVault** — это уютный учебный каталог с несколькими играми, которые помогают прокачать знания JavaScript, TypeScript и подготовиться к техническому интервью 🐾😸 Пользователь учится через практику и небольшие игровые задания, без стресса и перегруза 🎮🐱 Обучение здесь такое же мягкое и приятное, как котик, который поддерживает тебя лапкой перед собеседованием 🐈💛
 
-**Ссылка на демо:** [demo]()
+**Ссылка на демо:** [demo](https://youtu.be/8F0yhklDuZg)
 
 ## 🌟 Чем гордимся:
 
-Наша сильная сторона - грамотное распределение ролей в команде и выстроенная коммуникация между участниками. Это помогло нам работать согласованно, быстро принимать решения и не терять общий темп разработки. Отдельно гордимся тем, что реализовали собственный кастомный бэкенд и при этом сохранили единый стиль проекта. Также важно, что мы впервые работали с Angular, но смогли быстро разобраться в технологии и выстроить понятную, целостную архитектуру.
+Наша сильная сторона - грамотное распределение ролей в команде и выстроенная коммуникация между участниками. Это помогло нам работать согласованно, быстро принимать решения и не терять общий темп разработки. Отдельно гордимся тем, что реализовали собственный кастомный бэкенд и при этом сохранили единый стиль проекта. Также важно, что мы впервые работали с Angular, но смогли быстро разобраться в технологии и выстроить понятную, целостную архитектуру. Кроме того, мы упаковали приложение в кроссплатформенное десктопное приложение на базе Electron.
 
 ## 👥 Состав команды
 
@@ -16,7 +16,7 @@
 | ------------------------------ | ------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | Frontend Developer / Team lead | Мария   | [WhaleisaJoy](https://github.com/WhaleisaJoy)         | [дневник](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes/whaleisajoy)     |
 | Frontend Developer             | Алена   | [Alena1409](https://github.com/Alena1409)             | [дневник](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes/alena1409)       |
-| Backend Developer              | Алексей | [AlexGorSer](https://github.com/AlexGorSer)           | [дневник](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes/AlexGorSer)      |
+| Backend Developer / DevOps     | Алексей | [AlexGorSer](https://github.com/AlexGorSer)           | [дневник](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes/AlexGorSer)      |
 | Frontend Developer             | Надежда | [kozochkina82](https://github.com/kozochkina82)       | [дневник](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes/kozochkina82)    |
 | Frontend Developer             | Оксана  | [Oksi2510](https://github.com/Oksi2510)               | [дневник](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes/Oksi2510)        |
 | Frontend Developer             | Павел   | [pavelkuvsh1noff](https://github.com/pavelkuvsh1noff) | [дневник](https://github.com/ngKittyDebug/RS-Tandem-ngKittyDebug/tree/main/development-notes/pavelkuvsh1noff) |
@@ -96,6 +96,19 @@ npm run test
 ```bash
 npm run check-all
 ```
+
+### 🐳 Зпуск приложения через Docker
+
+1. Установите `Docker`
+2. Сделайте копию `.env.example`
+3. Переименуйте его в `.env`
+4. Заполните в нем все поля
+5. Пропишите команду `docker-compose up`
+6. Profit
+
+Приложение frontend поднимется на `localhost:8080`
+
+Приложение backend поднимется на `localhost:4000`
 
 ## 🛠️ Tech Stack
 
