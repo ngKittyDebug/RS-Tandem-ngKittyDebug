@@ -5,6 +5,7 @@ import { createMockPrismaService } from 'prisma/__mocks__/prisma-service-mock';
 import { NotFoundException } from '@nestjs/common';
 import { CreateWordDto } from '../dto/create-word.dto';
 import { UpdateWordDto } from '../dto/update-word.dto';
+import { Prisma } from 'src/generated/prisma/client';
 
 describe('WordService', () => {
   let service: WordService;
@@ -233,7 +234,12 @@ describe('WordService', () => {
     });
 
     it('should throw NotFoundException if word not found', async () => {
-      prismaMock.word.findUnique.mockResolvedValue(null);
+      prismaMock.word.delete.mockRejectedValue(
+        new Prisma.PrismaClientKnownRequestError('', {
+          code: 'P2025',
+          clientVersion: '5.0.0',
+        }),
+      );
 
       await expect(service.remove(999)).rejects.toThrow(NotFoundException);
     });

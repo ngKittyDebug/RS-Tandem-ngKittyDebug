@@ -9,5 +9,5 @@ export class AvatarUpdateDto {
   @IsString()
   @IsNotEmpty()
   @IsUrl()
-  avatar: string;
+  avatar!: string;
 }

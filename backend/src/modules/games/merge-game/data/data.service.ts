@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateDataDto } from './dto/create-data.dto';
 import { UpdateDataDto } from './dto/update-data.dto';
+import { Prisma } from 'src/generated/prisma/client';
 
 @Injectable()
 export class DataService {
@@ -124,12 +125,17 @@ export class DataService {
   }
 
   async remove(id: number) {
-    await this.findOne(id);
-
-    await this.prisma.mergeGameData.delete({
-      where: { id },
-    });
-
-    return { message: `MergeGameData с id ${id} успешно удалена` };
+    try {
+      await this.prisma.mergeGameData.delete({ where: { id } });
+      return { message: `MergeGameData с id ${id} успешно удалена` };
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(`Запись с id=${id} не найдена`);
+      }
+      throw error;
+    }
   }
 }

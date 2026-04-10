@@ -6,11 +6,17 @@ import { UserModule } from './modules/user/user.module';
 import { JwtStrategy } from './guards/jwt.strategy';
 import { KeyStorageModule } from './modules/key-storage/key-storage.module';
 import { MergeGameModule } from './modules/games/merge-game/merge-game.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerConfigRoot } from './config/throttler.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    ThrottlerModule.forRoot({
+      throttlers: [ThrottlerConfigRoot],
     }),
     PrismaModule,
     AuthModule,
@@ -18,6 +24,12 @@ import { MergeGameModule } from './modules/games/merge-game/merge-game.module';
     KeyStorageModule,
     MergeGameModule,
   ],
-  providers: [JwtStrategy],
+  providers: [
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

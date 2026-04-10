@@ -44,5 +44,5 @@ export class UserDto {
   @Matches(PASSWORD_PATTERN, {
     message: 'Некорректный пароль',
   })
-  password: string;
+  password!: string;
 }

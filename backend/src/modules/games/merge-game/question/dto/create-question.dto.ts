@@ -8,12 +8,12 @@ export class CreateQuestionDto {
   })
   @IsNotEmpty()
   @IsString()
-  question: string;
+  question!: string;
 
   @ApiProperty({ description: 'Ответ на вопрос', example: 'кот' })
   @IsNotEmpty()
   @IsString()
-  answer: string;
+  answer!: string;
 
   @ApiProperty({
     description: 'Ключевые слова для ответа',
@@ -24,5 +24,5 @@ export class CreateQuestionDto {
   @IsArray()
   @ArrayNotEmpty()
   @IsString({ each: true })
-  keywords: string[];
+  keywords!: string[];
 }

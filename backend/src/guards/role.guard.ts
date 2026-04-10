@@ -2,8 +2,8 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
-  ImATeapotException,
   ForbiddenException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Roles } from 'src/decorators/role.decorator';
@@ -22,11 +22,14 @@ export class RolesGuard implements CanActivate {
     const user = request.user;
 
     if (!user) {
-      throw new ImATeapotException();
+      throw new UnauthorizedException('Требуется аутентификация');
     }
 
-    if (user.role === roles) {
-      return true;
-    } else throw new ForbiddenException();
+    const rolesArray = Array.isArray(roles) ? roles : [roles];
+
+    if (!user.role) {
+      throw new ForbiddenException();
+    }
+    return rolesArray.includes(user.role);
   }
 }

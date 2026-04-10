@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
 import { CreateWordDto } from './dto/create-word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
+import { Prisma } from 'src/generated/prisma/client';
 
 @Injectable()
 export class WordService {
@@ -84,12 +85,18 @@ export class WordService {
   }
 
   async remove(id: number) {
-    await this.findOne(id);
+    try {
+      await this.prisma.word.delete({ where: { id } });
 
-    await this.prisma.word.delete({
-      where: { id },
-    });
-
-    return { message: `Word с id ${id} успешно удален` };
+      return { message: `Word с id ${id} успешно удален` };
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(`Запись с id=${id} не найдена`);
+      }
+      throw error;
+    }
   }
 }

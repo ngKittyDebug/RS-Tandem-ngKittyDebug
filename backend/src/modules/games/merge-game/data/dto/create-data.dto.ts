@@ -13,7 +13,7 @@ export class CreateDataDto {
   @ApiProperty({ description: 'Категория данных игры', example: 'Животные' })
   @IsNotEmpty()
   @IsString()
-  category: string;
+  category!: string;
 
   @ApiProperty({
     description: 'Массив слов с вопросами',
@@ -25,5 +25,5 @@ export class CreateDataDto {
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
   @Type(() => CreateWordDto)
-  words: CreateWordDto[];
+  words!: CreateWordDto[];
 }

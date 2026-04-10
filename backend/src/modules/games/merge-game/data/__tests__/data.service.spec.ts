@@ -5,6 +5,7 @@ import { createMockPrismaService } from 'prisma/__mocks__/prisma-service-mock';
 import { NotFoundException } from '@nestjs/common';
 import { CreateDataDto } from '../dto/create-data.dto';
 import { UpdateDataDto } from '../dto/update-data.dto';
+import { Prisma } from 'src/generated/prisma/client';
 
 describe('DataService', () => {
   let service: DataService;
@@ -315,7 +316,12 @@ describe('DataService', () => {
     });
 
     it('should throw NotFoundException if data not found', async () => {
-      prismaMock.mergeGameData.findUnique.mockResolvedValue(null);
+      prismaMock.mergeGameData.delete.mockRejectedValue(
+        new Prisma.PrismaClientKnownRequestError('', {
+          code: 'P2025',
+          clientVersion: '5.0.0',
+        }),
+      );
 
       await expect(service.remove(999)).rejects.toThrow(NotFoundException);
     });

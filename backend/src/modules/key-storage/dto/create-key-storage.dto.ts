@@ -8,7 +8,7 @@ export class CreateKeyStorageDto {
   })
   @IsString()
   @IsNotEmpty()
-  key: string;
+  key!: string;
 
   @ApiProperty({
     description: 'Данные для хранения в хранилище (произвольный объект)',
@@ -16,5 +16,5 @@ export class CreateKeyStorageDto {
   })
   @IsNotEmpty()
   @IsObject()
-  storage: object;
+  storage!: object;
 }

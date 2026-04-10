@@ -1,103 +1,201 @@
 # Backend (NestJS)
 
-Backend для приложения RS-Tandem-ngKittyDebug на NestJS с использованием Prisma ORM и PostgreSQL.
+Backend для приложения MeowVault на NestJS с использованием Prisma ORM и PostgreSQL.
 
-## Требования
+## 📋 Требования
 
-- Node.js >= 20
-- npm >= 10
-- Docker и Docker Compose
+Перед началом убедитесь, что у вас установлены:
+
+- **Node.js** >= 20
+- **npm** >= 10
+- **Docker** и **Docker Compose**
 
 ---
 
-## Быстрый старт
+## 🚀 Пошаговая инструкция по запуску
 
-### 1. Установка зависимостей
+### Шаг 1: Установка зависимостей
 
 ```bash
 npm ci
 ```
 
-### 2. Настройка окружения
+> `npm ci` устанавливает зависимости из `package-lock.json` (быстрее и надёжнее, чем `npm install`).
 
-Скопируйте `.env.example` в `.env` и настройте переменные:
+### Шаг 2: Настройка окружения
+
+Скопируйте `.env.example` в `.env`:
 
 ```bash
 cp .env.example .env
 ```
 
-**Необходимые переменные:**
+Откройте `.env` и настройте переменные:
 
-| Переменная          | Описание                        | По умолчанию       |
-| ------------------- | ------------------------------- | ------------------ |
-| `DATABASE_URL`      | Строка подключения к PostgreSQL | —                  |
-| `PORT`              | Порт сервера                    | `3000`             |
-| `DEV_HOST`          | Хост сервера                    | `http://localhost` |
-| `POSTGRES_USER`     | Пользователь PostgreSQL         | —                  |
-| `POSTGRES_PASSWORD` | Пароль PostgreSQL               | —                  |
-| `POSTGRES_DB`       | Имя базы данных                 | —                  |
-| `BCRYPT_SALT`       | Соль для хеширования паролей    | `10`               |
+```env
+DOMAIN=localhost
+MODE=product
 
-### 3. Запуск PostgreSQL (Docker)
+PORT=4000
+HOST=http://localhost
+DEPLOY_URL_CORS=/^https:\/\/(deploy-preview-\d+--)?meowvault\.netlify\.app$/
+
+DEV_HOST=http://localhost:4200
+
+# PostgreSQL
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=<ваш-надежный-пароль>
+POSTGRES_DB=postgres
+
+# Bcrypt
+BCRYPT_SALT=10
+
+# JWT
+JWT_SECRET_KEY=<ваш-секретный-ключ-минимум-32-символа>
+JWT_ACCESS_TOKEN_EXPIRE_TIME=1h
+JWT_REFRESH_TOKEN_EXPIRE_TIME=7d
+
+# GitHub OAuth2
+REDIRECT_FRONTEND=http://localhost:4200/
+CALLBACK_URL=http://localhost:3000/auth/github/callback
+GITHUB_CLIENT_ID=<ваш-client-id>
+GITHUB_CLIENT_SECRET=<ваш-client-secret>
+```
+
+> ⚠️ **Важно:** Замените все placeholder-значения (`<...>`) на реальные значения!
+>
+> - `POSTGRES_PASSWORD` — придумайте надёжный пароль для базы данных
+> - `JWT_SECRET_KEY` — сгенерируйте случайную строку минимум 32 символа (например, через `openssl rand -base64 32`)
+> - `GITHUB_CLIENT_ID` и `GITHUB_CLIENT_SECRET` — создайте в [GitHub OAuth Apps](https://github.com/settings/developers)
+
+**Полный список переменных окружения:**
+
+| Переменная                      | Описание                             | По умолчанию                |
+| ------------------------------- | ------------------------------------ | --------------------------- |
+| `DOMAIN`                        | Домен приложения                     | `localhost`                 |
+| `MODE`                          | Режим работы (`product` / `develop`) | `product`                   |
+| `PORT`                          | Порт сервера                         | `4000`                      |
+| `HOST`                          | Основной хост                        | `http://localhost`          |
+| `DEPLOY_URL_CORS`               | Regex для CORS (deploy previews)     | —                           |
+| `DEV_HOST`                      | Хост фронтенда для разработки        | `http://localhost:4200`     |
+| `POSTGRES_USER`                 | Пользователь PostgreSQL              | `postgres`                  |
+| `POSTGRES_PASSWORD`             | Пароль PostgreSQL                    | —                           |
+| `POSTGRES_DB`                   | Имя базы данных                      | `postgres`                  |
+| `BCRYPT_SALT`                   | Соль для хеширования паролей         | `10`                        |
+| `JWT_SECRET_KEY`                | Секретный ключ для JWT               | —                           |
+| `JWT_ACCESS_TOKEN_EXPIRE_TIME`  | Время жизни access token             | `1h`                        |
+| `JWT_REFRESH_TOKEN_EXPIRE_TIME` | Время жизни refresh token            | `7d`                        |
+| `GITHUB_CLIENT_ID`              | Client ID для GitHub OAuth           | —                           |
+| `GITHUB_CLIENT_SECRET`          | Client Secret для GitHub OAuth       | —                           |
+| `REDIRECT_FRONTEND`             | URL редиректа после OAuth            | `http://localhost:4200/`    |
+| `CALLBACK_URL`                  | Callback URL для GitHub OAuth        | `http://localhost:3000/...` |
+
+### Шаг 3: Запуск PostgreSQL (Docker)
 
 ```bash
 npm run docker:dev
 ```
 
-Контейнер будет доступен на порту `5433`.
+Эта команда запустит контейнер с PostgreSQL на порту **5433**.
 
-### 4. Генерация Prisma клиента
+> Для остановки контейнера: `docker-compose down`
+> Для удаления данных: `docker-compose down -v`
+
+### Шаг 4: Генерация Prisma клиента
 
 ```bash
 npm run generate:dev
 ```
 
-### 5. Применение миграций
+Prisma сгенерирует клиент на основе `schema.prisma` для работы с базой данных.
+
+### Шаг 5: Применение миграций
 
 ```bash
 npm run migration:dev
 ```
 
-### 6. Запуск сервера
+Будут применены все миграции и создана структура базы данных.
+
+> При создании новой миграции: `npm run migration:dev` создаст и применит её.
+> Для production: `npm run migration` (только применение без создания).
+
+### Шаг 6: Запуск сервера
 
 ```bash
-# Режим разработки (авто-перезагрузка)
+# Режим разработки (с авто-перезагрузкой при изменении файлов)
 npm run start:dev
 
-# Режим отладки
+# Режим отладки (с debugger, можно подключиться через DevTools)
 npm run start:debug
 
-# Production режим
+# Production режим (предварительно выполните npm run build)
 npm run start:prod
 ```
 
+После запуска сервер будет доступен по адресу: **http://localhost:4000**
+
 ---
 
-## Swagger (API документация)
+## 📚 Swagger (API документация)
 
-После запуска приложения Swagger доступен по адресу:
+После запуска приложения Swagger UI доступен по адресу:
 
 ```
-http://localhost:3000/docs
+http://localhost:4000/docs
 ```
 
 Экспорт спецификации в YAML:
 
 ```
-http://localhost:3000/openapi.yaml
+http://localhost:4000/openapi.yaml
 ```
 
 📖 **Подробная документация по Swagger:** [SWAGGER_WIKI.md](./SWAGGER_WIKI.md)
 
 ---
 
-## Структура проекта
+## 🛠️ Дополнительные команды
+
+### Prisma Studio (визуальный редактор БД)
+
+```bash
+npm run prisma-studio
+```
+
+Откроется веб-интерфейс для просмотра и редактирования данных в базе данных.
+
+### Проверка кода
+
+```bash
+# Полная проверка (форматирование + типы + линтинг + тесты)
+npm run check-all
+
+# Отдельные проверки
+npm run ci:format    # Проверка форматирования (Prettier)
+npm run typecheck    # Проверка типов TypeScript
+npm run ci:lint      # Проверка линтинга (ESLint)
+npm run test         # Запуск unit-тестов
+npm run test:cov     # Тесты с отчётом о покрытии
+npm run test:e2e     # E2E тесты
+```
+
+### Форматирование и линтинг
+
+```bash
+npm run format  # Авто-форматирование кода (Prettier)
+npm run lint    # Авто-исправление проблем линтера (ESLint)
+```
+
+---
+
+## 📁 Структура проекта
 
 ```
 backend/
 ├── prisma/
-│   ├── schema.prisma          # Схема базы данных
-│   └── migrations/            # Миграции Prisma
+│   ├── schema.prisma          # Схема базы данных (модели, связи)
+│   └── migrations/            # Миграции Prisma (версионирование БД)
 │
 ├── src/
 │   ├── modules/
@@ -146,7 +244,7 @@ backend/
 
 ---
 
-## Доступные скрипты
+## 📜 Все доступные скрипты
 
 ### Основные
 
@@ -161,10 +259,10 @@ backend/
 
 | Команда                 | Описание                                      |
 | ----------------------- | --------------------------------------------- |
-| `npm run docker:dev`    | Запуск PostgreSQL в Docker                    |
+| `npm run docker:dev`    | Запуск PostgreSQL в Docker (порт 5433)        |
 | `npm run generate:dev`  | Генерация Prisma клиента                      |
-| `npm run migration:dev` | Применение миграций (dev)                     |
-| `npm run migration`     | Применение миграций (prod)                    |
+| `npm run migration:dev` | Создание и применение миграций (dev)          |
+| `npm run migration`     | Применение миграций (production)              |
 | `npm run prisma-studio` | Запуск Prisma Studio (визуальный редактор БД) |
 
 ### Проверка кода
@@ -180,17 +278,53 @@ backend/
 
 ### Тесты
 
-| Команда              | Описание             |
-| -------------------- | -------------------- |
-| `npm run test`       | Запуск тестов        |
-| `npm run test:watch` | Тесты в режиме watch |
-| `npm run test:cov`   | Тесты с покрытием    |
-| `npm run test:e2e`   | E2E тесты            |
+| Команда              | Описание                 |
+| -------------------- | ------------------------ |
+| `npm run test`       | Запуск unit-тестов       |
+| `npm run test:watch` | Тесты в режиме watch     |
+| `npm run test:cov`   | Тесты с отчётом покрытия |
+| `npm run test:debug` | Тесты с отладчиком       |
+| `npm run test:e2e`   | E2E (end-to-end) тесты   |
 
 ---
 
-## Полезные ссылки
+## 🔧 Troubleshooting
 
-- [Документация по Swagger](./SWAGGER_WIKI.md) — подробное руководство по использованию Swagger UI
+### Порт 5433 уже занят
+
+Если порт 5433 уже используется другим процессом, измените порт в `docker-compose.yml`:
+
+```yaml
+ports:
+  - 5434:5432 # Замените 5433 на свободный порт
+```
+
+И обновите `DATABASE_URL` в `.env` соответственно.
+
+### Ошибка Prisma: `Can't reach database server`
+
+1. Убедитесь, что Docker контейнер запущен: `docker ps`
+2. Проверьте `DATABASE_URL` в `.env` (должен соответствовать порту из docker-compose)
+3. Перезапустите контейнер: `docker-compose down && docker-compose up -d`
+
+### Ошибка JWT_SECRET_KEY
+
+Убедитесь, что `JWT_SECRET_KEY` — это случайная строка минимум **32 символа**.
+Сгенерировать можно командой:
+
+```bash
+# Linux/Mac
+openssl rand -base64 32
+
+# Windows (PowerShell)
+-join ((48..57) + (65..90) + (97..122) | Get-Random -Count 32 | ForEach-Object {[char]$_})
+```
+
+---
+
+## 🔗 Полезные ссылки
+
+- [Документация по Swagger](./SWAGGER_WIKI.md) — подробное руководство по Swagger UI
 - [NestJS Documentation](https://docs.nestjs.com/)
 - [Prisma Documentation](https://www.prisma.io/docs/)
+- [GitHub OAuth Setup](https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/creating-an-oauth-app)
